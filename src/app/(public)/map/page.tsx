@@ -1,7 +1,7 @@
 'use client'
 
 import dynamic from 'next/dynamic'
-import { useState, useCallback, useMemo, useEffect, useRef } from 'react'
+import { Suspense, useState, useCallback, useMemo, useEffect, useRef } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import { publicApi } from '@/lib/api'
@@ -43,7 +43,7 @@ function filtersToParams(f: MapFilters): URLSearchParams {
   return p
 }
 
-export default function MapPage() {
+function MapPageContent() {
   const { authUser } = useAuth()
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -224,5 +224,13 @@ export default function MapPage() {
         </div>
       )}
     </div>
+  )
+}
+
+export default function MapPage() {
+  return (
+    <Suspense fallback={<div className="w-full h-screen bg-slate-950 animate-pulse" />}>
+      <MapPageContent />
+    </Suspense>
   )
 }
