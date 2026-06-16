@@ -7,7 +7,7 @@ const MOCK_MODE = process.env.NEXT_PUBLIC_MOCK_API === 'true'
 let _app: FirebaseApp | null = null
 let _auth: Auth | null = null
 
-if (!MOCK_MODE) {
+if (!MOCK_MODE && process.env.NEXT_PUBLIC_FIREBASE_API_KEY) {
   const firebaseConfig = {
     apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
     authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
