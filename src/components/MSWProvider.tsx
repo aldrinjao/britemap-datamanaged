@@ -20,7 +20,12 @@ export function MSWProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!mockEnabled) return
-    enableMocking().then(() => setReady(true))
+    enableMocking()
+      .then(() => setReady(true))
+      .catch((err) => {
+        console.warn('MSW failed to start:', err)
+        setReady(true)
+      })
   }, [mockEnabled])
 
   // Blank screen while worker registers — typically <200ms
