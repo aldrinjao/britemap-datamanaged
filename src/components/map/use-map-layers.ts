@@ -18,6 +18,12 @@ export interface LayerState {
     heatmap: boolean
     clumpSizeMetric: ClumpSizeMetric
   }
+  overlays: {
+    bambooDist: boolean
+    bamboDistOpacity: number
+    droneId: string | null
+    droneOpacity: number
+  }
 }
 
 type LayerAction =
@@ -29,6 +35,10 @@ type LayerAction =
   | { type: 'TOGGLE_QUADRAT_POINTS' }
   | { type: 'TOGGLE_HEATMAP' }
   | { type: 'SET_CLUMP_SIZE_METRIC'; payload: ClumpSizeMetric }
+  | { type: 'TOGGLE_BAMBOO_DIST' }
+  | { type: 'SET_BAMBOO_DIST_OPACITY'; payload: number }
+  | { type: 'SET_DRONE_ID'; payload: string | null }
+  | { type: 'SET_DRONE_OPACITY'; payload: number }
 
 const initialState: LayerState = {
   basemap: 'streets',
@@ -44,6 +54,12 @@ const initialState: LayerState = {
     quadratPoints: true,
     heatmap: false,
     clumpSizeMetric: 'diameter',
+  },
+  overlays: {
+    bambooDist: false,
+    bamboDistOpacity: 0.65,
+    droneId: null,
+    droneOpacity: 0.9,
   },
 }
 
@@ -65,6 +81,14 @@ function reducer(state: LayerState, action: LayerAction): LayerState {
       return { ...state, data: { ...state.data, heatmap: !state.data.heatmap } }
     case 'SET_CLUMP_SIZE_METRIC':
       return { ...state, data: { ...state.data, clumpSizeMetric: action.payload } }
+    case 'TOGGLE_BAMBOO_DIST':
+      return { ...state, overlays: { ...state.overlays, bambooDist: !state.overlays.bambooDist } }
+    case 'SET_BAMBOO_DIST_OPACITY':
+      return { ...state, overlays: { ...state.overlays, bamboDistOpacity: action.payload } }
+    case 'SET_DRONE_ID':
+      return { ...state, overlays: { ...state.overlays, droneId: action.payload } }
+    case 'SET_DRONE_OPACITY':
+      return { ...state, overlays: { ...state.overlays, droneOpacity: action.payload } }
     default:
       return state
   }
@@ -75,13 +99,17 @@ export function useMapLayers() {
 
   return {
     layers: state,
-    setBasemap: (v: BasemapStyle) => dispatch({ type: 'SET_BASEMAP', payload: v }),
-    toggleHillshade: () => dispatch({ type: 'TOGGLE_HILLSHADE' }),
-    toggleRoads: () => dispatch({ type: 'TOGGLE_ROADS' }),
-    toggleBoundary: (k: keyof LayerState['boundaries']) => dispatch({ type: 'TOGGLE_BOUNDARY', payload: k }),
-    setProvincesOpacity: (v: number) => dispatch({ type: 'SET_PROVINCES_OPACITY', payload: v }),
-    toggleQuadratPoints: () => dispatch({ type: 'TOGGLE_QUADRAT_POINTS' }),
-    toggleHeatmap: () => dispatch({ type: 'TOGGLE_HEATMAP' }),
-    setClumpSizeMetric: (v: ClumpSizeMetric) => dispatch({ type: 'SET_CLUMP_SIZE_METRIC', payload: v }),
+    setBasemap:          (v: BasemapStyle)      => dispatch({ type: 'SET_BASEMAP', payload: v }),
+    toggleHillshade:     ()                      => dispatch({ type: 'TOGGLE_HILLSHADE' }),
+    toggleRoads:         ()                      => dispatch({ type: 'TOGGLE_ROADS' }),
+    toggleBoundary:      (k: keyof LayerState['boundaries']) => dispatch({ type: 'TOGGLE_BOUNDARY', payload: k }),
+    setProvincesOpacity: (v: number)             => dispatch({ type: 'SET_PROVINCES_OPACITY', payload: v }),
+    toggleQuadratPoints: ()                      => dispatch({ type: 'TOGGLE_QUADRAT_POINTS' }),
+    toggleHeatmap:       ()                      => dispatch({ type: 'TOGGLE_HEATMAP' }),
+    setClumpSizeMetric:  (v: ClumpSizeMetric)    => dispatch({ type: 'SET_CLUMP_SIZE_METRIC', payload: v }),
+    toggleBambooDist:    ()                      => dispatch({ type: 'TOGGLE_BAMBOO_DIST' }),
+    setBamboDistOpacity: (v: number)             => dispatch({ type: 'SET_BAMBOO_DIST_OPACITY', payload: v }),
+    setDroneId:          (v: string | null)      => dispatch({ type: 'SET_DRONE_ID', payload: v }),
+    setDroneOpacity:     (v: number)             => dispatch({ type: 'SET_DRONE_OPACITY', payload: v }),
   }
 }

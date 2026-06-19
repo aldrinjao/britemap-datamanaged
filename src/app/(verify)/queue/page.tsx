@@ -136,7 +136,7 @@ export default function QueuePage() {
                         <button
                           onClick={() => openMutation.mutate({ entityType: item.entityType, uuid: item.uuid })}
                           disabled={openMutation.isPending}
-                          className="px-2 py-1 text-xs rounded bg-blue-600 hover:bg-blue-500 dark:bg-blue-700 dark:hover:bg-blue-600 text-white disabled:opacity-50"
+                          className="px-2 py-1 text-xs rounded bg-emerald-600 hover:bg-emerald-500 dark:bg-emerald-700 dark:hover:bg-emerald-600 text-white disabled:opacity-50"
                         >
                           Open
                         </button>

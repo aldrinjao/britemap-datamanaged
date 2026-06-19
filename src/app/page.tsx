@@ -32,7 +32,7 @@ function Nav() {
               href="/map"
               className="block px-4 py-1.5 rounded-full border border-emerald-300/60 text-emerald-100 font-semibold text-sm hover:bg-emerald-700 transition-colors"
             >
-              🗺 Launch Map
+              Launch Map
             </Link>
             <Link
               href="/dashboard"
@@ -97,7 +97,7 @@ export default function LandingPage() {
     <div className="min-h-screen bg-white text-slate-900" style={{ scrollBehavior: 'smooth' }}>
 
       {/* ── Header ── */}
-      <header className="bg-gradient-to-r from-emerald-900 via-emerald-800 to-green-900 text-white">
+      <header className="bg-slate-900 text-white border-b border-slate-800">
         <div className="max-w-6xl mx-auto px-6 py-6">
           <div className="flex flex-col sm:flex-row items-center gap-6">
             {/* Logos — fixed 56×56 container so all three are the same visual size */}
@@ -139,17 +139,16 @@ export default function LandingPage() {
       <Nav />
 
       {/* ── Hero ── */}
-      <section id="home" className="relative overflow-hidden bg-emerald-950 min-h-[420px] flex items-end">
-        {/* Hero image — place hero2.png in /public/ */}
+      <section id="home" className="relative overflow-hidden bg-slate-950 min-h-[420px] flex items-end">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/hero2.png"
           alt="Bamboo Forest"
-          className="absolute inset-0 w-full h-full object-cover opacity-60"
+          className="absolute inset-0 w-full h-full object-cover opacity-75"
           onError={(e) => { (e.target as HTMLImageElement).style.opacity = '0' }}
         />
-        {/* Decorative bamboo-green gradient when no image */}
-        <div className="absolute inset-0 bg-gradient-to-br from-emerald-950 via-green-900 to-emerald-800 opacity-90 pointer-events-none" />
+        {/* Dark gradient anchors the text without casting a green tint over the image */}
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/50 to-transparent pointer-events-none" />
 
         <div className="relative z-10 max-w-6xl mx-auto px-6 py-16 w-full">
           <div className="max-w-2xl">
@@ -167,7 +166,7 @@ export default function LandingPage() {
                 href="/map"
                 className="px-5 py-2.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-white font-semibold text-sm transition-colors shadow-lg"
               >
-                🗺 Launch Map
+                Launch Map
               </Link>
               <a
                 href="#about"
@@ -179,6 +178,23 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+
+      {/* ── Stats strip ── */}
+      <div className="bg-emerald-800 text-white">
+        <div className="max-w-6xl mx-auto px-6 py-8 grid grid-cols-2 sm:grid-cols-4 gap-6 text-center">
+          {[
+            { value: '60+',  label: 'Quadrats Surveyed' },
+            { value: '9',    label: 'Bamboo Species' },
+            { value: '11',   label: 'Regions Covered' },
+            { value: '3',    label: 'Project Components' },
+          ].map(({ value, label }) => (
+            <div key={label}>
+              <p className="text-3xl font-extrabold text-emerald-300 leading-none">{value}</p>
+              <p className="mt-1 text-sm text-emerald-100 font-medium">{label}</p>
+            </div>
+          ))}
+        </div>
+      </div>
 
       {/* ── About ── */}
       <Section id="about" className="bg-slate-50">
@@ -342,6 +358,29 @@ export default function LandingPage() {
         </div>
       </Section>
 
+      {/* ── Map CTA ── */}
+      <section className="relative overflow-hidden bg-emerald-950 py-20">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-emerald-800/30 via-transparent to-transparent pointer-events-none" />
+        <div className="relative max-w-6xl mx-auto px-6 text-center">
+          <p className="text-emerald-400 text-sm font-semibold uppercase tracking-widest mb-3">Interactive WebGIS</p>
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-white leading-tight">
+            Explore the Bamboo Distribution Map
+          </h2>
+          <p className="mt-4 text-emerald-200 text-base max-w-xl mx-auto leading-relaxed">
+            Browse survey sites across the Philippines, filter by region or species, and drill into field-level data — all in your browser.
+          </p>
+          <Link
+            href="/map"
+            className="mt-8 inline-flex items-center gap-2 px-7 py-3 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-white font-semibold text-sm transition-colors shadow-xl"
+          >
+            Open Map
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
+            </svg>
+          </Link>
+        </div>
+      </section>
+
       {/* ── News ── */}
       <Section id="news" className="bg-slate-50">
         <SectionHeading>Latest News &amp; Updates</SectionHeading>
@@ -351,7 +390,7 @@ export default function LandingPage() {
               src: '/news1.png',
               date: 'January 17, 2025',
               title: 'Manual on Harmonized System for Community-based Inventory of Bamboo Resources in the Philippines',
-              excerpt: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+              excerpt: 'A comprehensive field guide covering bamboo identification, GIS-aided mapping procedures, and the standardized community-based inventory protocol used across 11 regions.',
             },
             {
               src: '/news2.jpg',
@@ -452,13 +491,13 @@ export default function LandingPage() {
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-emerald-700 hover:bg-emerald-600 text-white text-sm font-semibold transition-colors shadow"
               >
-                📥 Download Manual
+                Download Manual
               </a>
               <a
                 href="#contact"
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border border-emerald-600 text-emerald-700 hover:bg-emerald-50 text-sm font-semibold transition-colors"
               >
-                📧 Request Print Copy
+                Request Print Copy
               </a>
             </div>
 
@@ -517,7 +556,7 @@ export default function LandingPage() {
           </div>
 
           <div className="mt-10 pt-6 border-t border-emerald-800 text-center text-xs text-emerald-400">
-            © 2025 BRITEMAP. All rights reserved. | Funded by DOST-PCAARRD
+            © 2024–2025 BRITEMAP. All rights reserved. | Funded by DOST-PCAARRD
           </div>
         </div>
       </footer>

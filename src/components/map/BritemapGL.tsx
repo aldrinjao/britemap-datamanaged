@@ -7,6 +7,7 @@ import type { Layer } from '@deck.gl/core'
 import { DeckGLOverlay } from './DeckGLOverlay'
 import { LayerPanel } from './LayerPanel'
 import { useMapLayers } from './use-map-layers'
+import { BAMBOO_DIST_TILES, DRONE_FLIGHTS } from './overlay-config'
 import {
   makeQuadratDotsLayer,
   makeQuadratSquaresLayer,
@@ -268,6 +269,49 @@ export function BritemapGL({
       >
         <NavigationControl position="bottom-right" />
         <ScaleControl position="bottom-left" />
+        {/* Hillshade — raster-dem from AWS Terrarium tiles */}
+        {layers.hillshade && (
+          <>
+            <Source
+              id="hillshade-dem"
+              type="raster-dem"
+              tiles={['https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png']}
+              tileSize={256}
+              encoding="terrarium"
+              maxzoom={15}
+            />
+            <MapLayer
+              id="hillshade-layer"
+              type="hillshade"
+              source="hillshade-dem"
+              paint={{
+                'hillshade-exaggeration': 0.4,
+                'hillshade-shadow-color': '#000000',
+                'hillshade-highlight-color': '#ffffff',
+                'hillshade-accent-color': '#000000',
+              }}
+            />
+          </>
+        )}
+
+        {/* Bamboo distribution — AI/ML raster tiles (below data, above basemap) */}
+        {layers.overlays.bambooDist && BAMBOO_DIST_TILES && (
+          <Source type="raster" tiles={[BAMBOO_DIST_TILES]} tileSize={256}>
+            <MapLayer type="raster" paint={{ 'raster-opacity': layers.overlays.bamboDistOpacity }} />
+          </Source>
+        )}
+
+        {/* Drone orthophoto — selected flight tiles */}
+        {layers.overlays.droneId && (() => {
+          const flight = DRONE_FLIGHTS.find((f) => f.id === layers.overlays.droneId && f.tiles)
+          return flight ? (
+            <Source type="raster" tiles={[flight.tiles]} tileSize={256}>
+              <MapLayer type="raster" paint={{ 'raster-opacity': layers.overlays.droneOpacity }} />
+            </Source>
+          ) : null
+        })()}
+
+        {/* Roads overlay — OSM on satellite only */}
         {layers.roads && layers.basemap === 'satellite' && (
           <Source
             type="raster"
@@ -311,6 +355,10 @@ export function BritemapGL({
             onToggleQuadratPoints={actions.toggleQuadratPoints}
             onToggleHeatmap={actions.toggleHeatmap}
             onSetClumpSizeMetric={actions.setClumpSizeMetric}
+            onToggleBambooDist={actions.toggleBambooDist}
+            onSetBamboDistOpacity={actions.setBamboDistOpacity}
+            onSetDroneId={actions.setDroneId}
+            onSetDroneOpacity={actions.setDroneOpacity}
           />
           {visibleSpecies.length > 0 && (
             <div className="w-56 bg-slate-900/95 backdrop-blur-sm border border-slate-700 rounded-lg shadow-xl px-3 py-2">

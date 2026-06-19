@@ -100,69 +100,69 @@ export const CURRENT_USER = MOCK_USERS[0]
 // Source: Camsur-Data.xlsx — Camarines Sur bamboo survey, Apr–May 2025
 
 export const PUBLIC_QUADRATS: PublicQuadrat[] = [
-  { _id: uid(2000), serverId: 2001, regionCode: '05', region: 'Region V (Bicol Region)', provinceCode: '501700000', province: 'Camarines Sur', municipalityCode: 'CAM_SUR_NAB', municipality: 'Nabua', barangayCode: 'CAM_SUR_NAB_BUSTRAC', barangay: 'Bustrac', latitude: 13.366997, longitude: 123.348914, clumpCount: 9, photoCount: 0, approvedAt: 1745971813000, dominantSpecies: 'Bambusa spinosa' },
-  { _id: uid(2001), serverId: 2002, regionCode: '05', region: 'Region V (Bicol Region)', provinceCode: '501700000', province: 'Camarines Sur', municipalityCode: 'CAM_SUR_NAB', municipality: 'Nabua', barangayCode: 'CAM_SUR_NAB_BUSTRAC', barangay: 'Bustrac', latitude: 13.364451, longitude: 123.347399, clumpCount: 9, photoCount: 0, approvedAt: 1745974270000, dominantSpecies: 'Bambusa spinosa' },
-  { _id: uid(2002), serverId: 2003, regionCode: '05', region: 'Region V (Bicol Region)', provinceCode: '501700000', province: 'Camarines Sur', municipalityCode: 'CAM_SUR_NAB', municipality: 'Nabua', barangayCode: 'CAM_SUR_NAB_BUSTRAC', barangay: 'Bustrac', latitude: 13.36414, longitude: 123.350926, clumpCount: 7, photoCount: 0, approvedAt: 1745975845000, dominantSpecies: 'Bambusa spinosa' },
-  { _id: uid(2003), serverId: 2004, regionCode: '05', region: 'Region V (Bicol Region)', provinceCode: '501700000', province: 'Camarines Sur', municipalityCode: 'CAM_SUR_NAB', municipality: 'Nabua', barangayCode: 'CAM_SUR_NAB_BUSTRAC', barangay: 'Bustrac', latitude: 13.365522, longitude: 123.354246, clumpCount: 8, photoCount: 0, approvedAt: 1745976594000, dominantSpecies: 'Bambusa spinosa' },
-  { _id: uid(2004), serverId: 2005, regionCode: '05', region: 'Region V (Bicol Region)', provinceCode: '501700000', province: 'Camarines Sur', municipalityCode: 'CAM_SUR_NAB', municipality: 'Nabua', barangayCode: 'CAM_SUR_NAB_SAN_VICENTE_OGBON', barangay: 'San Vicente Ogbon', latitude: 13.377004, longitude: 123.349694, clumpCount: 8, photoCount: 0, approvedAt: 1745977824000, dominantSpecies: 'Bambusa spinosa' },
-  { _id: uid(2005), serverId: 2006, regionCode: '05', region: 'Region V (Bicol Region)', provinceCode: '501700000', province: 'Camarines Sur', municipalityCode: 'CAM_SUR_NAB', municipality: 'Nabua', barangayCode: 'CAM_SUR_NAB_SAN_VICENTE_OGBON', barangay: 'San Vicente Ogbon', latitude: 13.377223, longitude: 123.346693, clumpCount: 6, photoCount: 0, approvedAt: 1745979063000, dominantSpecies: 'Bambusa spinosa' },
-  { _id: uid(2006), serverId: 2007, regionCode: '05', region: 'Region V (Bicol Region)', provinceCode: '501700000', province: 'Camarines Sur', municipalityCode: 'CAM_SUR_NAB', municipality: 'Nabua', barangayCode: 'CAM_SUR_NAB_SAN_VICENTE_OGBON', barangay: 'San Vicente Ogbon', latitude: 13.385239, longitude: 123.340406, clumpCount: 13, photoCount: 0, approvedAt: 1745981479000, dominantSpecies: 'Bambusa spinosa' },
-  { _id: uid(2007), serverId: 2008, regionCode: '05', region: 'Region V (Bicol Region)', provinceCode: '501700000', province: 'Camarines Sur', municipalityCode: 'CAM_SUR_NAB', municipality: 'Nabua', barangayCode: 'CAM_SUR_NAB_SAN_ROQUE_MADAWON', barangay: 'San Roque Madawon', latitude: 13.391439, longitude: 123.337742, clumpCount: 12, photoCount: 0, approvedAt: 1745983757000, dominantSpecies: 'Bambusa spinosa' },
-  { _id: uid(2008), serverId: 2009, regionCode: '05', region: 'Region V (Bicol Region)', provinceCode: '501700000', province: 'Camarines Sur', municipalityCode: 'CAM_SUR_NAB', municipality: 'Nabua', barangayCode: 'CAM_SUR_NAB_SAN_ROQUE_MADAWON', barangay: 'San Roque Madawon', latitude: 13.39481, longitude: 123.333941, clumpCount: 6, photoCount: 0, approvedAt: 1745987715000, dominantSpecies: 'Bambusa spinosa' },
-  { _id: uid(2009), serverId: 2010, regionCode: '05', region: 'Region V (Bicol Region)', provinceCode: '501700000', province: 'Camarines Sur', municipalityCode: 'CAM_SUR_NAB', municipality: 'Nabua', barangayCode: 'CAM_SUR_NAB_SAN_ROQUE_MADAWON', barangay: 'San Roque Madawon', latitude: 13.393734, longitude: 123.332098, clumpCount: 10, photoCount: 0, approvedAt: 1745988640000, dominantSpecies: 'Bambusa spinosa' },
-  { _id: uid(2010), serverId: 2011, regionCode: '05', region: 'Region V (Bicol Region)', provinceCode: '501700000', province: 'Camarines Sur', municipalityCode: 'CAM_SUR_BUL', municipality: 'Bula', barangayCode: 'CAM_SUR_BUL_OMBAO_HEIGHTS', barangay: 'Ombao Heights', latitude: 13.461971, longitude: 123.238098, clumpCount: 13, photoCount: 0, approvedAt: 1746061175000, dominantSpecies: 'Bambusa spinosa' },
-  { _id: uid(2011), serverId: 2012, regionCode: '05', region: 'Region V (Bicol Region)', provinceCode: '501700000', province: 'Camarines Sur', municipalityCode: 'CAM_SUR_BUL', municipality: 'Bula', barangayCode: 'CAM_SUR_BUL_OMBAO_HEIGHTS', barangay: 'Ombao Heights', latitude: 13.460563, longitude: 123.238276, clumpCount: 3, photoCount: 0, approvedAt: 1746062922000, dominantSpecies: 'Bambusa spinosa' },
-  { _id: uid(2012), serverId: 2013, regionCode: '05', region: 'Region V (Bicol Region)', provinceCode: '501700000', province: 'Camarines Sur', municipalityCode: 'CAM_SUR_BUL', municipality: 'Bula', barangayCode: 'CAM_SUR_BUL_OMBAO_HEIGHTS', barangay: 'Ombao Heights', latitude: 13.460662, longitude: 123.235844, clumpCount: 14, photoCount: 0, approvedAt: 1746064018000, dominantSpecies: 'Bambusa spinosa' },
-  { _id: uid(2013), serverId: 2014, regionCode: '05', region: 'Region V (Bicol Region)', provinceCode: '501700000', province: 'Camarines Sur', municipalityCode: 'CAM_SUR_BUL', municipality: 'Bula', barangayCode: 'CAM_SUR_BUL_OMBAO_HEIGHTS', barangay: 'Ombao Heights', latitude: 13.4593, longitude: 123.237358, clumpCount: 8, photoCount: 0, approvedAt: 1746065387000, dominantSpecies: 'Bambusa vulgaris' },
-  { _id: uid(2014), serverId: 2015, regionCode: '05', region: 'Region V (Bicol Region)', provinceCode: '501700000', province: 'Camarines Sur', municipalityCode: 'CAM_SUR_BUL', municipality: 'Bula', barangayCode: 'CAM_SUR_BUL_SANTO_NI_O', barangay: 'Santo Niño', latitude: 13.470192, longitude: 123.227495, clumpCount: 17, photoCount: 0, approvedAt: 1746067797000, dominantSpecies: 'Bambusa merrilliana' },
-  { _id: uid(2015), serverId: 2016, regionCode: '05', region: 'Region V (Bicol Region)', provinceCode: '501700000', province: 'Camarines Sur', municipalityCode: 'CAM_SUR_BUL', municipality: 'Bula', barangayCode: 'CAM_SUR_BUL_SANTO_NI_O', barangay: 'Santo Niño', latitude: 13.473794, longitude: 123.231307, clumpCount: 5, photoCount: 0, approvedAt: 1746069797000, dominantSpecies: 'Bambusa spinosa' },
-  { _id: uid(2016), serverId: 2017, regionCode: '05', region: 'Region V (Bicol Region)', provinceCode: '501700000', province: 'Camarines Sur', municipalityCode: 'CAM_SUR_BUL', municipality: 'Bula', barangayCode: 'CAM_SUR_BUL_SANTO_NI_O', barangay: 'Santo Niño', latitude: 13.4808651, longitude: 123.2283479, clumpCount: 8, photoCount: 0, approvedAt: 1746069977000, dominantSpecies: 'Bambusa spinosa' },
-  { _id: uid(2017), serverId: 2018, regionCode: '05', region: 'Region V (Bicol Region)', provinceCode: '501700000', province: 'Camarines Sur', municipalityCode: 'CAM_SUR_BUL', municipality: 'Bula', barangayCode: 'CAM_SUR_BUL_PANOYPOYAN', barangay: 'Panoypoyan', latitude: 13.46223, longitude: 123.254463, clumpCount: 6, photoCount: 0, approvedAt: 1746075514000, dominantSpecies: 'Bambusa vulgaris' },
-  { _id: uid(2018), serverId: 2019, regionCode: '05', region: 'Region V (Bicol Region)', provinceCode: '501700000', province: 'Camarines Sur', municipalityCode: 'CAM_SUR_BUL', municipality: 'Bula', barangayCode: 'CAM_SUR_BUL_PANOYPOYAN', barangay: 'Panoypoyan', latitude: 13.463727, longitude: 123.25595, clumpCount: 7, photoCount: 0, approvedAt: 1746077506000, dominantSpecies: 'Bambusa spinosa' },
-  { _id: uid(2019), serverId: 2020, regionCode: '05', region: 'Region V (Bicol Region)', provinceCode: '501700000', province: 'Camarines Sur', municipalityCode: 'CAM_SUR_BUL', municipality: 'Bula', barangayCode: 'CAM_SUR_BUL_PANOYPOYAN', barangay: 'Panoypoyan', latitude: 13.462097, longitude: 123.256477, clumpCount: 6, photoCount: 0, approvedAt: 1746078303000, dominantSpecies: 'Bambusa vulgaris' },
-  { _id: uid(2020), serverId: 2021, regionCode: '05', region: 'Region V (Bicol Region)', provinceCode: '501700000', province: 'Camarines Sur', municipalityCode: 'CAM_SUR_BAT', municipality: 'Bato', barangayCode: 'CAM_SUR_BAT_SAN_VICENTE', barangay: 'San Vicente', latitude: 13.36552, longitude: 123.355646, clumpCount: 5, photoCount: 0, approvedAt: 1746148120000, dominantSpecies: 'Bambusa spinosa' },
-  { _id: uid(2021), serverId: 2022, regionCode: '05', region: 'Region V (Bicol Region)', provinceCode: '501700000', province: 'Camarines Sur', municipalityCode: 'CAM_SUR_BAT', municipality: 'Bato', barangayCode: 'CAM_SUR_BAT_SAN_VICENTE', barangay: 'San Vicente', latitude: 13.361259, longitude: 123.352707, clumpCount: 8, photoCount: 0, approvedAt: 1746148865000, dominantSpecies: 'Bambusa spinosa' },
-  { _id: uid(2022), serverId: 2023, regionCode: '05', region: 'Region V (Bicol Region)', provinceCode: '501700000', province: 'Camarines Sur', municipalityCode: 'CAM_SUR_BAT', municipality: 'Bato', barangayCode: 'CAM_SUR_BAT_BACOLOD', barangay: 'Bacolod', latitude: 13.363546, longitude: 123.329709, clumpCount: 7, photoCount: 0, approvedAt: 1746150513000, dominantSpecies: 'Bambusa spinosa' },
-  { _id: uid(2023), serverId: 2024, regionCode: '05', region: 'Region V (Bicol Region)', provinceCode: '501700000', province: 'Camarines Sur', municipalityCode: 'CAM_SUR_BAT', municipality: 'Bato', barangayCode: 'CAM_SUR_BAT_BACOLOD', barangay: 'Bacolod', latitude: 13.359979, longitude: 123.327157, clumpCount: 6, photoCount: 0, approvedAt: 1746151184000, dominantSpecies: 'Bambusa spinosa' },
-  { _id: uid(2024), serverId: 2025, regionCode: '05', region: 'Region V (Bicol Region)', provinceCode: '501700000', province: 'Camarines Sur', municipalityCode: 'CAM_SUR_BAT', municipality: 'Bato', barangayCode: 'CAM_SUR_BAT_BACOLOD', barangay: 'Bacolod', latitude: 13.360729, longitude: 123.323505, clumpCount: 8, photoCount: 0, approvedAt: 1746152665000, dominantSpecies: 'Bambusa spinosa' },
-  { _id: uid(2025), serverId: 2026, regionCode: '05', region: 'Region V (Bicol Region)', provinceCode: '501700000', province: 'Camarines Sur', municipalityCode: 'CAM_SUR_BAT', municipality: 'Bato', barangayCode: 'CAM_SUR_BAT_BACOLOD', barangay: 'Bacolod', latitude: 13.360324, longitude: 123.317967, clumpCount: 7, photoCount: 0, approvedAt: 1746153577000, dominantSpecies: 'Bambusa spinosa' },
-  { _id: uid(2026), serverId: 2027, regionCode: '05', region: 'Region V (Bicol Region)', provinceCode: '501700000', province: 'Camarines Sur', municipalityCode: 'CAM_SUR_BAT', municipality: 'Bato', barangayCode: 'CAM_SUR_BAT_NEIGHBORHOOD', barangay: 'Neighborhood', latitude: 13.350693, longitude: 123.296922, clumpCount: 7, photoCount: 0, approvedAt: 1746155296000, dominantSpecies: 'Bambusa spinosa' },
-  { _id: uid(2027), serverId: 2028, regionCode: '05', region: 'Region V (Bicol Region)', provinceCode: '501700000', province: 'Camarines Sur', municipalityCode: 'CAM_SUR_BAT', municipality: 'Bato', barangayCode: 'CAM_SUR_BAT_NEIGHBORHOOD', barangay: 'Neighborhood', latitude: 13.351924, longitude: 123.298406, clumpCount: 8, photoCount: 0, approvedAt: 1746156601000, dominantSpecies: 'Bambusa spinosa' },
-  { _id: uid(2028), serverId: 2029, regionCode: '05', region: 'Region V (Bicol Region)', provinceCode: '501700000', province: 'Camarines Sur', municipalityCode: 'CAM_SUR_BAT', municipality: 'Bato', barangayCode: 'CAM_SUR_BAT_NEIGHBORHOOD', barangay: 'Neighborhood', latitude: 13.353806, longitude: 123.299881, clumpCount: 5, photoCount: 0, approvedAt: 1746157216000, dominantSpecies: 'Bambusa spinosa' },
-  { _id: uid(2029), serverId: 2030, regionCode: '05', region: 'Region V (Bicol Region)', provinceCode: '501700000', province: 'Camarines Sur', municipalityCode: 'CAM_SUR_BAT', municipality: 'Bato', barangayCode: 'CAM_SUR_BAT_NEIGHBORHOOD', barangay: 'Neighborhood', latitude: 13.357556, longitude: 123.304677, clumpCount: 7, photoCount: 0, approvedAt: 1746158242000, dominantSpecies: 'Bambusa vulgaris' },
+  { _id: uid(2000), serverId: 2001, regionCode: '05', region: 'Region V (Bicol Region)', provinceCode: '501700000', province: 'Camarines Sur', municipalityCode: 'CAM_SUR_NAB', municipality: 'Nabua', barangayCode: 'CAM_SUR_NAB_BUSTRAC', barangay: 'Bustrac', latitude: 13.366997, longitude: 123.348914, clumpCount: 9, photoCount: 0, approvedAt: 1745971813000 },
+  { _id: uid(2001), serverId: 2002, regionCode: '05', region: 'Region V (Bicol Region)', provinceCode: '501700000', province: 'Camarines Sur', municipalityCode: 'CAM_SUR_NAB', municipality: 'Nabua', barangayCode: 'CAM_SUR_NAB_BUSTRAC', barangay: 'Bustrac', latitude: 13.364451, longitude: 123.347399, clumpCount: 9, photoCount: 0, approvedAt: 1745974270000 },
+  { _id: uid(2002), serverId: 2003, regionCode: '05', region: 'Region V (Bicol Region)', provinceCode: '501700000', province: 'Camarines Sur', municipalityCode: 'CAM_SUR_NAB', municipality: 'Nabua', barangayCode: 'CAM_SUR_NAB_BUSTRAC', barangay: 'Bustrac', latitude: 13.36414, longitude: 123.350926, clumpCount: 7, photoCount: 0, approvedAt: 1745975845000 },
+  { _id: uid(2003), serverId: 2004, regionCode: '05', region: 'Region V (Bicol Region)', provinceCode: '501700000', province: 'Camarines Sur', municipalityCode: 'CAM_SUR_NAB', municipality: 'Nabua', barangayCode: 'CAM_SUR_NAB_BUSTRAC', barangay: 'Bustrac', latitude: 13.365522, longitude: 123.354246, clumpCount: 8, photoCount: 0, approvedAt: 1745976594000 },
+  { _id: uid(2004), serverId: 2005, regionCode: '05', region: 'Region V (Bicol Region)', provinceCode: '501700000', province: 'Camarines Sur', municipalityCode: 'CAM_SUR_NAB', municipality: 'Nabua', barangayCode: 'CAM_SUR_NAB_SAN_VICENTE_OGBON', barangay: 'San Vicente Ogbon', latitude: 13.377004, longitude: 123.349694, clumpCount: 8, photoCount: 0, approvedAt: 1745977824000 },
+  { _id: uid(2005), serverId: 2006, regionCode: '05', region: 'Region V (Bicol Region)', provinceCode: '501700000', province: 'Camarines Sur', municipalityCode: 'CAM_SUR_NAB', municipality: 'Nabua', barangayCode: 'CAM_SUR_NAB_SAN_VICENTE_OGBON', barangay: 'San Vicente Ogbon', latitude: 13.377223, longitude: 123.346693, clumpCount: 6, photoCount: 0, approvedAt: 1745979063000 },
+  { _id: uid(2006), serverId: 2007, regionCode: '05', region: 'Region V (Bicol Region)', provinceCode: '501700000', province: 'Camarines Sur', municipalityCode: 'CAM_SUR_NAB', municipality: 'Nabua', barangayCode: 'CAM_SUR_NAB_SAN_VICENTE_OGBON', barangay: 'San Vicente Ogbon', latitude: 13.385239, longitude: 123.340406, clumpCount: 13, photoCount: 0, approvedAt: 1745981479000 },
+  { _id: uid(2007), serverId: 2008, regionCode: '05', region: 'Region V (Bicol Region)', provinceCode: '501700000', province: 'Camarines Sur', municipalityCode: 'CAM_SUR_NAB', municipality: 'Nabua', barangayCode: 'CAM_SUR_NAB_SAN_ROQUE_MADAWON', barangay: 'San Roque Madawon', latitude: 13.391439, longitude: 123.337742, clumpCount: 12, photoCount: 0, approvedAt: 1745983757000 },
+  { _id: uid(2008), serverId: 2009, regionCode: '05', region: 'Region V (Bicol Region)', provinceCode: '501700000', province: 'Camarines Sur', municipalityCode: 'CAM_SUR_NAB', municipality: 'Nabua', barangayCode: 'CAM_SUR_NAB_SAN_ROQUE_MADAWON', barangay: 'San Roque Madawon', latitude: 13.39481, longitude: 123.333941, clumpCount: 6, photoCount: 0, approvedAt: 1745987715000 },
+  { _id: uid(2009), serverId: 2010, regionCode: '05', region: 'Region V (Bicol Region)', provinceCode: '501700000', province: 'Camarines Sur', municipalityCode: 'CAM_SUR_NAB', municipality: 'Nabua', barangayCode: 'CAM_SUR_NAB_SAN_ROQUE_MADAWON', barangay: 'San Roque Madawon', latitude: 13.393734, longitude: 123.332098, clumpCount: 10, photoCount: 0, approvedAt: 1745988640000 },
+  { _id: uid(2010), serverId: 2011, regionCode: '05', region: 'Region V (Bicol Region)', provinceCode: '501700000', province: 'Camarines Sur', municipalityCode: 'CAM_SUR_BUL', municipality: 'Bula', barangayCode: 'CAM_SUR_BUL_OMBAO_HEIGHTS', barangay: 'Ombao Heights', latitude: 13.461971, longitude: 123.238098, clumpCount: 13, photoCount: 0, approvedAt: 1746061175000 },
+  { _id: uid(2011), serverId: 2012, regionCode: '05', region: 'Region V (Bicol Region)', provinceCode: '501700000', province: 'Camarines Sur', municipalityCode: 'CAM_SUR_BUL', municipality: 'Bula', barangayCode: 'CAM_SUR_BUL_OMBAO_HEIGHTS', barangay: 'Ombao Heights', latitude: 13.460563, longitude: 123.238276, clumpCount: 3, photoCount: 0, approvedAt: 1746062922000 },
+  { _id: uid(2012), serverId: 2013, regionCode: '05', region: 'Region V (Bicol Region)', provinceCode: '501700000', province: 'Camarines Sur', municipalityCode: 'CAM_SUR_BUL', municipality: 'Bula', barangayCode: 'CAM_SUR_BUL_OMBAO_HEIGHTS', barangay: 'Ombao Heights', latitude: 13.460662, longitude: 123.235844, clumpCount: 14, photoCount: 0, approvedAt: 1746064018000 },
+  { _id: uid(2013), serverId: 2014, regionCode: '05', region: 'Region V (Bicol Region)', provinceCode: '501700000', province: 'Camarines Sur', municipalityCode: 'CAM_SUR_BUL', municipality: 'Bula', barangayCode: 'CAM_SUR_BUL_OMBAO_HEIGHTS', barangay: 'Ombao Heights', latitude: 13.4593, longitude: 123.237358, clumpCount: 8, photoCount: 0, approvedAt: 1746065387000 },
+  { _id: uid(2014), serverId: 2015, regionCode: '05', region: 'Region V (Bicol Region)', provinceCode: '501700000', province: 'Camarines Sur', municipalityCode: 'CAM_SUR_BUL', municipality: 'Bula', barangayCode: 'CAM_SUR_BUL_SANTO_NI_O', barangay: 'Santo Niño', latitude: 13.470192, longitude: 123.227495, clumpCount: 17, photoCount: 0, approvedAt: 1746067797000 },
+  { _id: uid(2015), serverId: 2016, regionCode: '05', region: 'Region V (Bicol Region)', provinceCode: '501700000', province: 'Camarines Sur', municipalityCode: 'CAM_SUR_BUL', municipality: 'Bula', barangayCode: 'CAM_SUR_BUL_SANTO_NI_O', barangay: 'Santo Niño', latitude: 13.473794, longitude: 123.231307, clumpCount: 5, photoCount: 0, approvedAt: 1746069797000 },
+  { _id: uid(2016), serverId: 2017, regionCode: '05', region: 'Region V (Bicol Region)', provinceCode: '501700000', province: 'Camarines Sur', municipalityCode: 'CAM_SUR_BUL', municipality: 'Bula', barangayCode: 'CAM_SUR_BUL_SANTO_NI_O', barangay: 'Santo Niño', latitude: 13.4808651, longitude: 123.2283479, clumpCount: 8, photoCount: 0, approvedAt: 1746069977000 },
+  { _id: uid(2017), serverId: 2018, regionCode: '05', region: 'Region V (Bicol Region)', provinceCode: '501700000', province: 'Camarines Sur', municipalityCode: 'CAM_SUR_BUL', municipality: 'Bula', barangayCode: 'CAM_SUR_BUL_PANOYPOYAN', barangay: 'Panoypoyan', latitude: 13.46223, longitude: 123.254463, clumpCount: 6, photoCount: 0, approvedAt: 1746075514000 },
+  { _id: uid(2018), serverId: 2019, regionCode: '05', region: 'Region V (Bicol Region)', provinceCode: '501700000', province: 'Camarines Sur', municipalityCode: 'CAM_SUR_BUL', municipality: 'Bula', barangayCode: 'CAM_SUR_BUL_PANOYPOYAN', barangay: 'Panoypoyan', latitude: 13.463727, longitude: 123.25595, clumpCount: 7, photoCount: 0, approvedAt: 1746077506000 },
+  { _id: uid(2019), serverId: 2020, regionCode: '05', region: 'Region V (Bicol Region)', provinceCode: '501700000', province: 'Camarines Sur', municipalityCode: 'CAM_SUR_BUL', municipality: 'Bula', barangayCode: 'CAM_SUR_BUL_PANOYPOYAN', barangay: 'Panoypoyan', latitude: 13.462097, longitude: 123.256477, clumpCount: 6, photoCount: 0, approvedAt: 1746078303000 },
+  { _id: uid(2020), serverId: 2021, regionCode: '05', region: 'Region V (Bicol Region)', provinceCode: '501700000', province: 'Camarines Sur', municipalityCode: 'CAM_SUR_BAT', municipality: 'Bato', barangayCode: 'CAM_SUR_BAT_SAN_VICENTE', barangay: 'San Vicente', latitude: 13.36552, longitude: 123.355646, clumpCount: 5, photoCount: 0, approvedAt: 1746148120000 },
+  { _id: uid(2021), serverId: 2022, regionCode: '05', region: 'Region V (Bicol Region)', provinceCode: '501700000', province: 'Camarines Sur', municipalityCode: 'CAM_SUR_BAT', municipality: 'Bato', barangayCode: 'CAM_SUR_BAT_SAN_VICENTE', barangay: 'San Vicente', latitude: 13.361259, longitude: 123.352707, clumpCount: 8, photoCount: 0, approvedAt: 1746148865000 },
+  { _id: uid(2022), serverId: 2023, regionCode: '05', region: 'Region V (Bicol Region)', provinceCode: '501700000', province: 'Camarines Sur', municipalityCode: 'CAM_SUR_BAT', municipality: 'Bato', barangayCode: 'CAM_SUR_BAT_BACOLOD', barangay: 'Bacolod', latitude: 13.363546, longitude: 123.329709, clumpCount: 7, photoCount: 0, approvedAt: 1746150513000 },
+  { _id: uid(2023), serverId: 2024, regionCode: '05', region: 'Region V (Bicol Region)', provinceCode: '501700000', province: 'Camarines Sur', municipalityCode: 'CAM_SUR_BAT', municipality: 'Bato', barangayCode: 'CAM_SUR_BAT_BACOLOD', barangay: 'Bacolod', latitude: 13.359979, longitude: 123.327157, clumpCount: 6, photoCount: 0, approvedAt: 1746151184000 },
+  { _id: uid(2024), serverId: 2025, regionCode: '05', region: 'Region V (Bicol Region)', provinceCode: '501700000', province: 'Camarines Sur', municipalityCode: 'CAM_SUR_BAT', municipality: 'Bato', barangayCode: 'CAM_SUR_BAT_BACOLOD', barangay: 'Bacolod', latitude: 13.360729, longitude: 123.323505, clumpCount: 8, photoCount: 0, approvedAt: 1746152665000 },
+  { _id: uid(2025), serverId: 2026, regionCode: '05', region: 'Region V (Bicol Region)', provinceCode: '501700000', province: 'Camarines Sur', municipalityCode: 'CAM_SUR_BAT', municipality: 'Bato', barangayCode: 'CAM_SUR_BAT_BACOLOD', barangay: 'Bacolod', latitude: 13.360324, longitude: 123.317967, clumpCount: 7, photoCount: 0, approvedAt: 1746153577000 },
+  { _id: uid(2026), serverId: 2027, regionCode: '05', region: 'Region V (Bicol Region)', provinceCode: '501700000', province: 'Camarines Sur', municipalityCode: 'CAM_SUR_BAT', municipality: 'Bato', barangayCode: 'CAM_SUR_BAT_NEIGHBORHOOD', barangay: 'Neighborhood', latitude: 13.350693, longitude: 123.296922, clumpCount: 7, photoCount: 0, approvedAt: 1746155296000 },
+  { _id: uid(2027), serverId: 2028, regionCode: '05', region: 'Region V (Bicol Region)', provinceCode: '501700000', province: 'Camarines Sur', municipalityCode: 'CAM_SUR_BAT', municipality: 'Bato', barangayCode: 'CAM_SUR_BAT_NEIGHBORHOOD', barangay: 'Neighborhood', latitude: 13.351924, longitude: 123.298406, clumpCount: 8, photoCount: 0, approvedAt: 1746156601000 },
+  { _id: uid(2028), serverId: 2029, regionCode: '05', region: 'Region V (Bicol Region)', provinceCode: '501700000', province: 'Camarines Sur', municipalityCode: 'CAM_SUR_BAT', municipality: 'Bato', barangayCode: 'CAM_SUR_BAT_NEIGHBORHOOD', barangay: 'Neighborhood', latitude: 13.353806, longitude: 123.299881, clumpCount: 5, photoCount: 0, approvedAt: 1746157216000 },
+  { _id: uid(2029), serverId: 2030, regionCode: '05', region: 'Region V (Bicol Region)', provinceCode: '501700000', province: 'Camarines Sur', municipalityCode: 'CAM_SUR_BAT', municipality: 'Bato', barangayCode: 'CAM_SUR_BAT_NEIGHBORHOOD', barangay: 'Neighborhood', latitude: 13.357556, longitude: 123.304677, clumpCount: 7, photoCount: 0, approvedAt: 1746158242000 },
   // Source: Abra-Data-041626.xlsx — CAR bamboo survey, Dec 2024
-  { _id: uid(3000), serverId: 3000, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_LAG', municipality: 'Lagangilang', barangayCode: 'ABR_LAG_SAN_ISIDRO', barangay: 'San Isidro', latitude: 17.597564, longitude: 120.804324, clumpCount: 15, photoCount: 0, approvedAt: 1733328000000, dominantSpecies: 'Bambusa spinosa' },
-  { _id: uid(3001), serverId: 3001, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_LAG', municipality: 'Lagangilang', barangayCode: 'ABR_LAG_SAN_ISIDRO', barangay: 'San Isidro', latitude: 17.59658, longitude: 120.802602, clumpCount: 14, photoCount: 0, approvedAt: 1733328000000, dominantSpecies: 'Bambusa spinosa' },
-  { _id: uid(3002), serverId: 3002, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_LAG', municipality: 'Lagangilang', barangayCode: 'ABR_LAG_NAGTIPULAN', barangay: 'Nagtipulan', latitude: 17.607265, longitude: 120.817, clumpCount: 12, photoCount: 0, approvedAt: 1733328000000, dominantSpecies: 'Bambusa spinosa' },
-  { _id: uid(3003), serverId: 3003, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_LAG', municipality: 'Lagangilang', barangayCode: 'ABR_LAG_SAN_ISIDRO', barangay: 'San Isidro', latitude: 17.595379, longitude: 120.799981, clumpCount: 12, photoCount: 0, approvedAt: 1733328000000, dominantSpecies: 'Bambusa spinosa' },
-  { _id: uid(3004), serverId: 3004, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_LAG', municipality: 'Lagangilang', barangayCode: 'ABR_LAG_TAGODTOD', barangay: 'Tagodtod', latitude: 17.58814, longitude: 120.754763, clumpCount: 14, photoCount: 0, approvedAt: 1733328000000, dominantSpecies: 'Bambusa spinosa' },
-  { _id: uid(3005), serverId: 3005, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_LAG', municipality: 'Lagangilang', barangayCode: 'ABR_LAG_TAGODTOD', barangay: 'Tagodtod', latitude: 17.586965, longitude: 120.753328, clumpCount: 9, photoCount: 0, approvedAt: 1733328000000, dominantSpecies: 'Bambusa spinosa' },
-  { _id: uid(3006), serverId: 3006, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_LAG', municipality: 'Lagangilang', barangayCode: 'ABR_LAG_TAPING', barangay: 'Taping', latitude: 17.584901, longitude: 120.752179, clumpCount: 13, photoCount: 0, approvedAt: 1733328000000, dominantSpecies: 'Bambusa spinosa' },
-  { _id: uid(3007), serverId: 3007, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_LAG', municipality: 'Lagangilang', barangayCode: 'ABR_LAG_TAPING', barangay: 'Taping', latitude: 17.581205, longitude: 120.759213, clumpCount: 10, photoCount: 0, approvedAt: 1733328000000, dominantSpecies: 'Bambusa spinosa' },
-  { _id: uid(3008), serverId: 3008, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_LAG', municipality: 'Lagangilang', barangayCode: 'ABR_LAG_TAPING', barangay: 'Taping', latitude: 17.582778, longitude: 120.75745, clumpCount: 11, photoCount: 0, approvedAt: 1733328000000, dominantSpecies: 'Bambusa spinosa' },
-  { _id: uid(3009), serverId: 3009, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_LAG', municipality: 'Lagangilang', barangayCode: 'ABR_LAG_TAPING', barangay: 'Taping', latitude: 17.584082, longitude: 120.754988, clumpCount: 11, photoCount: 0, approvedAt: 1733328000000, dominantSpecies: 'Bambusa spinosa' },
-  { _id: uid(3010), serverId: 3010, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_LIC', municipality: 'Licuan-Baay', barangayCode: 'ABR_LIC_CAWAYAN', barangay: 'Cawayan', latitude: 17.577207, longitude: 120.897776, clumpCount: 18, photoCount: 0, approvedAt: 1733241600000, dominantSpecies: 'Gigantochloa levis' },
-  { _id: uid(3011), serverId: 3011, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_LIC', municipality: 'Licuan-Baay', barangayCode: 'ABR_LIC_CAWAYAN', barangay: 'Cawayan', latitude: 17.577399, longitude: 120.895968, clumpCount: 9, photoCount: 0, approvedAt: 1733241600000, dominantSpecies: 'Gigantochloa levis' },
-  { _id: uid(3012), serverId: 3012, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_LIC', municipality: 'Licuan-Baay', barangayCode: 'ABR_LIC_CAWAYAN', barangay: 'Cawayan', latitude: 17.575392, longitude: 120.898762, clumpCount: 7, photoCount: 0, approvedAt: 1733241600000, dominantSpecies: 'Gigantochloa levis' },
-  { _id: uid(3013), serverId: 3013, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_LIC', municipality: 'Licuan-Baay', barangayCode: 'ABR_LIC_CAWAYAN', barangay: 'Cawayan', latitude: 17.573653, longitude: 120.899992, clumpCount: 19, photoCount: 0, approvedAt: 1733241600000, dominantSpecies: 'Gigantochloa levis' },
-  { _id: uid(3014), serverId: 3014, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_LIC', municipality: 'Licuan-Baay', barangayCode: 'ABR_LIC_NALBUAN', barangay: 'Nalbuan', latitude: 17.558411, longitude: 120.90633, clumpCount: 22, photoCount: 0, approvedAt: 1733241600000, dominantSpecies: 'Gigantochloa levis' },
-  { _id: uid(3015), serverId: 3015, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_LIC', municipality: 'Licuan-Baay', barangayCode: 'ABR_LIC_NALBUAN', barangay: 'Nalbuan', latitude: 17.562164, longitude: 120.903399, clumpCount: 8, photoCount: 0, approvedAt: 1733241600000, dominantSpecies: 'Gigantochloa levis' },
-  { _id: uid(3016), serverId: 3016, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_LIC', municipality: 'Licuan-Baay', barangayCode: 'ABR_LIC_NALBUAN', barangay: 'Nalbuan', latitude: 17.567985, longitude: 120.901434, clumpCount: 10, photoCount: 0, approvedAt: 1733241600000, dominantSpecies: 'Gigantochloa levis' },
-  { _id: uid(3017), serverId: 3017, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_LIC', municipality: 'Licuan-Baay', barangayCode: 'ABR_LIC_TUMALIP', barangay: 'Tumalip', latitude: 17.573533, longitude: 120.897219, clumpCount: 9, photoCount: 0, approvedAt: 1733241600000, dominantSpecies: 'Gigantochloa levis' },
-  { _id: uid(3018), serverId: 3018, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_LIC', municipality: 'Licuan-Baay', barangayCode: 'ABR_LIC_TUMALIP', barangay: 'Tumalip', latitude: 17.574843, longitude: 120.894862, clumpCount: 10, photoCount: 0, approvedAt: 1733241600000, dominantSpecies: 'Gigantochloa levis' },
-  { _id: uid(3019), serverId: 3019, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_LIC', municipality: 'Licuan-Baay', barangayCode: 'ABR_LIC_TUMALIP', barangay: 'Tumalip', latitude: 17.574805, longitude: 120.891494, clumpCount: 13, photoCount: 0, approvedAt: 1733241600000, dominantSpecies: 'Gigantochloa levis' },
-  { _id: uid(3020), serverId: 3020, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_SAL', municipality: 'Sallapadan', barangayCode: 'ABR_SAL_BAZAR', barangay: 'Bazar', latitude: 17.454376, longitude: 120.801121, clumpCount: 8, photoCount: 0, approvedAt: 1733414400000, dominantSpecies: 'Gigantochloa levis' },
-  { _id: uid(3021), serverId: 3021, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_SAL', municipality: 'Sallapadan', barangayCode: 'ABR_SAL_BAZAR', barangay: 'Bazar', latitude: 17.45284, longitude: 120.797377, clumpCount: 13, photoCount: 0, approvedAt: 1733414400000, dominantSpecies: 'Gigantochloa levis' },
-  { _id: uid(3022), serverId: 3022, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_SAL', municipality: 'Sallapadan', barangayCode: 'ABR_SAL_BAZAR', barangay: 'Bazar', latitude: 17.453926, longitude: 120.795181, clumpCount: 14, photoCount: 0, approvedAt: 1733414400000, dominantSpecies: 'Gigantochloa levis' },
-  { _id: uid(3023), serverId: 3023, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_SAL', municipality: 'Sallapadan', barangayCode: 'ABR_SAL_BAZAR', barangay: 'Bazar', latitude: 17.456153, longitude: 120.791252, clumpCount: 9, photoCount: 0, approvedAt: 1733414400000, dominantSpecies: 'Gigantochloa levis' },
-  { _id: uid(3024), serverId: 3024, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_SAL', municipality: 'Sallapadan', barangayCode: 'ABR_SAL_BAZAR', barangay: 'Bazar', latitude: 17.457237, longitude: 120.785498, clumpCount: 11, photoCount: 0, approvedAt: 1733414400000, dominantSpecies: 'Gigantochloa levis' },
-  { _id: uid(3025), serverId: 3025, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_SAL', municipality: 'Sallapadan', barangayCode: 'ABR_SAL_BAZAR', barangay: 'Bazar', latitude: 17.457168, longitude: 120.782353, clumpCount: 7, photoCount: 0, approvedAt: 1733414400000, dominantSpecies: 'Gigantochloa levis' },
-  { _id: uid(3026), serverId: 3026, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_SAL', municipality: 'Sallapadan', barangayCode: 'ABR_SAL_BILABILA', barangay: 'Bilabila', latitude: 17.482733, longitude: 120.762803, clumpCount: 6, photoCount: 0, approvedAt: 1733414400000, dominantSpecies: 'Bambusa merrilliana' },
-  { _id: uid(3027), serverId: 3027, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_SAL', municipality: 'Sallapadan', barangayCode: 'ABR_SAL_BILABILA', barangay: 'Bilabila', latitude: 17.482202, longitude: 120.764877, clumpCount: 6, photoCount: 0, approvedAt: 1733414400000, dominantSpecies: 'Bambusa spinosa' },
-  { _id: uid(3028), serverId: 3028, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_SAL', municipality: 'Sallapadan', barangayCode: 'ABR_SAL_BILABILA', barangay: 'Bilabila', latitude: 17.486685, longitude: 120.762235, clumpCount: 11, photoCount: 0, approvedAt: 1733414400000, dominantSpecies: 'Gigantochloa levis' },
-  { _id: uid(3029), serverId: 3029, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_SAL', municipality: 'Sallapadan', barangayCode: 'ABR_SAL_BILABILA', barangay: 'Bilabila', latitude: 17.497663, longitude: 120.758489, clumpCount: 13, photoCount: 0, approvedAt: 1733414400000, dominantSpecies: 'Gigantochloa levis' },
+  { _id: uid(3000), serverId: 3000, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_LAG', municipality: 'Lagangilang', barangayCode: 'ABR_LAG_SAN_ISIDRO', barangay: 'San Isidro', latitude: 17.597564, longitude: 120.804324, clumpCount: 15, photoCount: 0, approvedAt: 1733328000000 },
+  { _id: uid(3001), serverId: 3001, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_LAG', municipality: 'Lagangilang', barangayCode: 'ABR_LAG_SAN_ISIDRO', barangay: 'San Isidro', latitude: 17.59658, longitude: 120.802602, clumpCount: 14, photoCount: 0, approvedAt: 1733328000000 },
+  { _id: uid(3002), serverId: 3002, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_LAG', municipality: 'Lagangilang', barangayCode: 'ABR_LAG_NAGTIPULAN', barangay: 'Nagtipulan', latitude: 17.607265, longitude: 120.817, clumpCount: 12, photoCount: 0, approvedAt: 1733328000000 },
+  { _id: uid(3003), serverId: 3003, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_LAG', municipality: 'Lagangilang', barangayCode: 'ABR_LAG_SAN_ISIDRO', barangay: 'San Isidro', latitude: 17.595379, longitude: 120.799981, clumpCount: 12, photoCount: 0, approvedAt: 1733328000000 },
+  { _id: uid(3004), serverId: 3004, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_LAG', municipality: 'Lagangilang', barangayCode: 'ABR_LAG_TAGODTOD', barangay: 'Tagodtod', latitude: 17.58814, longitude: 120.754763, clumpCount: 14, photoCount: 0, approvedAt: 1733328000000 },
+  { _id: uid(3005), serverId: 3005, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_LAG', municipality: 'Lagangilang', barangayCode: 'ABR_LAG_TAGODTOD', barangay: 'Tagodtod', latitude: 17.586965, longitude: 120.753328, clumpCount: 9, photoCount: 0, approvedAt: 1733328000000 },
+  { _id: uid(3006), serverId: 3006, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_LAG', municipality: 'Lagangilang', barangayCode: 'ABR_LAG_TAPING', barangay: 'Taping', latitude: 17.584901, longitude: 120.752179, clumpCount: 13, photoCount: 0, approvedAt: 1733328000000 },
+  { _id: uid(3007), serverId: 3007, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_LAG', municipality: 'Lagangilang', barangayCode: 'ABR_LAG_TAPING', barangay: 'Taping', latitude: 17.581205, longitude: 120.759213, clumpCount: 10, photoCount: 0, approvedAt: 1733328000000 },
+  { _id: uid(3008), serverId: 3008, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_LAG', municipality: 'Lagangilang', barangayCode: 'ABR_LAG_TAPING', barangay: 'Taping', latitude: 17.582778, longitude: 120.75745, clumpCount: 11, photoCount: 0, approvedAt: 1733328000000 },
+  { _id: uid(3009), serverId: 3009, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_LAG', municipality: 'Lagangilang', barangayCode: 'ABR_LAG_TAPING', barangay: 'Taping', latitude: 17.584082, longitude: 120.754988, clumpCount: 11, photoCount: 0, approvedAt: 1733328000000 },
+  { _id: uid(3010), serverId: 3010, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_LIC', municipality: 'Licuan-Baay', barangayCode: 'ABR_LIC_CAWAYAN', barangay: 'Cawayan', latitude: 17.577207, longitude: 120.897776, clumpCount: 18, photoCount: 0, approvedAt: 1733241600000 },
+  { _id: uid(3011), serverId: 3011, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_LIC', municipality: 'Licuan-Baay', barangayCode: 'ABR_LIC_CAWAYAN', barangay: 'Cawayan', latitude: 17.577399, longitude: 120.895968, clumpCount: 9, photoCount: 0, approvedAt: 1733241600000 },
+  { _id: uid(3012), serverId: 3012, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_LIC', municipality: 'Licuan-Baay', barangayCode: 'ABR_LIC_CAWAYAN', barangay: 'Cawayan', latitude: 17.575392, longitude: 120.898762, clumpCount: 7, photoCount: 0, approvedAt: 1733241600000 },
+  { _id: uid(3013), serverId: 3013, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_LIC', municipality: 'Licuan-Baay', barangayCode: 'ABR_LIC_CAWAYAN', barangay: 'Cawayan', latitude: 17.573653, longitude: 120.899992, clumpCount: 19, photoCount: 0, approvedAt: 1733241600000 },
+  { _id: uid(3014), serverId: 3014, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_LIC', municipality: 'Licuan-Baay', barangayCode: 'ABR_LIC_NALBUAN', barangay: 'Nalbuan', latitude: 17.558411, longitude: 120.90633, clumpCount: 22, photoCount: 0, approvedAt: 1733241600000 },
+  { _id: uid(3015), serverId: 3015, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_LIC', municipality: 'Licuan-Baay', barangayCode: 'ABR_LIC_NALBUAN', barangay: 'Nalbuan', latitude: 17.562164, longitude: 120.903399, clumpCount: 8, photoCount: 0, approvedAt: 1733241600000 },
+  { _id: uid(3016), serverId: 3016, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_LIC', municipality: 'Licuan-Baay', barangayCode: 'ABR_LIC_NALBUAN', barangay: 'Nalbuan', latitude: 17.567985, longitude: 120.901434, clumpCount: 10, photoCount: 0, approvedAt: 1733241600000 },
+  { _id: uid(3017), serverId: 3017, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_LIC', municipality: 'Licuan-Baay', barangayCode: 'ABR_LIC_TUMALIP', barangay: 'Tumalip', latitude: 17.573533, longitude: 120.897219, clumpCount: 9, photoCount: 0, approvedAt: 1733241600000 },
+  { _id: uid(3018), serverId: 3018, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_LIC', municipality: 'Licuan-Baay', barangayCode: 'ABR_LIC_TUMALIP', barangay: 'Tumalip', latitude: 17.574843, longitude: 120.894862, clumpCount: 10, photoCount: 0, approvedAt: 1733241600000 },
+  { _id: uid(3019), serverId: 3019, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_LIC', municipality: 'Licuan-Baay', barangayCode: 'ABR_LIC_TUMALIP', barangay: 'Tumalip', latitude: 17.574805, longitude: 120.891494, clumpCount: 13, photoCount: 0, approvedAt: 1733241600000 },
+  { _id: uid(3020), serverId: 3020, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_SAL', municipality: 'Sallapadan', barangayCode: 'ABR_SAL_BAZAR', barangay: 'Bazar', latitude: 17.454376, longitude: 120.801121, clumpCount: 8, photoCount: 0, approvedAt: 1733414400000 },
+  { _id: uid(3021), serverId: 3021, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_SAL', municipality: 'Sallapadan', barangayCode: 'ABR_SAL_BAZAR', barangay: 'Bazar', latitude: 17.45284, longitude: 120.797377, clumpCount: 13, photoCount: 0, approvedAt: 1733414400000 },
+  { _id: uid(3022), serverId: 3022, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_SAL', municipality: 'Sallapadan', barangayCode: 'ABR_SAL_BAZAR', barangay: 'Bazar', latitude: 17.453926, longitude: 120.795181, clumpCount: 14, photoCount: 0, approvedAt: 1733414400000 },
+  { _id: uid(3023), serverId: 3023, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_SAL', municipality: 'Sallapadan', barangayCode: 'ABR_SAL_BAZAR', barangay: 'Bazar', latitude: 17.456153, longitude: 120.791252, clumpCount: 9, photoCount: 0, approvedAt: 1733414400000 },
+  { _id: uid(3024), serverId: 3024, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_SAL', municipality: 'Sallapadan', barangayCode: 'ABR_SAL_BAZAR', barangay: 'Bazar', latitude: 17.457237, longitude: 120.785498, clumpCount: 11, photoCount: 0, approvedAt: 1733414400000 },
+  { _id: uid(3025), serverId: 3025, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_SAL', municipality: 'Sallapadan', barangayCode: 'ABR_SAL_BAZAR', barangay: 'Bazar', latitude: 17.457168, longitude: 120.782353, clumpCount: 7, photoCount: 0, approvedAt: 1733414400000 },
+  { _id: uid(3026), serverId: 3026, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_SAL', municipality: 'Sallapadan', barangayCode: 'ABR_SAL_BILABILA', barangay: 'Bilabila', latitude: 17.482733, longitude: 120.762803, clumpCount: 6, photoCount: 0, approvedAt: 1733414400000 },
+  { _id: uid(3027), serverId: 3027, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_SAL', municipality: 'Sallapadan', barangayCode: 'ABR_SAL_BILABILA', barangay: 'Bilabila', latitude: 17.482202, longitude: 120.764877, clumpCount: 6, photoCount: 0, approvedAt: 1733414400000 },
+  { _id: uid(3028), serverId: 3028, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_SAL', municipality: 'Sallapadan', barangayCode: 'ABR_SAL_BILABILA', barangay: 'Bilabila', latitude: 17.486685, longitude: 120.762235, clumpCount: 11, photoCount: 0, approvedAt: 1733414400000 },
+  { _id: uid(3029), serverId: 3029, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_SAL', municipality: 'Sallapadan', barangayCode: 'ABR_SAL_BILABILA', barangay: 'Bilabila', latitude: 17.497663, longitude: 120.758489, clumpCount: 13, photoCount: 0, approvedAt: 1733414400000 },
   // Demo quadrat with placeholder photos — Los Baños, Laguna (near UPLB)
-  { _id: uid(4000), serverId: 4000, regionCode: '04A', region: 'CALABARZON', provinceCode: '1648000000', province: 'Laguna', municipalityCode: 'LAG_LB', municipality: 'Los Baños', barangayCode: 'LAG_LB_TADLAC', barangay: 'Tadlac', latitude: 14.1684, longitude: 121.2391, clumpCount: 4, photoCount: 3, approvedAt: daysAgo(14), dominantSpecies: 'Bambusa vulgaris' },
+  { _id: uid(4000), serverId: 4000, regionCode: '04A', region: 'CALABARZON', provinceCode: '1648000000', province: 'Laguna', municipalityCode: 'LAG_LB', municipality: 'Los Baños', barangayCode: 'LAG_LB_TADLAC', barangay: 'Tadlac', latitude: 14.1684, longitude: 121.2391, clumpCount: 4, photoCount: 3, approvedAt: daysAgo(14) },
 
 ]
 
@@ -177,7 +177,6 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
     barangayCode: 'CAM_SUR_NAB_BUSTRAC', barangay: 'Bustrac',
     latitude: 13.366997, longitude: 123.348914,
     clumpCount: 9, photoCount: 0, approvedAt: 1745971813000,
-    dominantSpecies: 'Bambusa spinosa',
     elevationMeters: 66.0, slopeDegrees: undefined, aspectDegrees: undefined,
     speciesSummary: [{ scientificName: 'Bambusa spinosa', clumpCount: 9 }],
     clumps: [
@@ -200,7 +199,6 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
     barangayCode: 'CAM_SUR_NAB_BUSTRAC', barangay: 'Bustrac',
     latitude: 13.364451, longitude: 123.347399,
     clumpCount: 9, photoCount: 0, approvedAt: 1745974270000,
-    dominantSpecies: 'Bambusa spinosa',
     elevationMeters: 66.0, slopeDegrees: undefined, aspectDegrees: undefined,
     speciesSummary: [{ scientificName: 'Bambusa spinosa', clumpCount: 9 }],
     clumps: [
@@ -223,7 +221,6 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
     barangayCode: 'CAM_SUR_NAB_BUSTRAC', barangay: 'Bustrac',
     latitude: 13.36414, longitude: 123.350926,
     clumpCount: 7, photoCount: 0, approvedAt: 1745975845000,
-    dominantSpecies: 'Bambusa spinosa',
     elevationMeters: 66.0, slopeDegrees: undefined, aspectDegrees: undefined,
     speciesSummary: [{ scientificName: 'Bambusa spinosa', clumpCount: 7 }],
     clumps: [
@@ -244,7 +241,6 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
     barangayCode: 'CAM_SUR_NAB_BUSTRAC', barangay: 'Bustrac',
     latitude: 13.365522, longitude: 123.354246,
     clumpCount: 8, photoCount: 0, approvedAt: 1745976594000,
-    dominantSpecies: 'Bambusa spinosa',
     elevationMeters: 25.0, slopeDegrees: undefined, aspectDegrees: undefined,
     speciesSummary: [{ scientificName: 'Bambusa spinosa', clumpCount: 8 }],
     clumps: [
@@ -266,7 +262,6 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
     barangayCode: 'CAM_SUR_NAB_SAN_VICENTE_OGBON', barangay: 'San Vicente Ogbon',
     latitude: 13.377004, longitude: 123.349694,
     clumpCount: 8, photoCount: 0, approvedAt: 1745977824000,
-    dominantSpecies: 'Bambusa spinosa',
     elevationMeters: 24.0, slopeDegrees: undefined, aspectDegrees: undefined,
     speciesSummary: [{ scientificName: 'Bambusa spinosa', clumpCount: 8 }],
     clumps: [
@@ -288,7 +283,6 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
     barangayCode: 'CAM_SUR_NAB_SAN_VICENTE_OGBON', barangay: 'San Vicente Ogbon',
     latitude: 13.377223, longitude: 123.346693,
     clumpCount: 6, photoCount: 0, approvedAt: 1745979063000,
-    dominantSpecies: 'Bambusa spinosa',
     elevationMeters: 24.0, slopeDegrees: undefined, aspectDegrees: undefined,
     speciesSummary: [{ scientificName: 'Bambusa spinosa', clumpCount: 6 }],
     clumps: [
@@ -308,7 +302,6 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
     barangayCode: 'CAM_SUR_NAB_SAN_VICENTE_OGBON', barangay: 'San Vicente Ogbon',
     latitude: 13.385239, longitude: 123.340406,
     clumpCount: 13, photoCount: 0, approvedAt: 1745981479000,
-    dominantSpecies: 'Bambusa spinosa',
     elevationMeters: 26.0, slopeDegrees: undefined, aspectDegrees: undefined,
     speciesSummary: [{ scientificName: 'Bambusa spinosa', clumpCount: 13 }],
     clumps: [
@@ -335,7 +328,6 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
     barangayCode: 'CAM_SUR_NAB_SAN_ROQUE_MADAWON', barangay: 'San Roque Madawon',
     latitude: 13.391439, longitude: 123.337742,
     clumpCount: 12, photoCount: 0, approvedAt: 1745983757000,
-    dominantSpecies: 'Bambusa spinosa',
     elevationMeters: 56.0, slopeDegrees: undefined, aspectDegrees: undefined,
     speciesSummary: [{ scientificName: 'Bambusa spinosa', clumpCount: 12 }],
     clumps: [
@@ -361,7 +353,6 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
     barangayCode: 'CAM_SUR_NAB_SAN_ROQUE_MADAWON', barangay: 'San Roque Madawon',
     latitude: 13.39481, longitude: 123.333941,
     clumpCount: 6, photoCount: 0, approvedAt: 1745987715000,
-    dominantSpecies: 'Bambusa spinosa',
     elevationMeters: 52.0, slopeDegrees: undefined, aspectDegrees: undefined,
     speciesSummary: [{ scientificName: 'Bambusa spinosa', clumpCount: 6 }],
     clumps: [
@@ -381,7 +372,6 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
     barangayCode: 'CAM_SUR_NAB_SAN_ROQUE_MADAWON', barangay: 'San Roque Madawon',
     latitude: 13.393734, longitude: 123.332098,
     clumpCount: 10, photoCount: 0, approvedAt: 1745988640000,
-    dominantSpecies: 'Bambusa spinosa',
     elevationMeters: 56.0, slopeDegrees: undefined, aspectDegrees: undefined,
     speciesSummary: [{ scientificName: 'Bambusa spinosa', clumpCount: 10 }],
     clumps: [
@@ -405,7 +395,6 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
     barangayCode: 'CAM_SUR_BUL_OMBAO_HEIGHTS', barangay: 'Ombao Heights',
     latitude: 13.461971, longitude: 123.238098,
     clumpCount: 13, photoCount: 0, approvedAt: 1746061175000,
-    dominantSpecies: 'Bambusa spinosa',
     elevationMeters: 86.0, slopeDegrees: undefined, aspectDegrees: undefined,
     speciesSummary: [{ scientificName: 'Bambusa spinosa', clumpCount: 8 }, { scientificName: 'Bambusa vulgaris', clumpCount: 3 }, { scientificName: 'Gigantochloa levis', clumpCount: 2 }],
     clumps: [
@@ -432,7 +421,6 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
     barangayCode: 'CAM_SUR_BUL_OMBAO_HEIGHTS', barangay: 'Ombao Heights',
     latitude: 13.460563, longitude: 123.238276,
     clumpCount: 3, photoCount: 0, approvedAt: 1746062922000,
-    dominantSpecies: 'Bambusa spinosa',
     elevationMeters: 96.0, slopeDegrees: undefined, aspectDegrees: undefined,
     speciesSummary: [{ scientificName: 'Bambusa spinosa', clumpCount: 3 }],
     clumps: [
@@ -449,7 +437,6 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
     barangayCode: 'CAM_SUR_BUL_OMBAO_HEIGHTS', barangay: 'Ombao Heights',
     latitude: 13.460662, longitude: 123.235844,
     clumpCount: 14, photoCount: 0, approvedAt: 1746064018000,
-    dominantSpecies: 'Bambusa spinosa',
     elevationMeters: 97.0, slopeDegrees: undefined, aspectDegrees: undefined,
     speciesSummary: [{ scientificName: 'Bambusa spinosa', clumpCount: 14 }],
     clumps: [
@@ -477,7 +464,6 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
     barangayCode: 'CAM_SUR_BUL_OMBAO_HEIGHTS', barangay: 'Ombao Heights',
     latitude: 13.4593, longitude: 123.237358,
     clumpCount: 8, photoCount: 0, approvedAt: 1746065387000,
-    dominantSpecies: 'Bambusa vulgaris',
     elevationMeters: 95.0, slopeDegrees: undefined, aspectDegrees: undefined,
     speciesSummary: [{ scientificName: 'Bambusa vulgaris', clumpCount: 7 }, { scientificName: 'Bambusa spinosa', clumpCount: 1 }],
     clumps: [
@@ -499,7 +485,6 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
     barangayCode: 'CAM_SUR_BUL_SANTO_NI_O', barangay: 'Santo Niño',
     latitude: 13.470192, longitude: 123.227495,
     clumpCount: 17, photoCount: 0, approvedAt: 1746067797000,
-    dominantSpecies: 'Bambusa merrilliana',
     elevationMeters: 83.0, slopeDegrees: undefined, aspectDegrees: undefined,
     speciesSummary: [{ scientificName: 'Bambusa merrilliana', clumpCount: 17 }],
     clumps: [
@@ -530,7 +515,6 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
     barangayCode: 'CAM_SUR_BUL_SANTO_NI_O', barangay: 'Santo Niño',
     latitude: 13.473794, longitude: 123.231307,
     clumpCount: 5, photoCount: 0, approvedAt: 1746069797000,
-    dominantSpecies: 'Bambusa spinosa',
     elevationMeters: 76.0, slopeDegrees: undefined, aspectDegrees: undefined,
     speciesSummary: [{ scientificName: 'Bambusa spinosa', clumpCount: 5 }],
     clumps: [
@@ -549,7 +533,6 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
     barangayCode: 'CAM_SUR_BUL_SANTO_NI_O', barangay: 'Santo Niño',
     latitude: 13.4808651, longitude: 123.2283479,
     clumpCount: 8, photoCount: 0, approvedAt: 1746069977000,
-    dominantSpecies: 'Bambusa spinosa',
     elevationMeters: 65.0999984741211, slopeDegrees: undefined, aspectDegrees: undefined,
     speciesSummary: [{ scientificName: 'Bambusa spinosa', clumpCount: 8 }],
     clumps: [
@@ -571,7 +554,6 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
     barangayCode: 'CAM_SUR_BUL_PANOYPOYAN', barangay: 'Panoypoyan',
     latitude: 13.46223, longitude: 123.254463,
     clumpCount: 6, photoCount: 0, approvedAt: 1746075514000,
-    dominantSpecies: 'Bambusa vulgaris',
     elevationMeters: 73.0, slopeDegrees: undefined, aspectDegrees: undefined,
     speciesSummary: [{ scientificName: 'Bambusa vulgaris', clumpCount: 6 }],
     clumps: [
@@ -591,7 +573,6 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
     barangayCode: 'CAM_SUR_BUL_PANOYPOYAN', barangay: 'Panoypoyan',
     latitude: 13.463727, longitude: 123.25595,
     clumpCount: 7, photoCount: 0, approvedAt: 1746077506000,
-    dominantSpecies: 'Bambusa spinosa',
     elevationMeters: 74.0, slopeDegrees: undefined, aspectDegrees: undefined,
     speciesSummary: [{ scientificName: 'Bambusa spinosa', clumpCount: 7 }],
     clumps: [
@@ -612,7 +593,6 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
     barangayCode: 'CAM_SUR_BUL_PANOYPOYAN', barangay: 'Panoypoyan',
     latitude: 13.462097, longitude: 123.256477,
     clumpCount: 6, photoCount: 0, approvedAt: 1746078303000,
-    dominantSpecies: 'Bambusa vulgaris',
     elevationMeters: 78.0, slopeDegrees: undefined, aspectDegrees: undefined,
     speciesSummary: [{ scientificName: 'Bambusa vulgaris', clumpCount: 6 }],
     clumps: [
@@ -632,7 +612,6 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
     barangayCode: 'CAM_SUR_BAT_SAN_VICENTE', barangay: 'San Vicente',
     latitude: 13.36552, longitude: 123.355646,
     clumpCount: 5, photoCount: 0, approvedAt: 1746148120000,
-    dominantSpecies: 'Bambusa spinosa',
     elevationMeters: 75.0, slopeDegrees: undefined, aspectDegrees: undefined,
     speciesSummary: [{ scientificName: 'Bambusa spinosa', clumpCount: 5 }],
     clumps: [
@@ -651,7 +630,6 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
     barangayCode: 'CAM_SUR_BAT_SAN_VICENTE', barangay: 'San Vicente',
     latitude: 13.361259, longitude: 123.352707,
     clumpCount: 8, photoCount: 0, approvedAt: 1746148865000,
-    dominantSpecies: 'Bambusa spinosa',
     elevationMeters: 41.0, slopeDegrees: undefined, aspectDegrees: undefined,
     speciesSummary: [{ scientificName: 'Bambusa spinosa', clumpCount: 8 }],
     clumps: [
@@ -673,7 +651,6 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
     barangayCode: 'CAM_SUR_BAT_BACOLOD', barangay: 'Bacolod',
     latitude: 13.363546, longitude: 123.329709,
     clumpCount: 7, photoCount: 0, approvedAt: 1746150513000,
-    dominantSpecies: 'Bambusa spinosa',
     elevationMeters: 42.0, slopeDegrees: undefined, aspectDegrees: undefined,
     speciesSummary: [{ scientificName: 'Bambusa spinosa', clumpCount: 7 }],
     clumps: [
@@ -694,7 +671,6 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
     barangayCode: 'CAM_SUR_BAT_BACOLOD', barangay: 'Bacolod',
     latitude: 13.359979, longitude: 123.327157,
     clumpCount: 6, photoCount: 0, approvedAt: 1746151184000,
-    dominantSpecies: 'Bambusa spinosa',
     elevationMeters: 42.0, slopeDegrees: undefined, aspectDegrees: undefined,
     speciesSummary: [{ scientificName: 'Bambusa spinosa', clumpCount: 6 }],
     clumps: [
@@ -714,7 +690,6 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
     barangayCode: 'CAM_SUR_BAT_BACOLOD', barangay: 'Bacolod',
     latitude: 13.360729, longitude: 123.323505,
     clumpCount: 8, photoCount: 0, approvedAt: 1746152665000,
-    dominantSpecies: 'Bambusa spinosa',
     elevationMeters: 35.0, slopeDegrees: undefined, aspectDegrees: undefined,
     speciesSummary: [{ scientificName: 'Bambusa spinosa', clumpCount: 6 }, { scientificName: 'Bambusa vulgaris', clumpCount: 2 }],
     clumps: [
@@ -736,7 +711,6 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
     barangayCode: 'CAM_SUR_BAT_BACOLOD', barangay: 'Bacolod',
     latitude: 13.360324, longitude: 123.317967,
     clumpCount: 7, photoCount: 0, approvedAt: 1746153577000,
-    dominantSpecies: 'Bambusa spinosa',
     elevationMeters: 27.0, slopeDegrees: undefined, aspectDegrees: undefined,
     speciesSummary: [{ scientificName: 'Bambusa spinosa', clumpCount: 7 }],
     clumps: [
@@ -757,7 +731,6 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
     barangayCode: 'CAM_SUR_BAT_NEIGHBORHOOD', barangay: 'Neighborhood',
     latitude: 13.350693, longitude: 123.296922,
     clumpCount: 7, photoCount: 0, approvedAt: 1746155296000,
-    dominantSpecies: 'Bambusa spinosa',
     elevationMeters: 70.0, slopeDegrees: undefined, aspectDegrees: undefined,
     speciesSummary: [{ scientificName: 'Bambusa spinosa', clumpCount: 7 }],
     clumps: [
@@ -778,7 +751,6 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
     barangayCode: 'CAM_SUR_BAT_NEIGHBORHOOD', barangay: 'Neighborhood',
     latitude: 13.351924, longitude: 123.298406,
     clumpCount: 8, photoCount: 0, approvedAt: 1746156601000,
-    dominantSpecies: 'Bambusa spinosa',
     elevationMeters: 68.0, slopeDegrees: undefined, aspectDegrees: undefined,
     speciesSummary: [{ scientificName: 'Bambusa spinosa', clumpCount: 8 }],
     clumps: [
@@ -800,7 +772,6 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
     barangayCode: 'CAM_SUR_BAT_NEIGHBORHOOD', barangay: 'Neighborhood',
     latitude: 13.353806, longitude: 123.299881,
     clumpCount: 5, photoCount: 0, approvedAt: 1746157216000,
-    dominantSpecies: 'Bambusa spinosa',
     elevationMeters: 64.0, slopeDegrees: undefined, aspectDegrees: undefined,
     speciesSummary: [{ scientificName: 'Bambusa spinosa', clumpCount: 5 }],
     clumps: [
@@ -819,7 +790,6 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
     barangayCode: 'CAM_SUR_BAT_NEIGHBORHOOD', barangay: 'Neighborhood',
     latitude: 13.357556, longitude: 123.304677,
     clumpCount: 7, photoCount: 0, approvedAt: 1746158242000,
-    dominantSpecies: 'Bambusa vulgaris',
     elevationMeters: 44.0, slopeDegrees: undefined, aspectDegrees: undefined,
     speciesSummary: [{ scientificName: 'Bambusa vulgaris', clumpCount: 4 }, { scientificName: 'Bambusa spinosa', clumpCount: 3 }],
     clumps: [
@@ -841,7 +811,6 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
     barangayCode: 'ABR_LAG_SAN_ISIDRO', barangay: 'San Isidro',
     latitude: 17.597564, longitude: 120.804324,
     clumpCount: 15, photoCount: 0, approvedAt: 1733328000000,
-    dominantSpecies: 'Bambusa spinosa',
     elevationMeters: 250, slopeDegrees: undefined, aspectDegrees: undefined,
     speciesSummary: [{ scientificName: 'Bambusa spinosa', clumpCount: 14 }, { scientificName: 'Bambusa vulgaris', clumpCount: 1 }],
     clumps: [
@@ -870,7 +839,6 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
     barangayCode: 'ABR_LAG_SAN_ISIDRO', barangay: 'San Isidro',
     latitude: 17.59658, longitude: 120.802602,
     clumpCount: 14, photoCount: 0, approvedAt: 1733328000000,
-    dominantSpecies: 'Bambusa spinosa',
     elevationMeters: 245, slopeDegrees: undefined, aspectDegrees: undefined,
     speciesSummary: [{ scientificName: 'Bambusa spinosa', clumpCount: 14 }],
     clumps: [
@@ -898,7 +866,6 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
     barangayCode: 'ABR_LAG_NAGTIPULAN', barangay: 'Nagtipulan',
     latitude: 17.607265, longitude: 120.817,
     clumpCount: 12, photoCount: 0, approvedAt: 1733328000000,
-    dominantSpecies: 'Bambusa spinosa',
     elevationMeters: 339, slopeDegrees: undefined, aspectDegrees: undefined,
     speciesSummary: [{ scientificName: 'Bambusa spinosa', clumpCount: 12 }],
     clumps: [
@@ -924,7 +891,6 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
     barangayCode: 'ABR_LAG_SAN_ISIDRO', barangay: 'San Isidro',
     latitude: 17.595379, longitude: 120.799981,
     clumpCount: 12, photoCount: 0, approvedAt: 1733328000000,
-    dominantSpecies: 'Bambusa spinosa',
     elevationMeters: 229, slopeDegrees: undefined, aspectDegrees: undefined,
     speciesSummary: [{ scientificName: 'Bambusa spinosa', clumpCount: 12 }],
     clumps: [
@@ -950,7 +916,6 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
     barangayCode: 'ABR_LAG_TAGODTOD', barangay: 'Tagodtod',
     latitude: 17.58814, longitude: 120.754763,
     clumpCount: 14, photoCount: 0, approvedAt: 1733328000000,
-    dominantSpecies: 'Bambusa spinosa',
     elevationMeters: 127, slopeDegrees: undefined, aspectDegrees: undefined,
     speciesSummary: [{ scientificName: 'Bambusa spinosa', clumpCount: 8 }, { scientificName: 'Cyrtochloa puser', clumpCount: 6 }],
     clumps: [
@@ -978,7 +943,6 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
     barangayCode: 'ABR_LAG_TAGODTOD', barangay: 'Tagodtod',
     latitude: 17.586965, longitude: 120.753328,
     clumpCount: 9, photoCount: 0, approvedAt: 1733328000000,
-    dominantSpecies: 'Bambusa spinosa',
     elevationMeters: 110, slopeDegrees: undefined, aspectDegrees: undefined,
     speciesSummary: [{ scientificName: 'Bambusa spinosa', clumpCount: 9 }],
     clumps: [
@@ -1001,7 +965,6 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
     barangayCode: 'ABR_LAG_TAPING', barangay: 'Taping',
     latitude: 17.584901, longitude: 120.752179,
     clumpCount: 13, photoCount: 0, approvedAt: 1733328000000,
-    dominantSpecies: 'Bambusa spinosa',
     elevationMeters: 108, slopeDegrees: undefined, aspectDegrees: undefined,
     speciesSummary: [{ scientificName: 'Bambusa spinosa', clumpCount: 13 }],
     clumps: [
@@ -1028,7 +991,6 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
     barangayCode: 'ABR_LAG_TAPING', barangay: 'Taping',
     latitude: 17.581205, longitude: 120.759213,
     clumpCount: 10, photoCount: 0, approvedAt: 1733328000000,
-    dominantSpecies: 'Bambusa spinosa',
     elevationMeters: 114, slopeDegrees: undefined, aspectDegrees: undefined,
     speciesSummary: [{ scientificName: 'Bambusa spinosa', clumpCount: 9 }, { scientificName: 'Cyrtochloa puser', clumpCount: 1 }],
     clumps: [
@@ -1052,7 +1014,6 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
     barangayCode: 'ABR_LAG_TAPING', barangay: 'Taping',
     latitude: 17.582778, longitude: 120.75745,
     clumpCount: 11, photoCount: 0, approvedAt: 1733328000000,
-    dominantSpecies: 'Bambusa spinosa',
     elevationMeters: 122, slopeDegrees: undefined, aspectDegrees: undefined,
     speciesSummary: [{ scientificName: 'Bambusa spinosa', clumpCount: 11 }],
     clumps: [
@@ -1077,7 +1038,6 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
     barangayCode: 'ABR_LAG_TAPING', barangay: 'Taping',
     latitude: 17.584082, longitude: 120.754988,
     clumpCount: 11, photoCount: 0, approvedAt: 1733328000000,
-    dominantSpecies: 'Bambusa spinosa',
     elevationMeters: 122, slopeDegrees: undefined, aspectDegrees: undefined,
     speciesSummary: [{ scientificName: 'Bambusa spinosa', clumpCount: 11 }],
     clumps: [
@@ -1102,7 +1062,6 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
     barangayCode: 'ABR_LIC_CAWAYAN', barangay: 'Cawayan',
     latitude: 17.577207, longitude: 120.897776,
     clumpCount: 18, photoCount: 0, approvedAt: 1733241600000,
-    dominantSpecies: 'Gigantochloa levis',
     elevationMeters: 655, slopeDegrees: undefined, aspectDegrees: undefined,
     speciesSummary: [{ scientificName: 'Gigantochloa levis', clumpCount: 18 }],
     clumps: [
@@ -1134,7 +1093,6 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
     barangayCode: 'ABR_LIC_CAWAYAN', barangay: 'Cawayan',
     latitude: 17.577399, longitude: 120.895968,
     clumpCount: 9, photoCount: 0, approvedAt: 1733241600000,
-    dominantSpecies: 'Gigantochloa levis',
     elevationMeters: 662, slopeDegrees: undefined, aspectDegrees: undefined,
     speciesSummary: [{ scientificName: 'Gigantochloa levis', clumpCount: 9 }],
     clumps: [
@@ -1157,7 +1115,6 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
     barangayCode: 'ABR_LIC_CAWAYAN', barangay: 'Cawayan',
     latitude: 17.575392, longitude: 120.898762,
     clumpCount: 7, photoCount: 0, approvedAt: 1733241600000,
-    dominantSpecies: 'Gigantochloa levis',
     elevationMeters: 667, slopeDegrees: undefined, aspectDegrees: undefined,
     speciesSummary: [{ scientificName: 'Gigantochloa levis', clumpCount: 7 }],
     clumps: [
@@ -1178,7 +1135,6 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
     barangayCode: 'ABR_LIC_CAWAYAN', barangay: 'Cawayan',
     latitude: 17.573653, longitude: 120.899992,
     clumpCount: 19, photoCount: 0, approvedAt: 1733241600000,
-    dominantSpecies: 'Gigantochloa levis',
     elevationMeters: 700, slopeDegrees: undefined, aspectDegrees: undefined,
     speciesSummary: [{ scientificName: 'Gigantochloa levis', clumpCount: 19 }],
     clumps: [
@@ -1211,7 +1167,6 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
     barangayCode: 'ABR_LIC_NALBUAN', barangay: 'Nalbuan',
     latitude: 17.558411, longitude: 120.90633,
     clumpCount: 22, photoCount: 0, approvedAt: 1733241600000,
-    dominantSpecies: 'Gigantochloa levis',
     elevationMeters: 584, slopeDegrees: undefined, aspectDegrees: undefined,
     speciesSummary: [{ scientificName: 'Gigantochloa levis', clumpCount: 22 }],
     clumps: [
@@ -1247,7 +1202,6 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
     barangayCode: 'ABR_LIC_NALBUAN', barangay: 'Nalbuan',
     latitude: 17.562164, longitude: 120.903399,
     clumpCount: 8, photoCount: 0, approvedAt: 1733241600000,
-    dominantSpecies: 'Gigantochloa levis',
     elevationMeters: 626, slopeDegrees: undefined, aspectDegrees: undefined,
     speciesSummary: [{ scientificName: 'Gigantochloa levis', clumpCount: 8 }],
     clumps: [
@@ -1269,7 +1223,6 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
     barangayCode: 'ABR_LIC_NALBUAN', barangay: 'Nalbuan',
     latitude: 17.567985, longitude: 120.901434,
     clumpCount: 10, photoCount: 0, approvedAt: 1733241600000,
-    dominantSpecies: 'Gigantochloa levis',
     elevationMeters: 683, slopeDegrees: undefined, aspectDegrees: undefined,
     speciesSummary: [{ scientificName: 'Gigantochloa levis', clumpCount: 10 }],
     clumps: [
@@ -1293,7 +1246,6 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
     barangayCode: 'ABR_LIC_TUMALIP', barangay: 'Tumalip',
     latitude: 17.573533, longitude: 120.897219,
     clumpCount: 9, photoCount: 0, approvedAt: 1733241600000,
-    dominantSpecies: 'Gigantochloa levis',
     elevationMeters: 753, slopeDegrees: undefined, aspectDegrees: undefined,
     speciesSummary: [{ scientificName: 'Gigantochloa levis', clumpCount: 9 }],
     clumps: [
@@ -1316,7 +1268,6 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
     barangayCode: 'ABR_LIC_TUMALIP', barangay: 'Tumalip',
     latitude: 17.574843, longitude: 120.894862,
     clumpCount: 10, photoCount: 0, approvedAt: 1733241600000,
-    dominantSpecies: 'Gigantochloa levis',
     elevationMeters: 778, slopeDegrees: undefined, aspectDegrees: undefined,
     speciesSummary: [{ scientificName: 'Gigantochloa levis', clumpCount: 10 }],
     clumps: [
@@ -1340,7 +1291,6 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
     barangayCode: 'ABR_LIC_TUMALIP', barangay: 'Tumalip',
     latitude: 17.574805, longitude: 120.891494,
     clumpCount: 13, photoCount: 0, approvedAt: 1733241600000,
-    dominantSpecies: 'Gigantochloa levis',
     elevationMeters: 804, slopeDegrees: undefined, aspectDegrees: undefined,
     speciesSummary: [{ scientificName: 'Gigantochloa levis', clumpCount: 13 }],
     clumps: [
@@ -1367,7 +1317,6 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
     barangayCode: 'ABR_SAL_BAZAR', barangay: 'Bazar',
     latitude: 17.454376, longitude: 120.801121,
     clumpCount: 8, photoCount: 0, approvedAt: 1733414400000,
-    dominantSpecies: 'Gigantochloa levis',
     elevationMeters: 283, slopeDegrees: undefined, aspectDegrees: undefined,
     speciesSummary: [{ scientificName: 'Gigantochloa levis', clumpCount: 8 }],
     clumps: [
@@ -1389,7 +1338,6 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
     barangayCode: 'ABR_SAL_BAZAR', barangay: 'Bazar',
     latitude: 17.45284, longitude: 120.797377,
     clumpCount: 13, photoCount: 0, approvedAt: 1733414400000,
-    dominantSpecies: 'Gigantochloa levis',
     elevationMeters: 303, slopeDegrees: undefined, aspectDegrees: undefined,
     speciesSummary: [{ scientificName: 'Gigantochloa levis', clumpCount: 13 }],
     clumps: [
@@ -1416,7 +1364,6 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
     barangayCode: 'ABR_SAL_BAZAR', barangay: 'Bazar',
     latitude: 17.453926, longitude: 120.795181,
     clumpCount: 14, photoCount: 0, approvedAt: 1733414400000,
-    dominantSpecies: 'Gigantochloa levis',
     elevationMeters: 284, slopeDegrees: undefined, aspectDegrees: undefined,
     speciesSummary: [{ scientificName: 'Gigantochloa levis', clumpCount: 14 }],
     clumps: [
@@ -1444,7 +1391,6 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
     barangayCode: 'ABR_SAL_BAZAR', barangay: 'Bazar',
     latitude: 17.456153, longitude: 120.791252,
     clumpCount: 9, photoCount: 0, approvedAt: 1733414400000,
-    dominantSpecies: 'Gigantochloa levis',
     elevationMeters: 250, slopeDegrees: undefined, aspectDegrees: undefined,
     speciesSummary: [{ scientificName: 'Gigantochloa levis', clumpCount: 9 }],
     clumps: [
@@ -1467,7 +1413,6 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
     barangayCode: 'ABR_SAL_BAZAR', barangay: 'Bazar',
     latitude: 17.457237, longitude: 120.785498,
     clumpCount: 11, photoCount: 0, approvedAt: 1733414400000,
-    dominantSpecies: 'Gigantochloa levis',
     elevationMeters: 244, slopeDegrees: undefined, aspectDegrees: undefined,
     speciesSummary: [{ scientificName: 'Gigantochloa levis', clumpCount: 11 }],
     clumps: [
@@ -1492,7 +1437,6 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
     barangayCode: 'ABR_SAL_BAZAR', barangay: 'Bazar',
     latitude: 17.457168, longitude: 120.782353,
     clumpCount: 7, photoCount: 0, approvedAt: 1733414400000,
-    dominantSpecies: 'Gigantochloa levis',
     elevationMeters: 242, slopeDegrees: undefined, aspectDegrees: undefined,
     speciesSummary: [{ scientificName: 'Gigantochloa levis', clumpCount: 7 }],
     clumps: [
@@ -1513,7 +1457,6 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
     barangayCode: 'ABR_SAL_BILABILA', barangay: 'Bilabila',
     latitude: 17.482733, longitude: 120.762803,
     clumpCount: 6, photoCount: 0, approvedAt: 1733414400000,
-    dominantSpecies: 'Bambusa merrilliana',
     elevationMeters: 350, slopeDegrees: undefined, aspectDegrees: undefined,
     speciesSummary: [{ scientificName: 'Bambusa merrilliana', clumpCount: 5 }, { scientificName: 'Bambusa spinosa', clumpCount: 1 }],
     clumps: [
@@ -1533,7 +1476,6 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
     barangayCode: 'ABR_SAL_BILABILA', barangay: 'Bilabila',
     latitude: 17.482202, longitude: 120.764877,
     clumpCount: 6, photoCount: 0, approvedAt: 1733414400000,
-    dominantSpecies: 'Bambusa spinosa',
     elevationMeters: 367, slopeDegrees: undefined, aspectDegrees: undefined,
     speciesSummary: [{ scientificName: 'Bambusa spinosa', clumpCount: 5 }, { scientificName: 'Gigantochloa levis', clumpCount: 1 }],
     clumps: [
@@ -1553,7 +1495,6 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
     barangayCode: 'ABR_SAL_BILABILA', barangay: 'Bilabila',
     latitude: 17.486685, longitude: 120.762235,
     clumpCount: 11, photoCount: 0, approvedAt: 1733414400000,
-    dominantSpecies: 'Gigantochloa levis',
     elevationMeters: 314, slopeDegrees: undefined, aspectDegrees: undefined,
     speciesSummary: [{ scientificName: 'Gigantochloa levis', clumpCount: 11 }],
     clumps: [
@@ -1578,7 +1519,6 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
     barangayCode: 'ABR_SAL_BILABILA', barangay: 'Bilabila',
     latitude: 17.497663, longitude: 120.758489,
     clumpCount: 13, photoCount: 0, approvedAt: 1733414400000,
-    dominantSpecies: 'Gigantochloa levis',
     elevationMeters: 233, slopeDegrees: undefined, aspectDegrees: undefined,
     speciesSummary: [{ scientificName: 'Gigantochloa levis', clumpCount: 13 }],
     clumps: [
@@ -1608,7 +1548,6 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
     latitude: 14.1684, longitude: 121.2391,
     clumpCount: 4, photoCount: 3,
     approvedAt: daysAgo(14),
-    dominantSpecies: 'Bambusa vulgaris',
     elevationMeters: 62, slopeDegrees: 8, aspectDegrees: 270,
     speciesSummary: [
       { scientificName: 'Bambusa vulgaris', clumpCount: 3 },
