@@ -3,7 +3,7 @@
 import { useState, useMemo } from 'react'
 import clsx from 'clsx'
 import type { PublicQuadrat, PublicClump } from '@/lib/types'
-import { SPECIES_COLORS, SPECIES_ORDER } from './deck-layers'
+import { getSpeciesColor, SPECIES_ORDER } from './deck-layers'
 
 // ─── Public filter types ──────────────────────────────────────────────────────
 
@@ -108,21 +108,39 @@ export function StatsFilterPanel({
   isLoading,
   layerFilteredCount,
 }: StatsFilterPanelProps) {
-  const [open, setOpen] = useState(true)
-  const [tab, setTab]   = useState<Tab>('stats')
+  const [open, setOpen]           = useState(true)
+  const [tab, setTab]             = useState<Tab>('stats')
+  const [showAllSpecies, setShowAllSpecies] = useState(false)
+  const [speciesSearch, setSpeciesSearch]   = useState('')
 
   const set = (patch: Partial<MapFilters>) => onFiltersChange({ ...filters, ...patch })
 
-  const hasActiveFilters =
-    !!filters.search || !!filters.region || !!filters.province || !!filters.municipality ||
-    filters.minClumps > 0 || filters.minPhotos > 0 ||
-    speciesFilter.length > 0 || !!dateRange.from || !!dateRange.to
+  const activeFilterCount =
+    (filters.search       ? 1 : 0) +
+    (filters.region       ? 1 : 0) +
+    (filters.province     ? 1 : 0) +
+    (filters.municipality ? 1 : 0) +
+    (filters.minClumps > 0            ? 1 : 0) +
+    (filters.minPhotos > 0            ? 1 : 0) +
+    (speciesFilter.length > 0         ? 1 : 0) +
+    (dateRange.from || dateRange.to   ? 1 : 0)
+
+  const hasActiveFilters = activeFilterCount > 0
 
   const allRegions = useMemo(() => {
     const map: Record<string, number> = {}
     for (const q of allQuadrats) map[q.region] = (map[q.region] ?? 0) + 1
     return Object.entries(map).sort((a, b) => b[1] - a[1])
   }, [allQuadrats])
+
+  // All observed species (from clumps), sorted by frequency then name
+  const allObservedSpecies = useMemo(() => {
+    const map: Record<string, number> = {}
+    for (const c of displayedClumps.length > 0 ? displayedClumps : []) map[c.scientificName] = (map[c.scientificName] ?? 0) + 1
+    // Fall back to SPECIES_ORDER if no clumps loaded yet
+    const fromClumps = Object.entries(map).sort((a, b) => b[1] - a[1]).map(([n]) => n)
+    return fromClumps.length > 0 ? fromClumps : SPECIES_ORDER
+  }, [displayedClumps])
 
   const stats = useMemo(() => {
     const n = filteredQuadrats.length
@@ -164,14 +182,21 @@ export function StatsFilterPanel({
     const minHt      = heights.length   ? Math.min(...heights)   : null
     const maxHt      = heights.length   ? Math.max(...heights)   : null
 
-    // Species breakdown from displayed clumps
-    const speciesMap: Record<string, number> = {}
+    // Species breakdown from displayed clumps — count + avg culm diameter per species
+    const speciesMap: Record<string, { count: number; diamSum: number; diamN: number }> = {}
     for (const c of displayedClumps) {
-      speciesMap[c.scientificName] = (speciesMap[c.scientificName] ?? 0) + 1
+      const entry = speciesMap[c.scientificName] ?? { count: 0, diamSum: 0, diamN: 0 }
+      entry.count++
+      if (c.averageDiameterCm != null) { entry.diamSum += c.averageDiameterCm; entry.diamN++ }
+      speciesMap[c.scientificName] = entry
     }
     const speciesList = Object.entries(speciesMap)
-      .sort((a, b) => b[1] - a[1])
-      .map(([name, count]) => ({ name, count, pct: nc > 0 ? (count / nc) * 100 : 0 }))
+      .sort((a, b) => b[1].count - a[1].count)
+      .map(([name, { count, diamSum, diamN }]) => ({
+        name, count,
+        pct: nc > 0 ? (count / nc) * 100 : 0,
+        avgDiam: diamN > 0 ? diamSum / diamN : null,
+      }))
     const maxSpeciesCount = speciesList[0]?.count ?? 1
 
     return {
@@ -190,15 +215,17 @@ export function StatsFilterPanel({
   return (
     <div
       className={clsx(
-        'absolute top-16 left-4 z-10 bg-slate-900/95 backdrop-blur-sm rounded-lg shadow-2xl border border-slate-700 text-white transition-all',
+        'absolute top-[4.5rem] left-4 z-10 bg-slate-900/95 backdrop-blur-sm rounded-lg shadow-2xl border border-slate-700 text-white transition-all',
         open ? 'w-64' : 'w-auto',
       )}
     >
       {/* Header */}
       <div className="flex items-center gap-2 px-3 py-2 border-b border-slate-700">
         <span className="text-sm font-semibold flex-1">Survey data</span>
-        {hasActiveFilters && (
-          <span className="w-2 h-2 rounded-full bg-emerald-400 flex-shrink-0" title="Filters active" />
+        {activeFilterCount > 0 && (
+          <span className="text-[10px] font-semibold leading-none px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+            {activeFilterCount}
+          </span>
         )}
         <button
           onClick={() => setOpen((o) => !o)}
@@ -235,7 +262,16 @@ export function StatsFilterPanel({
             {tab === 'stats' && (
               <>
                 {isLoading && (
-                  <p className="text-xs text-slate-500 text-center py-4">Loading…</p>
+                  <div className="space-y-3 py-1 animate-pulse">
+                    <div className="flex gap-1.5">
+                      {[...Array(3)].map((_, i) => (
+                        <div key={i} className="flex-1 h-12 rounded bg-slate-800" />
+                      ))}
+                    </div>
+                    {[...Array(4)].map((_, i) => (
+                      <div key={i} className="h-3 rounded bg-slate-800" style={{ width: `${80 - i * 12}%` }} />
+                    ))}
+                  </div>
                 )}
 
                 {!isLoading && !stats && (
@@ -304,8 +340,8 @@ export function StatsFilterPanel({
                       <div className="space-y-1.5">
                         <SectionLabel>Species distribution</SectionLabel>
                         <div className="space-y-1.5">
-                          {stats.speciesList.map(({ name, count, pct }) => {
-                            const [r, g, b] = SPECIES_COLORS[name] ?? [148, 163, 184]
+                          {(showAllSpecies ? stats.speciesList : stats.speciesList.slice(0, 8)).map(({ name, count, pct, avgDiam }) => {
+                            const [r, g, b] = getSpeciesColor(name)
                             return (
                               <div key={name}>
                                 <div className="flex items-center justify-between mb-0.5 gap-1">
@@ -320,7 +356,7 @@ export function StatsFilterPanel({
                                     {count} <span className="text-slate-600">({fmt(pct, 0)}%)</span>
                                   </span>
                                 </div>
-                                <div className="h-1 bg-slate-700 rounded-full overflow-hidden">
+                                <div className="h-1.5 bg-slate-700 rounded-full overflow-hidden">
                                   <div
                                     className="h-full rounded-full"
                                     style={{
@@ -329,10 +365,25 @@ export function StatsFilterPanel({
                                     }}
                                   />
                                 </div>
+                                {avgDiam != null && (
+                                  <p className="text-right text-slate-600 mt-0.5" style={{ fontSize: '10px' }}>
+                                    avg ⌀ {fmt(avgDiam)} cm
+                                  </p>
+                                )}
                               </div>
                             )
                           })}
                         </div>
+                        {stats.speciesList.length > 8 && (
+                          <button
+                            onClick={() => setShowAllSpecies((v) => !v)}
+                            className="text-xs text-slate-500 hover:text-slate-300 w-full text-center"
+                          >
+                            {showAllSpecies
+                              ? '↑ show less'
+                              : `+ ${stats.speciesList.length - 8} more species`}
+                          </button>
+                        )}
                       </div>
                     )}
 
@@ -453,47 +504,57 @@ export function StatsFilterPanel({
                 {/* Species */}
                 <div>
                   <div className="flex items-center justify-between mb-1">
-                    <label className="text-xs text-slate-400">Species</label>
+                    <label className="text-xs text-slate-400">
+                      Species {allObservedSpecies.length > 0 && <span className="text-slate-600">({allObservedSpecies.length})</span>}
+                    </label>
                     {speciesFilter.length > 0 && (
                       <button onClick={() => onSpeciesFilterChange([])} className="text-xs text-slate-500 hover:text-white">
                         all
                       </button>
                     )}
                   </div>
-                  <div className="space-y-1">
-                    {SPECIES_ORDER.map((sp) => {
-                      const [r, g, b] = SPECIES_COLORS[sp] ?? [148, 163, 184]
-                      const active = speciesFilter.length === 0 || speciesFilter.includes(sp)
-                      return (
-                        <label key={sp} className="flex items-center gap-2 cursor-pointer group">
-                          <input
-                            type="checkbox"
-                            checked={active}
-                            onChange={() => {
-                              if (speciesFilter.length === 0) {
-                                onSpeciesFilterChange(SPECIES_ORDER.filter((s) => s !== sp))
-                              } else if (speciesFilter.includes(sp)) {
-                                const next = speciesFilter.filter((s) => s !== sp)
-                                onSpeciesFilterChange(next.length === SPECIES_ORDER.length - 1 ? [] : next)
-                              } else {
-                                const next = [...speciesFilter, sp]
-                                onSpeciesFilterChange(next.length === SPECIES_ORDER.length ? [] : next)
-                              }
-                            }}
-                            className="w-3.5 h-3.5 rounded accent-emerald-500 flex-shrink-0"
-                          />
-                          <span
-                            className="w-2.5 h-2.5 rounded-sm flex-shrink-0 border border-white/20"
-                            style={{ backgroundColor: `rgb(${r},${g},${b})` }}
-                          />
-                          <span className="text-xs italic text-slate-300 truncate group-hover:text-white">{sp}</span>
-                        </label>
-                      )
-                    })}
-                    <div className="flex items-center gap-2 pl-5">
-                      <span className="w-2.5 h-2.5 rounded-sm flex-shrink-0 border border-white/20 bg-slate-400" />
-                      <span className="text-xs text-slate-500">Other</span>
-                    </div>
+                  {allObservedSpecies.length > 6 && (
+                    <input
+                      type="text"
+                      placeholder="Search species…"
+                      value={speciesSearch}
+                      onChange={(e) => setSpeciesSearch(e.target.value)}
+                      className="w-full mb-1.5 px-2 py-1 rounded bg-slate-800 border border-slate-600 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+                    />
+                  )}
+                  <div className="space-y-1 max-h-40 overflow-y-auto pr-0.5">
+                    {allObservedSpecies
+                      .filter((sp) => !speciesSearch || sp.toLowerCase().includes(speciesSearch.toLowerCase()))
+                      .map((sp) => {
+                        const [r, g, b] = getSpeciesColor(sp)
+                        const active = speciesFilter.length === 0 || speciesFilter.includes(sp)
+                        return (
+                          <label key={sp} className="flex items-center gap-2 cursor-pointer group">
+                            <input
+                              type="checkbox"
+                              checked={active}
+                              onChange={() => {
+                                const total = allObservedSpecies.length
+                                if (speciesFilter.length === 0) {
+                                  onSpeciesFilterChange(allObservedSpecies.filter((s) => s !== sp))
+                                } else if (speciesFilter.includes(sp)) {
+                                  const next = speciesFilter.filter((s) => s !== sp)
+                                  onSpeciesFilterChange(next.length === total - 1 ? [] : next)
+                                } else {
+                                  const next = [...speciesFilter, sp]
+                                  onSpeciesFilterChange(next.length === total ? [] : next)
+                                }
+                              }}
+                              className="w-3.5 h-3.5 rounded accent-emerald-500 flex-shrink-0"
+                            />
+                            <span
+                              className="w-2.5 h-2.5 rounded-sm flex-shrink-0 border border-white/20"
+                              style={{ backgroundColor: `rgb(${r},${g},${b})` }}
+                            />
+                            <span className="text-xs italic text-slate-300 truncate group-hover:text-white">{sp}</span>
+                          </label>
+                        )
+                      })}
                   </div>
                 </div>
 

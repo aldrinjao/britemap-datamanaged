@@ -161,6 +161,8 @@ export const PUBLIC_QUADRATS: PublicQuadrat[] = [
   { _id: uid(3027), serverId: 3027, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_SAL', municipality: 'Sallapadan', barangayCode: 'ABR_SAL_BILABILA', barangay: 'Bilabila', latitude: 17.482202, longitude: 120.764877, clumpCount: 6, photoCount: 0, approvedAt: 1733414400000, dominantSpecies: 'Bambusa spinosa' },
   { _id: uid(3028), serverId: 3028, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_SAL', municipality: 'Sallapadan', barangayCode: 'ABR_SAL_BILABILA', barangay: 'Bilabila', latitude: 17.486685, longitude: 120.762235, clumpCount: 11, photoCount: 0, approvedAt: 1733414400000, dominantSpecies: 'Gigantochloa levis' },
   { _id: uid(3029), serverId: 3029, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_SAL', municipality: 'Sallapadan', barangayCode: 'ABR_SAL_BILABILA', barangay: 'Bilabila', latitude: 17.497663, longitude: 120.758489, clumpCount: 13, photoCount: 0, approvedAt: 1733414400000, dominantSpecies: 'Gigantochloa levis' },
+  // Demo quadrat with placeholder photos — Los Baños, Laguna (near UPLB)
+  { _id: uid(4000), serverId: 4000, regionCode: '04A', region: 'CALABARZON', provinceCode: '1648000000', province: 'Laguna', municipalityCode: 'LAG_LB', municipality: 'Los Baños', barangayCode: 'LAG_LB_TADLAC', barangay: 'Tadlac', latitude: 14.1684, longitude: 121.2391, clumpCount: 4, photoCount: 3, approvedAt: daysAgo(14), dominantSpecies: 'Bambusa vulgaris' },
 
 ]
 
@@ -1593,6 +1595,37 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
       { _id: uid(6341), quadratId: uid(3029), scientificName: 'Gigantochloa levis', commonName: 'Bolo', culmCount: 28, averageDiameterCm: 8.0, averageHeightMeters: 10.0, approvedAt: 1733414400000, photos: [], azimuth: 97.0, distanceMeters: 5.0 },
       { _id: uid(6342), quadratId: uid(3029), scientificName: 'Gigantochloa levis', commonName: 'Bolo', culmCount: 25, averageDiameterCm: 5.5, averageHeightMeters: 10.0, approvedAt: 1737820800000, photos: [], azimuth: 52.0, distanceMeters: 13.0 },
       { _id: uid(6343), quadratId: uid(3029), scientificName: 'Gigantochloa levis', commonName: 'Bolo', culmCount: 10, averageDiameterCm: 6.0, averageHeightMeters: 10.0, approvedAt: 1737820800000, photos: [], azimuth: 86.0, distanceMeters: 2.5 },
+    ],
+  },
+
+  // Demo quadrat with placeholder photos
+  [uid(4000)]: {
+    _id: uid(4000), serverId: 4000,
+    regionCode: '04A', region: 'CALABARZON',
+    provinceCode: '1648000000', province: 'Laguna',
+    municipalityCode: 'LAG_LB', municipality: 'Los Baños',
+    barangayCode: 'LAG_LB_TADLAC', barangay: 'Tadlac',
+    latitude: 14.1684, longitude: 121.2391,
+    clumpCount: 4, photoCount: 3,
+    approvedAt: daysAgo(14),
+    dominantSpecies: 'Bambusa vulgaris',
+    elevationMeters: 62, slopeDegrees: 8, aspectDegrees: 270,
+    speciesSummary: [
+      { scientificName: 'Bambusa vulgaris', clumpCount: 3 },
+      { scientificName: 'Bambusa spinosa',  clumpCount: 1 },
+    ],
+    clumps: [
+      { _id: uid(7000), quadratId: uid(4000), scientificName: 'Bambusa vulgaris', commonName: 'Kawayan Kiling', culmCount: 120, averageDiameterCm: 9.5, averageHeightMeters: 18.0, approvedAt: daysAgo(14), azimuth: 45,  distanceMeters: 8,
+        photos: [
+          { photoId: uid(8000), photoUrl: '/p1.JPG', capturedAt: daysAgo(14) },
+          { photoId: uid(8001), photoUrl: '/p2.JPG', capturedAt: daysAgo(14) },
+        ] },
+      { _id: uid(7001), quadratId: uid(4000), scientificName: 'Bambusa vulgaris', commonName: 'Kawayan Kiling', culmCount: 95,  averageDiameterCm: 8.0, averageHeightMeters: 16.0, approvedAt: daysAgo(14), azimuth: 135, distanceMeters: 11,
+        photos: [
+          { photoId: uid(8002), photoUrl: '/p3.JPG', capturedAt: daysAgo(14) },
+        ] },
+      { _id: uid(7002), quadratId: uid(4000), scientificName: 'Bambusa vulgaris', commonName: 'Kawayan Kiling', culmCount: 78,  averageDiameterCm: 7.5, averageHeightMeters: 15.0, approvedAt: daysAgo(14), azimuth: 220, distanceMeters: 7,  photos: [] },
+      { _id: uid(7003), quadratId: uid(4000), scientificName: 'Bambusa spinosa',  commonName: 'Kawayan Tinik',  culmCount: 65,  averageDiameterCm: 6.0, averageHeightMeters: 12.0, approvedAt: daysAgo(14), azimuth: 315, distanceMeters: 14, photos: [] },
     ],
   },
 

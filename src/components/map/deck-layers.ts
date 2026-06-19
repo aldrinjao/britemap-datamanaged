@@ -25,8 +25,30 @@ export const SPECIES_ORDER = [
 
 const UNKNOWN_COLOR: [number, number, number, number] = [148, 163, 184, 200]
 
+// Overflow palette for species beyond SPECIES_COLORS — assigned by stable name hash
+const OVERFLOW_PALETTE: [number, number, number, number][] = [
+  [249, 115,  22, 220], // orange
+  [236,  72, 153, 220], // pink
+  [139,  92, 246, 220], // violet
+  [  6, 182, 212, 220], // cyan
+  [239,  68,  68, 220], // red
+  [168,  85, 247, 220], // purple
+  [251, 191,  36, 220], // yellow
+  [ 14, 165, 233, 220], // sky
+  [ 52, 211, 153, 220], // emerald-light
+  [248, 113, 113, 220], // rose
+]
+
+export function getSpeciesColor(name: string): [number, number, number, number] {
+  if (SPECIES_COLORS[name]) return SPECIES_COLORS[name]
+  let h = 0
+  for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) | 0
+  return OVERFLOW_PALETTE[Math.abs(h) % OVERFLOW_PALETTE.length]
+}
+
 function speciesColor(name: string | undefined): [number, number, number, number] {
-  return SPECIES_COLORS[name ?? ''] ?? UNKNOWN_COLOR
+  if (!name) return UNKNOWN_COLOR
+  return getSpeciesColor(name)
 }
 
 // ─── Quadrat centroid dots (low-zoom fallback) ────────────────────────────────
@@ -52,7 +74,7 @@ export function makeQuadratDotsLayer(data: PublicQuadrat[]): Layer {
 
 // ─── 30 m × 30 m quadrat squares ─────────────────────────────────────────────
 
-// Half-side in degrees (15 m). Longitude correction applied per feature.
+// Half-side of the 30 m × 30 m survey quadrat in meters.
 const HALF_M = 15
 
 function quadratPolygon(lat: number, lon: number): [number, number][] {
@@ -82,9 +104,9 @@ export function makeQuadratSquaresLayer(
       return [r, g, b, 90]  // semi-transparent fill
     },
     getLineColor: (d) => speciesColor(d.dominantSpecies),
-    getLineWidth: 1.5,
-    lineWidthMinPixels: 1,
-    lineWidthMaxPixels: 3,
+    getLineWidth: 2,
+    lineWidthMinPixels: 2,
+    lineWidthMaxPixels: 4,
     filled: true,
     stroked: true,
     pickable: true,

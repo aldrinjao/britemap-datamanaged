@@ -44,7 +44,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         {/* Logo */}
         <div className="px-4 py-4 border-b border-slate-200 dark:border-slate-800">
           <Link href="/" className="font-bold text-lg tracking-tight text-emerald-600 dark:text-emerald-400 hover:text-emerald-500 dark:hover:text-emerald-300 transition-colors">
-            BRITE-MAP
+            BRITEMAP
           </Link>
           <span className="ml-2 text-xs text-slate-400 uppercase">{role}</span>
         </div>

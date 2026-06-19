@@ -1,7 +1,7 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useState } from 'react'
-import Map, { NavigationControl, ScaleControl } from 'react-map-gl/maplibre'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import Map, { NavigationControl, ScaleControl, Source, Layer as MapLayer, type MapRef } from 'react-map-gl/maplibre'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import type { Layer } from '@deck.gl/core'
 import { DeckGLOverlay } from './DeckGLOverlay'
@@ -18,6 +18,7 @@ import {
   makeRegionHighlightLayer,
   makeProvinceHighlightLayer,
   makeMunicipalityHighlightLayer,
+  getSpeciesColor,
 } from './deck-layers'
 import type { PublicClump, PublicQuadrat } from '@/lib/types'
 import type { DateRange } from './StatsFilterPanel'
@@ -52,8 +53,8 @@ const GEODATA = {
 void GEODATA // referenced for future use
 
 // ─── Zoom thresholds for level-of-detail switching ───────────────────────────
-const SQUARE_ZOOM_THRESHOLD = 12   // below: centroid dots; at/above: 30m squares
-const CLUMP_ZOOM_THRESHOLD  = 14   // at/above: individual clump dots
+const SQUARE_ZOOM_THRESHOLD = 16   // below: centroid dots; at/above: quadrat squares (~12 px at zoom 16)
+const CLUMP_ZOOM_THRESHOLD  = 18   // at/above: individual clump dots
 
 // ─── Tooltip ──────────────────────────────────────────────────────────────────
 
@@ -99,7 +100,11 @@ export interface BritemapGLProps {
   activeMunicipality?: string
   onQuadratClick?: (quadrat: PublicQuadrat) => void
   onVisibleCountChange?: (count: number) => void
+  flyToTarget?: { latitude: number; longitude: number }
   showLayerPanel?: boolean
+  visibleSpecies?: string[]
+  speciesCommonName?: Record<string, string>
+  speciesCount?: Record<string, number>
   className?: string
 }
 
@@ -117,12 +122,27 @@ export function BritemapGL({
   activeMunicipality,
   onQuadratClick,
   onVisibleCountChange,
+  flyToTarget,
   showLayerPanel = true,
+  visibleSpecies = [],
+  speciesCommonName = {},
+  speciesCount = {},
   className = 'w-full h-full',
 }: BritemapGLProps) {
   const { layers, ...actions } = useMapLayers()
   const [tooltip, setTooltip] = useState<TooltipInfo | null>(null)
   const [zoom, setZoom] = useState(5.5)
+  const mapRef = useRef<MapRef | null>(null)
+
+  useEffect(() => {
+    if (!flyToTarget || !mapRef.current) return
+    mapRef.current.flyTo({
+      center: [flyToTarget.longitude, flyToTarget.latitude],
+      zoom: Math.max(mapRef.current.getZoom(), 13),
+      duration: 900,
+      essential: true,
+    })
+  }, [flyToTarget])
 
   const handleHover = useCallback((info: { object?: PublicQuadrat | null; x: number; y: number }) => {
     if (info.object) {
@@ -238,6 +258,7 @@ export function BritemapGL({
   return (
     <div className={`relative ${className}`}>
       <Map
+        ref={mapRef}
         initialViewState={{ longitude: 122.0, latitude: 12.5, zoom: 5.5 }}
         style={{ width: '100%', height: '100%' }}
         mapStyle={mapStyle as string}
@@ -247,21 +268,79 @@ export function BritemapGL({
       >
         <NavigationControl position="bottom-right" />
         <ScaleControl position="bottom-left" />
+        {layers.roads && layers.basemap === 'satellite' && (
+          <Source
+            type="raster"
+            tiles={['https://tile.openstreetmap.org/{z}/{x}/{y}.png']}
+            tileSize={256}
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+          >
+            <MapLayer type="raster" paint={{ 'raster-opacity': 0.55 }} />
+          </Source>
+        )}
         <DeckGLOverlay layers={deckLayers} />
       </Map>
 
+      {/* Right-side panel column — LayerPanel + fit button + species legend share the same width and anchor */}
       {showLayerPanel && (
-        <LayerPanel
-          layers={layers}
-          onSetBasemap={actions.setBasemap}
-          onToggleHillshade={actions.toggleHillshade}
-          onToggleBoundary={actions.toggleBoundary}
-          onSetProvincesOpacity={actions.setProvincesOpacity}
-          onToggleQuadratPoints={actions.toggleQuadratPoints}
-          onSetClusterMode={actions.setClusterMode}
-          onToggleHeatmap={actions.toggleHeatmap}
-          onSetClumpSizeMetric={actions.setClumpSizeMetric}
-        />
+        <div className="absolute top-3 right-3 z-10 flex flex-col gap-2">
+          {quadrats.length > 0 && (
+            <button
+              onClick={() => {
+                if (!mapRef.current) return
+                const lons = quadrats.map((q) => q.longitude).filter((v): v is number => v != null)
+                const lats = quadrats.map((q) => q.latitude).filter((v): v is number => v != null)
+                if (!lons.length) return
+                mapRef.current.fitBounds(
+                  [[Math.min(...lons), Math.min(...lats)], [Math.max(...lons), Math.max(...lats)]],
+                  { padding: 80, duration: 800, maxZoom: 14 },
+                )
+              }}
+              className="w-56 py-1.5 rounded-lg bg-slate-900/95 backdrop-blur-sm border border-slate-700 text-xs text-slate-300 hover:text-white hover:bg-slate-800 shadow-lg transition-colors"
+            >
+              Fit to results ({quadrats.length})
+            </button>
+          )}
+          <LayerPanel
+            layers={layers}
+            onSetBasemap={actions.setBasemap}
+            onToggleHillshade={actions.toggleHillshade}
+            onToggleRoads={actions.toggleRoads}
+            onToggleBoundary={actions.toggleBoundary}
+            onSetProvincesOpacity={actions.setProvincesOpacity}
+            onToggleQuadratPoints={actions.toggleQuadratPoints}
+            onToggleHeatmap={actions.toggleHeatmap}
+            onSetClumpSizeMetric={actions.setClumpSizeMetric}
+          />
+          {visibleSpecies.length > 0 && (
+            <div className="w-56 bg-slate-900/95 backdrop-blur-sm border border-slate-700 rounded-lg shadow-xl px-3 py-2">
+              <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Species</p>
+              <div className="space-y-1.5 max-h-60 overflow-y-auto">
+                {visibleSpecies.map((name) => {
+                  const [r, g, b] = getSpeciesColor(name)
+                  const common = speciesCommonName[name]
+                  return (
+                    <div key={name} className="flex items-start gap-1.5">
+                      <span
+                        className="w-2.5 h-2.5 rounded-sm flex-shrink-0 mt-0.5"
+                        style={{ backgroundColor: `rgb(${r},${g},${b})` }}
+                      />
+                      <div className="min-w-0 flex-1">
+                        <p className="text-xs italic text-slate-300 truncate leading-tight" title={name}>{name}</p>
+                        {common && <p className="text-xs text-slate-500 truncate leading-tight">{common}</p>}
+                      </div>
+                      {speciesCount[name] != null && (
+                        <span className="flex-shrink-0 text-[10px] font-medium text-slate-400 bg-slate-800 rounded px-1 py-0.5 leading-none mt-0.5">
+                          {speciesCount[name]}
+                        </span>
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          )}
+        </div>
       )}
 
       {tooltip && <MapTooltip info={tooltip} />}

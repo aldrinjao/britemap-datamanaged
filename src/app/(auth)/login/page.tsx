@@ -60,7 +60,7 @@ export default function LoginPage() {
         <Link href="/" className="inline-flex items-center gap-1.5 text-sm text-slate-400 hover:text-white transition-colors mb-8">
           ← Back to main page
         </Link>
-        <h1 className="text-2xl font-bold text-white mb-1">BRITE-MAP</h1>
+        <h1 className="text-2xl font-bold text-white mb-1">BRITEMAP</h1>
         <p className="text-slate-400 text-sm mb-8">Admin &amp; Verification Console</p>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">

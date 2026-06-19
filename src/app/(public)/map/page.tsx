@@ -16,6 +16,7 @@ import {
   type DateRange,
 } from '@/components/map/StatsFilterPanel'
 import { useAuth } from '@/lib/auth-context'
+import { getSpeciesColor } from '@/components/map/deck-layers'
 
 // BritemapGL uses MapLibre/WebGL — must be client-only, no SSR
 const BritemapGL = dynamic(
@@ -154,6 +155,28 @@ function MapPageContent() {
     [quadratsWithSpecies, filters],
   )
 
+  // Selected quadrat keyboard / button navigation
+  const selectedIdx = selectedQuadrat
+    ? filteredQuadrats.findIndex((q) => q._id === selectedQuadrat._id)
+    : -1
+
+  const navigateQuadrat = useCallback((delta: 1 | -1) => {
+    if (selectedIdx === -1 || filteredQuadrats.length === 0) return
+    const next = filteredQuadrats[(selectedIdx + delta + filteredQuadrats.length) % filteredQuadrats.length]
+    handleQuadratClick(next)
+  }, [selectedIdx, filteredQuadrats, handleQuadratClick])
+
+  useEffect(() => {
+    if (!selectedQuadrat) return
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft')  navigateQuadrat(-1)
+      if (e.key === 'ArrowRight') navigateQuadrat(1)
+      if (e.key === 'Escape')     handleCloseQuadrat()
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [selectedQuadrat, navigateQuadrat, handleCloseQuadrat])
+
   // Clumps belonging to the currently filtered quadrats, with species filter applied.
   // Passed to StatsFilterPanel for clump-level statistics.
   const displayedClumps = useMemo(() => {
@@ -163,6 +186,43 @@ function MapPageContent() {
       ? byQuadrat.filter((c) => speciesFilter.includes(c.scientificName))
       : byQuadrat
   }, [allClumps, filteredQuadrats, speciesFilter])
+
+  // Clumps for the currently selected quadrat — used to enrich the selection panel
+  const selectedQuadratClumps = useMemo(
+    () => selectedQuadrat ? allClumps.filter((c) => c.quadratId === selectedQuadrat._id) : [],
+    [allClumps, selectedQuadrat],
+  )
+  const selectedTotalCulms = selectedQuadratClumps.reduce((s, c) => s + (c.culmCount ?? 0), 0)
+  const selectedDominantSpecies = useMemo(() => {
+    const map: Record<string, number> = {}
+    for (const c of selectedQuadratClumps) map[c.scientificName] = (map[c.scientificName] ?? 0) + 1
+    return Object.entries(map).sort((a, b) => b[1] - a[1]).map(([name]) => name)
+  }, [selectedQuadratClumps])
+
+  // Scientific name → common name lookup built from all loaded clumps
+  const speciesCommonName = useMemo(() => {
+    const map: Record<string, string> = {}
+    for (const c of allClumps) if (c.commonName) map[c.scientificName] = c.commonName
+    return map
+  }, [allClumps])
+
+  // Clump count per species among displayed clumps — shown as badge in legend
+  const speciesCount = useMemo(() => {
+    const map: Record<string, number> = {}
+    for (const c of displayedClumps) map[c.scientificName] = (map[c.scientificName] ?? 0) + 1
+    return map
+  }, [displayedClumps])
+
+  // Unique species visible on map — sorted by clump count descending so dominant species appear first
+  const visibleSpecies = useMemo(() => {
+    const seen = new Set<string>()
+    for (const c of displayedClumps) seen.add(c.scientificName)
+    for (const q of filteredQuadrats) if (q.dominantSpecies) seen.add(q.dominantSpecies)
+    return [...seen].sort((a, b) => {
+      const diff = (speciesCount[b] ?? 0) - (speciesCount[a] ?? 0)
+      return diff !== 0 ? diff : a.localeCompare(b)
+    })
+  }, [displayedClumps, filteredQuadrats, speciesCount])
 
   // Choropleth uses filtered counts so the heatmap reflects the active filter
   const countByProvince = useMemo(
@@ -176,27 +236,27 @@ function MapPageContent() {
 
   return (
     <div className="relative w-full h-screen bg-slate-950">
-      {/* Back button — dashboard when logged in, landing page when not */}
-      <Link
-        href={authUser ? '/dashboard' : '/'}
-        className="absolute top-4 left-4 z-10 flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900/90 border border-slate-700 text-sm text-slate-300 hover:text-white hover:bg-slate-800 transition-colors shadow-lg"
-      >
-        {authUser ? '← Dashboard' : '← BRITE-MAP'}
-      </Link>
-
-      {/* Top-center brand badge */}
-      <Link
-        href="/"
-        className="absolute top-4 left-1/2 -translate-x-1/2 z-10 flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-slate-900/90 border border-slate-700 shadow-lg hover:bg-slate-800 transition-colors"
-      >
-        <span className="text-emerald-400 font-bold text-sm tracking-wider">BRITE-MAP</span>
-        <span className="w-px h-3.5 bg-slate-600 flex-shrink-0" />
-        <span className="text-slate-400 text-xs whitespace-nowrap">Bamboo Distribution Survey</span>
-      </Link>
+      {/* Brand badge + back nav — sits directly above the Survey data panel */}
+      <div className="absolute top-4 left-4 z-10 flex items-center gap-1.5 w-64">
+        <Link
+          href={authUser ? '/dashboard' : '/'}
+          className="flex items-center px-2.5 py-1.5 rounded-lg bg-slate-900/90 border border-slate-700 text-xs text-slate-400 hover:text-white hover:bg-slate-800 transition-colors shadow-lg whitespace-nowrap"
+        >
+          {authUser ? '← Dashboard' : '← Home'}
+        </Link>
+        <Link
+          href="/"
+          className="flex-1 flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-slate-900/90 border border-slate-700 shadow-lg hover:bg-slate-800 transition-colors"
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/logo.svg" alt="" className="w-4 h-4 shrink-0" style={{ display: 'block' }} />
+          <span className="text-emerald-400 font-bold text-sm tracking-wider leading-none">BRITEMAP</span>
+        </Link>
+      </div>
 
       {/* Bottom-right attribution watermark — tucked left of MapLibre's nav control buttons */}
       <div className="absolute bottom-3 right-14 z-10 text-right pointer-events-none select-none">
-        <p className="text-xs font-semibold text-slate-400 tracking-wide">BRITE-MAP</p>
+        <p className="text-xs font-semibold text-slate-400 tracking-wide">BRITEMAP</p>
         <p className="text-xs text-slate-600">UPLB · DOST-PCAARRD</p>
       </div>
 
@@ -229,7 +289,11 @@ function MapPageContent() {
         activeMunicipality={filters.municipality || undefined}
         onQuadratClick={handleQuadratClick}
         onVisibleCountChange={setLayerFilteredCount}
+        flyToTarget={selectedQuadrat?.latitude != null ? { latitude: selectedQuadrat.latitude!, longitude: selectedQuadrat.longitude! } : undefined}
         showLayerPanel={detailUuid === null}
+        visibleSpecies={visibleSpecies}
+        speciesCommonName={speciesCommonName}
+        speciesCount={speciesCount}
         className="w-full h-full"
       />
 
@@ -269,26 +333,54 @@ function MapPageContent() {
 
       {/* Selected quadrat panel */}
       {selectedQuadrat && (
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-72 z-10 bg-slate-900/95 border border-slate-700 rounded-xl shadow-2xl p-4">
-          <button
-            onClick={handleCloseQuadrat}
-            className="absolute top-3 right-3 text-slate-500 hover:text-white"
-          >
-            ✕
-          </button>
-          <h3 className="font-semibold text-white pr-6">{selectedQuadrat.barangay}</h3>
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-76 z-10 bg-slate-900/95 border border-slate-700 rounded-xl shadow-2xl p-4">
+          {/* Header row: prev / counter / next / close */}
+          <div className="flex items-center gap-2 mb-3">
+            <button onClick={() => navigateQuadrat(-1)} className="text-slate-400 hover:text-white px-1.5 py-0.5 rounded hover:bg-slate-700 text-sm" title="Previous site (←)">‹</button>
+            <span className="flex-1 text-center text-xs text-slate-500">{selectedIdx + 1} / {filteredQuadrats.length}</span>
+            <button onClick={() => navigateQuadrat(1)} className="text-slate-400 hover:text-white px-1.5 py-0.5 rounded hover:bg-slate-700 text-sm" title="Next site (→)">›</button>
+            <button onClick={handleCloseQuadrat} className="text-slate-500 hover:text-white ml-1" title="Close (Esc)">✕</button>
+          </div>
+
+          {/* Location */}
+          <h3 className="font-semibold text-white leading-tight">{selectedQuadrat.barangay}</h3>
           <p className="text-sm text-slate-400 mt-0.5">{selectedQuadrat.municipality}, {selectedQuadrat.province}</p>
-          <p className="text-xs text-slate-500 mt-0.5">{selectedQuadrat.region}</p>
-          <div className="mt-3 flex gap-4 text-sm">
-            <div>
-              <span className="text-slate-400">Clumps</span>
-              <p className="font-semibold text-white">{selectedQuadrat.clumpCount}</p>
+          <p className="text-xs text-slate-500">{selectedQuadrat.region}</p>
+
+          {/* Dominant species chips */}
+          {selectedDominantSpecies.length > 0 && (
+            <div className="mt-2 flex flex-wrap gap-1">
+              {selectedDominantSpecies.slice(0, 3).map((name) => {
+                const [r, g, b] = getSpeciesColor(name)
+                return (
+                  <span
+                    key={name}
+                    className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs italic text-white/90"
+                    style={{ backgroundColor: `rgba(${r},${g},${b},0.35)`, border: `1px solid rgba(${r},${g},${b},0.6)` }}
+                  >
+                    {name}
+                  </span>
+                )
+              })}
             </div>
-            <div>
-              <span className="text-slate-400">Photos</span>
-              <p className="font-semibold text-white">{selectedQuadrat.photoCount}</p>
+          )}
+
+          {/* Key metrics */}
+          <div className="mt-3 grid grid-cols-3 gap-2 text-center">
+            <div className="bg-slate-800 rounded p-1.5">
+              <p className="text-sm font-bold text-white">{selectedQuadrat.clumpCount}</p>
+              <p className="text-xs text-slate-500">clumps</p>
+            </div>
+            <div className="bg-slate-800 rounded p-1.5">
+              <p className="text-sm font-bold text-white">{selectedTotalCulms > 0 ? selectedTotalCulms.toLocaleString() : '—'}</p>
+              <p className="text-xs text-slate-500">culms</p>
+            </div>
+            <div className="bg-slate-800 rounded p-1.5">
+              <p className="text-sm font-bold text-white">{selectedQuadrat.photoCount}</p>
+              <p className="text-xs text-slate-500">photos</p>
             </div>
           </div>
+
           <button
             onClick={() => setDetailUuid(selectedQuadrat._id)}
             className="mt-3 w-full text-center text-sm py-2 rounded-lg bg-emerald-700 hover:bg-emerald-600 text-white font-medium transition-colors"
