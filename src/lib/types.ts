@@ -127,6 +127,7 @@ export interface PublicQuadrat {
   clumpCount: number
   photoCount: number
   approvedAt: number
+  dominantSpecies?: string
 }
 
 export interface SpeciesSummary {
@@ -150,6 +151,12 @@ export interface PublicClump {
   averageHeightMeters: number
   approvedAt: number
   photos: PublicPhoto[]
+  // Survey measurement fields (from API)
+  azimuth: number         // degrees from north, clockwise
+  distanceMeters: number  // distance from quadrat centroid
+  // Computed client-side from quadrat centroid + azimuth/distance
+  latitude?: number
+  longitude?: number
 }
 
 export interface PublicQuadratDetail extends PublicQuadrat {

@@ -5,8 +5,10 @@ import type {
   BatchRunsResponse,
   CreateUserBody,
   GeographicDivisionsResponse,
+  PublicClump,
   PublicQuadrat,
   PublicQuadratDetail,
+  SpeciesSummary,
   UpdateUserBody,
   UserDTO,
   VerifyActionResponse,
@@ -35,6 +37,10 @@ export class BritemapApiError extends Error {
 
 const BASE = process.env.NEXT_PUBLIC_API_BASE_URL ?? ''
 const MOCK_MODE = process.env.NEXT_PUBLIC_MOCK_API === 'true'
+
+// photoUrl in API responses is a full root-relative path (e.g. /api/v1/public/photos/...).
+// Prepending the full BASE would double the /api/v1 segment, so we use the origin only.
+export const PHOTO_ORIGIN = BASE.startsWith('http') ? new URL(BASE).origin : ''
 
 interface FetchOptions extends Omit<RequestInit, 'headers'> {
   token?: string
@@ -79,6 +85,24 @@ async function apiFetch<T>(path: string, opts: FetchOptions = {}): Promise<T> {
   }
 
   return body as T
+}
+
+// ─── Clump position helper ────────────────────────────────────────────────────
+
+function clumpLatLon(
+  centLat: number,
+  centLon: number,
+  azimuthDeg: number,
+  distanceMeters: number,
+): { latitude: number; longitude: number } {
+  const R = 6_371_000
+  const az = (azimuthDeg * Math.PI) / 180
+  const dLat = (distanceMeters * Math.cos(az)) / R
+  const dLon = (distanceMeters * Math.sin(az)) / (R * Math.cos((centLat * Math.PI) / 180))
+  return {
+    latitude: centLat + (dLat * 180) / Math.PI,
+    longitude: centLon + (dLon * 180) / Math.PI,
+  }
 }
 
 // ─── Photo blob helper (Bearer on img src isn't possible) ────────────────────
@@ -131,8 +155,23 @@ export const publicApi = {
     )
   },
 
-  getQuadrat: (uuid: string) =>
-    apiFetch<PublicQuadratDetail>(`/public/quadrats/${uuid}`),
+  // Spec shape: { quadrat: {..., speciesSummary}, clumps: [...] }
+  // Clumps carry azimuth + distanceMeters; we compute absolute lat/lon here
+  // so map layers receive positioned clumps without knowing about the centroid.
+  getQuadrat: async (uuid: string): Promise<PublicQuadratDetail> => {
+    const res = await apiFetch<{
+      quadrat: Omit<PublicQuadratDetail, 'clumps'> & { speciesSummary: SpeciesSummary[] }
+      clumps: PublicClump[]
+    }>(`/public/quadrats/${uuid}`)
+    const { latitude: centLat, longitude: centLon } = res.quadrat
+    const clumps = res.clumps.map((c) => ({
+      ...c,
+      ...(centLat != null && centLon != null
+        ? clumpLatLon(centLat, centLon, c.azimuth, c.distanceMeters)
+        : {}),
+    }))
+    return { ...res.quadrat, clumps }
+  },
 }
 
 // ─── User self-service ────────────────────────────────────────────────────────

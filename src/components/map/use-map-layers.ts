@@ -2,6 +2,7 @@ import { useReducer } from 'react'
 
 export type BasemapStyle = 'streets' | 'satellite'
 export type ClusterMode = 'clustered' | 'individual'
+export type ClumpSizeMetric = 'diameter' | 'height'
 
 export interface LayerState {
   basemap: BasemapStyle
@@ -10,19 +11,13 @@ export interface LayerState {
     regions: boolean
     provinces: boolean
     municipalities: boolean
-    barangays: boolean
   }
   provincesOpacity: number
   data: {
     quadratPoints: boolean
     clusterMode: ClusterMode
     heatmap: boolean
-    colorByStatus: boolean
-    speciesFilter: string[] // empty = all species shown
-  }
-  dateRange: {
-    from: string | null // ISO date string
-    to: string | null
+    clumpSizeMetric: ClumpSizeMetric
   }
 }
 
@@ -34,9 +29,7 @@ type LayerAction =
   | { type: 'TOGGLE_QUADRAT_POINTS' }
   | { type: 'SET_CLUSTER_MODE'; payload: ClusterMode }
   | { type: 'TOGGLE_HEATMAP' }
-  | { type: 'TOGGLE_COLOR_BY_STATUS' }
-  | { type: 'SET_SPECIES_FILTER'; payload: string[] }
-  | { type: 'SET_DATE_RANGE'; payload: Partial<LayerState['dateRange']> }
+  | { type: 'SET_CLUMP_SIZE_METRIC'; payload: ClumpSizeMetric }
 
 const initialState: LayerState = {
   basemap: 'streets',
@@ -45,17 +38,14 @@ const initialState: LayerState = {
     regions: true,
     provinces: true,
     municipalities: false,
-    barangays: false,
   },
   provincesOpacity: 0.25,
   data: {
     quadratPoints: true,
     clusterMode: 'clustered',
     heatmap: false,
-    colorByStatus: false,
-    speciesFilter: [],
+    clumpSizeMetric: 'diameter',
   },
-  dateRange: { from: null, to: null },
 }
 
 function reducer(state: LayerState, action: LayerAction): LayerState {
@@ -74,12 +64,8 @@ function reducer(state: LayerState, action: LayerAction): LayerState {
       return { ...state, data: { ...state.data, clusterMode: action.payload } }
     case 'TOGGLE_HEATMAP':
       return { ...state, data: { ...state.data, heatmap: !state.data.heatmap } }
-    case 'TOGGLE_COLOR_BY_STATUS':
-      return { ...state, data: { ...state.data, colorByStatus: !state.data.colorByStatus } }
-    case 'SET_SPECIES_FILTER':
-      return { ...state, data: { ...state.data, speciesFilter: action.payload } }
-    case 'SET_DATE_RANGE':
-      return { ...state, dateRange: { ...state.dateRange, ...action.payload } }
+    case 'SET_CLUMP_SIZE_METRIC':
+      return { ...state, data: { ...state.data, clumpSizeMetric: action.payload } }
     default:
       return state
   }
@@ -97,8 +83,6 @@ export function useMapLayers() {
     toggleQuadratPoints: () => dispatch({ type: 'TOGGLE_QUADRAT_POINTS' }),
     setClusterMode: (v: ClusterMode) => dispatch({ type: 'SET_CLUSTER_MODE', payload: v }),
     toggleHeatmap: () => dispatch({ type: 'TOGGLE_HEATMAP' }),
-    toggleColorByStatus: () => dispatch({ type: 'TOGGLE_COLOR_BY_STATUS' }),
-    setSpeciesFilter: (v: string[]) => dispatch({ type: 'SET_SPECIES_FILTER', payload: v }),
-    setDateRange: (v: Partial<LayerState['dateRange']>) => dispatch({ type: 'SET_DATE_RANGE', payload: v }),
+    setClumpSizeMetric: (v: ClumpSizeMetric) => dispatch({ type: 'SET_CLUMP_SIZE_METRIC', payload: v }),
   }
 }

@@ -55,16 +55,16 @@ export const handlers = [
     return HttpResponse.json({
       serverTimestamp: Date.now(),
       divisions: [
-        { code: '04A',    name: 'CALABARZON',    type: 'region',       parentCode: null,    regionCode: '04A',    hasData: true },
-        { code: 'LAG',    name: 'Laguna',         type: 'province',     parentCode: '04A',   regionCode: '04A',    hasData: true },
-        { code: 'BTG',    name: 'Batangas',       type: 'province',     parentCode: '04A',   regionCode: '04A',    hasData: true },
-        { code: 'CAV',    name: 'Cavite',         type: 'province',     parentCode: '04A',   regionCode: '04A',    hasData: true },
-        { code: 'RIZ',    name: 'Rizal',          type: 'province',     parentCode: '04A',   regionCode: '04A',    hasData: true },
-        { code: 'QUE',    name: 'Quezon',         type: 'province',     parentCode: '04A',   regionCode: '04A',    hasData: true },
-        { code: 'LAG01',  name: 'Biñan',          type: 'municipality', parentCode: 'LAG',   regionCode: '04A',    hasData: true },
-        { code: 'LAG02',  name: 'Santa Rosa',     type: 'municipality', parentCode: 'LAG',   regionCode: '04A',    hasData: true },
-        { code: 'LAG03',  name: 'Calamba',        type: 'municipality', parentCode: 'LAG',   regionCode: '04A',    hasData: true },
-        { code: 'LAG04',  name: 'Los Baños',      type: 'municipality', parentCode: 'LAG',   regionCode: '04A',    hasData: true },
+        { code: '05',       name: 'Region V (Bicol Region)',              type: 'region',       parentCode: null,     regionCode: '05', hasData: true },
+        { code: '0517',     name: 'Camarines Sur',                        type: 'province',     parentCode: '05',     regionCode: '05', hasData: true },
+        { code: '051723',   name: 'Nabua',                                type: 'municipality', parentCode: '0517',   regionCode: '05', hasData: true },
+        { code: '051703',   name: 'Bula',                                 type: 'municipality', parentCode: '0517',   regionCode: '05', hasData: true },
+        { code: '051701',   name: 'Bato',                                 type: 'municipality', parentCode: '0517',   regionCode: '05', hasData: true },
+        { code: '14',       name: 'CAR (Cordillera Administrative Region)', type: 'region',     parentCode: null,     regionCode: '14', hasData: true },
+        { code: '14001',    name: 'Abra',                                 type: 'province',     parentCode: '14',     regionCode: '14', hasData: true },
+        { code: '140010',   name: 'Licuan-Baay',                          type: 'municipality', parentCode: '14001',  regionCode: '14', hasData: true },
+        { code: '140011',   name: 'Lagangilang',                          type: 'municipality', parentCode: '14001',  regionCode: '14', hasData: true },
+        { code: '140012',   name: 'Sallapadan',                           type: 'municipality', parentCode: '14001',  regionCode: '14', hasData: true },
       ],
     })
   }),
@@ -76,12 +76,16 @@ export const handlers = [
     return HttpResponse.json({
       serverTimestamp: Date.now(),
       divisions: [
-        { code: '04A',  name: 'CALABARZON', type: 'region',   parentCode: null,  regionCode: '04A' },
-        { code: 'LAG',  name: 'Laguna',      type: 'province', parentCode: '04A', regionCode: '04A' },
-        { code: 'BTG',  name: 'Batangas',    type: 'province', parentCode: '04A', regionCode: '04A' },
-        { code: 'CAV',  name: 'Cavite',      type: 'province', parentCode: '04A', regionCode: '04A' },
-        { code: 'RIZ',  name: 'Rizal',       type: 'province', parentCode: '04A', regionCode: '04A' },
-        { code: 'QUE',  name: 'Quezon',      type: 'province', parentCode: '04A', regionCode: '04A' },
+        { code: '05',       name: 'Region V (Bicol Region)',              type: 'region',       parentCode: null,    regionCode: '05' },
+        { code: '0517',     name: 'Camarines Sur',                        type: 'province',     parentCode: '05',    regionCode: '05' },
+        { code: '051723',   name: 'Nabua',                                type: 'municipality', parentCode: '0517',  regionCode: '05' },
+        { code: '051703',   name: 'Bula',                                 type: 'municipality', parentCode: '0517',  regionCode: '05' },
+        { code: '051701',   name: 'Bato',                                 type: 'municipality', parentCode: '0517',  regionCode: '05' },
+        { code: '14',       name: 'CAR (Cordillera Administrative Region)', type: 'region',     parentCode: null,    regionCode: '14' },
+        { code: '14001',    name: 'Abra',                                 type: 'province',     parentCode: '14',    regionCode: '14' },
+        { code: '140010',   name: 'Licuan-Baay',                          type: 'municipality', parentCode: '14001', regionCode: '14' },
+        { code: '140011',   name: 'Lagangilang',                          type: 'municipality', parentCode: '14001', regionCode: '14' },
+        { code: '140012',   name: 'Sallapadan',                           type: 'municipality', parentCode: '14001', regionCode: '14' },
       ],
     })
   }),
@@ -112,6 +116,7 @@ export const handlers = [
   }),
 
   // ── Public: quadrat detail ──────────────────────────────────────────────────
+  // Response shape matches spec §5.9 endpoint 25: { quadrat: {...}, clumps: [...] }
 
   http.get('*/api/v1/public/quadrats/:uuid', async ({ params }) => {
     await delay(DELAY)
@@ -122,7 +127,8 @@ export const handlers = [
         { status: 404 },
       )
     }
-    return HttpResponse.json(detail)
+    const { clumps, ...quadrat } = detail
+    return HttpResponse.json({ quadrat, clumps })
   }),
 
   // ── Public: photo serve (return a placeholder JPEG) ─────────────────────────

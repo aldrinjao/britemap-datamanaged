@@ -8,14 +8,19 @@ import { DeckGLOverlay } from './DeckGLOverlay'
 import { LayerPanel } from './LayerPanel'
 import { useMapLayers } from './use-map-layers'
 import {
-  makeQuadratPointsLayer,
+  makeQuadratDotsLayer,
+  makeQuadratSquaresLayer,
+  makeClumpPointsLayer,
   makeHeatmapLayer,
   makeProvinceFillLayer,
   makeRegionOutlineLayer,
   makeMunicipalityOutlineLayer,
-  makeBarangayOutlineLayer,
+  makeRegionHighlightLayer,
+  makeProvinceHighlightLayer,
+  makeMunicipalityHighlightLayer,
 } from './deck-layers'
-import type { PublicQuadrat } from '@/lib/types'
+import type { PublicClump, PublicQuadrat } from '@/lib/types'
+import type { DateRange } from './StatsFilterPanel'
 
 // ─── Basemap style URLs ───────────────────────────────────────────────────────
 
@@ -26,7 +31,6 @@ const MAP_STYLES = {
     sources: {
       'esri-satellite': {
         type: 'raster' as const,
-        // ESRI World Imagery — free, attribution required
         tiles: ['https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'],
         tileSize: 256,
         attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
@@ -37,9 +41,7 @@ const MAP_STYLES = {
   },
 }
 
-// ─── GeoJSON boundary paths (must be placed in /public/geodata/) ──────────────
-// Source: Convert PSA PSGC shapefiles to GeoJSON and place at these paths.
-// Each feature needs: properties.PSGC (matches API provinceCode)
+// ─── GeoJSON boundary paths ───────────────────────────────────────────────────
 
 const GEODATA = {
   provinces: '/geodata/provinces.geojson',
@@ -47,6 +49,11 @@ const GEODATA = {
   municipalities: '/geodata/municipalities.geojson',
   barangays: '/geodata/barangays.geojson',
 }
+void GEODATA // referenced for future use
+
+// ─── Zoom thresholds for level-of-detail switching ───────────────────────────
+const SQUARE_ZOOM_THRESHOLD = 12   // below: centroid dots; at/above: 30m squares
+const CLUMP_ZOOM_THRESHOLD  = 14   // at/above: individual clump dots
 
 // ─── Tooltip ──────────────────────────────────────────────────────────────────
 
@@ -65,6 +72,9 @@ function MapTooltip({ info }: { info: TooltipInfo }) {
     >
       <p className="font-semibold">{q.barangay}, {q.municipality}</p>
       <p className="text-slate-400 text-xs">{q.province} · {q.region}</p>
+      {q.dominantSpecies && (
+        <p className="text-slate-300 text-xs mt-1 italic">{q.dominantSpecies}</p>
+      )}
       <div className="mt-2 flex gap-3 text-xs">
         <span>{q.clumpCount} clumps</span>
         <span>{q.photoCount} photos</span>
@@ -77,28 +87,34 @@ function MapTooltip({ info }: { info: TooltipInfo }) {
 
 export interface BritemapGLProps {
   quadrats: PublicQuadrat[]
+  clumps?: PublicClump[]
+  speciesFilter?: string[]
+  dateRange?: DateRange
   quadratCountByProvince?: Record<string, number>
-  // Pass pre-fetched GeoJSON or leave undefined to skip that layer
   provincesGeoJSON?: { type: 'FeatureCollection'; features: unknown[] }
   regionsGeoJSON?: { type: 'FeatureCollection'; features: unknown[] }
   municipalitiesGeoJSON?: { type: 'FeatureCollection'; features: unknown[] }
-  barangaysGeoJSON?: { type: 'FeatureCollection'; features: unknown[] }
-  availableSpecies?: string[]
+  activeRegion?: string
+  activeProvince?: string
+  activeMunicipality?: string
   onQuadratClick?: (quadrat: PublicQuadrat) => void
   onVisibleCountChange?: (count: number) => void
-  // Show the layer panel (default true)
   showLayerPanel?: boolean
   className?: string
 }
 
 export function BritemapGL({
   quadrats,
+  clumps = [],
+  speciesFilter = [],
+  dateRange = { from: null, to: null },
   quadratCountByProvince = {},
   provincesGeoJSON,
   regionsGeoJSON,
   municipalitiesGeoJSON,
-  barangaysGeoJSON,
-  availableSpecies = [],
+  activeRegion,
+  activeProvince,
+  activeMunicipality,
   onQuadratClick,
   onVisibleCountChange,
   showLayerPanel = true,
@@ -106,6 +122,7 @@ export function BritemapGL({
 }: BritemapGLProps) {
   const { layers, ...actions } = useMapLayers()
   const [tooltip, setTooltip] = useState<TooltipInfo | null>(null)
+  const [zoom, setZoom] = useState(5.5)
 
   const handleHover = useCallback((info: { object?: PublicQuadrat | null; x: number; y: number }) => {
     if (info.object) {
@@ -122,32 +139,33 @@ export function BritemapGL({
     [onQuadratClick],
   )
 
-  // Apply species + date filters to quadrat data
-  const filteredQuadrats = useMemo(() => {
+  const handleMove = useCallback((evt: { viewState: { zoom: number } }) => {
+    setZoom(evt.viewState.zoom)
+  }, [])
+
+  // Quadrat squares only respond to date range — species filter does not hide squares
+  const dateFilteredQuadrats = useMemo(() => {
     let result = quadrats
-    if (layers.data.speciesFilter.length > 0) {
-      // Species data is in the detail endpoint; for the list we can only filter
-      // by what's available on the summary. Skip if no species data on items.
-      result = result.filter((q) => {
-        const qWithSpecies = q as PublicQuadrat & { speciesSummary?: Array<{ scientificName: string }> }
-        if (!qWithSpecies.speciesSummary) return true
-        return qWithSpecies.speciesSummary.some((s) => layers.data.speciesFilter.includes(s.scientificName))
-      })
-    }
-    if (layers.dateRange.from) {
-      const from = new Date(layers.dateRange.from).getTime()
+    if (dateRange.from) {
+      const from = new Date(dateRange.from).getTime()
       result = result.filter((q) => q.approvedAt >= from)
     }
-    if (layers.dateRange.to) {
-      const to = new Date(layers.dateRange.to).getTime() + 86_400_000 // inclusive end of day
+    if (dateRange.to) {
+      const to = new Date(dateRange.to).getTime() + 86_400_000
       result = result.filter((q) => q.approvedAt <= to)
     }
     return result
-  }, [quadrats, layers.data.speciesFilter, layers.dateRange])
+  }, [quadrats, dateRange])
+
+  // Species filter only affects clump dots and the heatmap
+  const filteredClumps = useMemo(() => {
+    if (speciesFilter.length === 0) return clumps
+    return clumps.filter((c) => speciesFilter.includes(c.scientificName))
+  }, [clumps, speciesFilter])
 
   useEffect(() => {
-    onVisibleCountChange?.(filteredQuadrats.length)
-  }, [filteredQuadrats.length, onVisibleCountChange])
+    onVisibleCountChange?.(dateFilteredQuadrats.length)
+  }, [dateFilteredQuadrats.length, onVisibleCountChange])
 
   // Build deck.gl layer array
   const deckLayers = useMemo(() => {
@@ -165,27 +183,52 @@ export function BritemapGL({
     if (layers.boundaries.municipalities && municipalitiesGeoJSON) {
       result.push(makeMunicipalityOutlineLayer(municipalitiesGeoJSON as { type: 'FeatureCollection'; features: unknown[] }))
     }
-    if (layers.boundaries.barangays && barangaysGeoJSON) {
-      result.push(makeBarangayOutlineLayer(barangaysGeoJSON as { type: 'FeatureCollection'; features: unknown[] }))
+    // Active-filter highlights — always shown when a filter is set, regardless of layer toggles
+    if (activeRegion && regionsGeoJSON) {
+      result.push(makeRegionHighlightLayer(regionsGeoJSON as { type: 'FeatureCollection'; features: unknown[] }, activeRegion))
+    }
+    if (activeProvince && provincesGeoJSON) {
+      result.push(makeProvinceHighlightLayer(provincesGeoJSON as { type: 'FeatureCollection'; features: unknown[] }, activeProvince))
+    }
+    if (activeMunicipality && municipalitiesGeoJSON) {
+      result.push(makeMunicipalityHighlightLayer(municipalitiesGeoJSON as { type: 'FeatureCollection'; features: unknown[] }, activeMunicipality))
     }
     if (layers.data.heatmap) {
-      result.push(makeHeatmapLayer(filteredQuadrats))
+      result.push(makeHeatmapLayer(filteredClumps))
     }
     if (layers.data.quadratPoints) {
-      result.push(
-        makeQuadratPointsLayer(filteredQuadrats, layers.data, handleHover as Parameters<typeof makeQuadratPointsLayer>[2], handleClick as Parameters<typeof makeQuadratPointsLayer>[3]),
-      )
+      if (zoom < SQUARE_ZOOM_THRESHOLD) {
+        // National / regional scale — centroid dots, pickable for hover/click
+        result.push(makeQuadratDotsLayer(dateFilteredQuadrats))
+      } else {
+        // Local scale — full 30m squares with hover/click
+        result.push(
+          makeQuadratSquaresLayer(
+            dateFilteredQuadrats,
+            handleHover as Parameters<typeof makeQuadratSquaresLayer>[1],
+            handleClick as Parameters<typeof makeQuadratSquaresLayer>[2],
+          ),
+        )
+        // Individual clumps only at high zoom
+        if (zoom >= CLUMP_ZOOM_THRESHOLD && filteredClumps.length > 0) {
+          result.push(makeClumpPointsLayer(filteredClumps, layers.data.clumpSizeMetric))
+        }
+      }
     }
 
     return result
   }, [
     layers,
-    filteredQuadrats,
+    dateFilteredQuadrats,
+    filteredClumps,
+    zoom,
     provincesGeoJSON,
     regionsGeoJSON,
     municipalitiesGeoJSON,
-    barangaysGeoJSON,
     quadratCountByProvince,
+    activeRegion,
+    activeProvince,
+    activeMunicipality,
     handleHover,
     handleClick,
   ])
@@ -199,6 +242,8 @@ export function BritemapGL({
         style={{ width: '100%', height: '100%' }}
         mapStyle={mapStyle as string}
         attributionControl={false}
+        minZoom={5}
+        onMove={handleMove}
       >
         <NavigationControl position="bottom-right" />
         <ScaleControl position="bottom-left" />
@@ -208,7 +253,6 @@ export function BritemapGL({
       {showLayerPanel && (
         <LayerPanel
           layers={layers}
-          availableSpecies={availableSpecies}
           onSetBasemap={actions.setBasemap}
           onToggleHillshade={actions.toggleHillshade}
           onToggleBoundary={actions.toggleBoundary}
@@ -216,9 +260,7 @@ export function BritemapGL({
           onToggleQuadratPoints={actions.toggleQuadratPoints}
           onSetClusterMode={actions.setClusterMode}
           onToggleHeatmap={actions.toggleHeatmap}
-          onToggleColorByStatus={actions.toggleColorByStatus}
-          onSetSpeciesFilter={actions.setSpeciesFilter}
-          onSetDateRange={actions.setDateRange}
+          onSetClumpSizeMetric={actions.setClumpSizeMetric}
         />
       )}
 

@@ -3,15 +3,17 @@
 import dynamic from 'next/dynamic'
 import { Suspense, useState, useCallback, useMemo, useEffect, useRef } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useInfiniteQuery } from '@tanstack/react-query'
+import { useInfiniteQuery, useQueries, useQuery } from '@tanstack/react-query'
 import { publicApi } from '@/lib/api'
 import type { PublicQuadrat } from '@/lib/types'
+import { QuadratDetailDrawer } from '@/components/map/QuadratDetailDrawer'
 import Link from 'next/link'
 import {
   StatsFilterPanel,
   DEFAULT_MAP_FILTERS,
   applyMapFilters,
   type MapFilters,
+  type DateRange,
 } from '@/components/map/StatsFilterPanel'
 import { useAuth } from '@/lib/auth-context'
 
@@ -49,7 +51,10 @@ function MapPageContent() {
   const searchParams = useSearchParams()
 
   const [selectedQuadrat, setSelectedQuadrat] = useState<PublicQuadrat | null>(null)
+  const [detailUuid, setDetailUuid] = useState<string | null>(null)
   const [filters, setFilters] = useState<MapFilters>(() => filtersFromParams(searchParams))
+  const [speciesFilter, setSpeciesFilter] = useState<string[]>([])
+  const [dateRange, setDateRange] = useState<DateRange>({ from: null, to: null })
   const [layerFilteredCount, setLayerFilteredCount] = useState<number | undefined>(undefined)
 
   // Read initial quadrat UUID from URL once on mount
@@ -73,10 +78,19 @@ function MapPageContent() {
 
   const handleCloseQuadrat = useCallback(() => {
     setSelectedQuadrat(null)
+    setDetailUuid(null)
     const qs = filtersToParams(filters)
     const qsStr = qs.toString()
     router.replace(qsStr ? `/map?${qsStr}` : '/map', { scroll: false })
   }, [filters, router])
+
+  // Static boundary GeoJSON — served from /public/geodata/
+  const fetchGeoJSON = (path: string) =>
+    fetch(path).then((r) => r.json() as Promise<{ type: 'FeatureCollection'; features: unknown[] }>)
+
+  const { data: regionsGeoJSON }       = useQuery({ queryKey: ['geodata-regions'],       queryFn: () => fetchGeoJSON('/geodata/regions.geojson'),       staleTime: Infinity })
+  const { data: provincesGeoJSON }     = useQuery({ queryKey: ['geodata-provinces'],     queryFn: () => fetchGeoJSON('/geodata/provinces.geojson'),     staleTime: Infinity })
+  const { data: municipalitiesGeoJSON }= useQuery({ queryKey: ['geodata-municipalities'],queryFn: () => fetchGeoJSON('/geodata/municipalities.geojson'), staleTime: Infinity })
 
   // Fetch all public quadrats (paginate to completion for map display)
   const { data, fetchNextPage, hasNextPage, isFetching } = useInfiniteQuery({
@@ -91,6 +105,24 @@ function MapPageContent() {
 
   const allQuadrats = data?.pages.flatMap((p) => p.items) ?? []
 
+  // Fetch all quadrat details in parallel once the list is fully loaded.
+  // Gives us clumps (for map dots/heatmap) and speciesSummary (for square colours)
+  // without needing a dedicated /public/clumps endpoint that isn't in the API spec.
+  const detailQueries = useQueries({
+    queries: allQuadrats.map((q) => ({
+      queryKey: ['public-quadrat', q._id] as const,
+      queryFn: () => publicApi.getQuadrat(q._id),
+      staleTime: Infinity,
+      enabled: !hasNextPage && allQuadrats.length > 0,
+    })),
+  })
+
+  const allClumps = useMemo(
+    () => detailQueries.flatMap((dq) => dq.data?.clumps ?? []),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [detailQueries.map((dq) => dq.dataUpdatedAt).join()],
+  )
+
   // Pre-select quadrat from URL on initial load (once data is available)
   useEffect(() => {
     if (initialSelectionDone.current || !initialQuadratId || !allQuadrats.length) return
@@ -101,11 +133,36 @@ function MapPageContent() {
     }
   }, [allQuadrats, initialQuadratId])
 
+  // Merge dominantSpecies from detail speciesSummary into the list items.
+  // The list endpoint doesn't return this field; we derive it client-side.
+  const quadratsWithSpecies = useMemo(() => {
+    const detailMap: Record<string, string> = {}
+    detailQueries.forEach((dq) => {
+      if (dq.data?.speciesSummary.length) {
+        detailMap[dq.data._id] = dq.data.speciesSummary[0].scientificName
+      }
+    })
+    return allQuadrats.map((q) =>
+      detailMap[q._id] ? { ...q, dominantSpecies: detailMap[q._id] } : q,
+    )
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [allQuadrats, detailQueries.map((dq) => dq.dataUpdatedAt).join()])
+
   // Apply client-side geographic + count filters
   const filteredQuadrats = useMemo(
-    () => applyMapFilters(allQuadrats, filters),
-    [allQuadrats, filters],
+    () => applyMapFilters(quadratsWithSpecies, filters),
+    [quadratsWithSpecies, filters],
   )
+
+  // Clumps belonging to the currently filtered quadrats, with species filter applied.
+  // Passed to StatsFilterPanel for clump-level statistics.
+  const displayedClumps = useMemo(() => {
+    const ids = new Set(filteredQuadrats.map((q) => q._id))
+    const byQuadrat = allClumps.filter((c) => ids.has(c.quadratId))
+    return speciesFilter.length > 0
+      ? byQuadrat.filter((c) => speciesFilter.includes(c.scientificName))
+      : byQuadrat
+  }, [allClumps, filteredQuadrats, speciesFilter])
 
   // Choropleth uses filtered counts so the heatmap reflects the active filter
   const countByProvince = useMemo(
@@ -147,17 +204,32 @@ function MapPageContent() {
       <StatsFilterPanel
         allQuadrats={allQuadrats}
         filteredQuadrats={filteredQuadrats}
+        displayedClumps={displayedClumps}
         filters={filters}
         onFiltersChange={handleFiltersChange}
+        speciesFilter={speciesFilter}
+        onSpeciesFilterChange={setSpeciesFilter}
+        dateRange={dateRange}
+        onDateRangeChange={(patch) => setDateRange((d) => ({ ...d, ...patch }))}
         isLoading={isFetching && allQuadrats.length === 0}
         layerFilteredCount={layerFilteredCount}
       />
 
       <BritemapGL
         quadrats={filteredQuadrats}
+        clumps={allClumps}
+        speciesFilter={speciesFilter}
+        dateRange={dateRange}
         quadratCountByProvince={countByProvince}
+        regionsGeoJSON={regionsGeoJSON}
+        provincesGeoJSON={provincesGeoJSON}
+        municipalitiesGeoJSON={municipalitiesGeoJSON}
+        activeRegion={filters.region || undefined}
+        activeProvince={filters.province || undefined}
+        activeMunicipality={filters.municipality || undefined}
         onQuadratClick={handleQuadratClick}
         onVisibleCountChange={setLayerFilteredCount}
+        showLayerPanel={detailUuid === null}
         className="w-full h-full"
       />
 
@@ -180,16 +252,24 @@ function MapPageContent() {
         </div>
       )}
 
+      {/* Quadrat detail drawer — opens in-place, map view is preserved */}
+      {detailUuid && (
+        <QuadratDetailDrawer
+          uuid={detailUuid}
+          onClose={() => setDetailUuid(null)}
+        />
+      )}
+
       {/* Loading indicator */}
       {isFetching && (
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 bg-slate-900/90 border border-slate-700 rounded-full px-4 py-1.5 text-xs text-slate-300">
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 bg-slate-900/90 border border-slate-700 rounded-full px-4 py-1.5 text-xs text-slate-300">
           Loading quadrats… ({allQuadrats.length} loaded)
         </div>
       )}
 
       {/* Selected quadrat panel */}
       {selectedQuadrat && (
-        <div className="absolute bottom-6 left-6 w-72 bg-slate-900/95 border border-slate-700 rounded-xl shadow-2xl p-4">
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-72 z-10 bg-slate-900/95 border border-slate-700 rounded-xl shadow-2xl p-4">
           <button
             onClick={handleCloseQuadrat}
             className="absolute top-3 right-3 text-slate-500 hover:text-white"
@@ -208,19 +288,13 @@ function MapPageContent() {
               <span className="text-slate-400">Photos</span>
               <p className="font-semibold text-white">{selectedQuadrat.photoCount}</p>
             </div>
-            <div>
-              <span className="text-slate-400">Approved</span>
-              <p className="font-semibold text-white text-xs">
-                {new Date(selectedQuadrat.approvedAt).toLocaleDateString()}
-              </p>
-            </div>
           </div>
-          <Link
-            href={`/quadrats/${selectedQuadrat._id}`}
-            className="mt-3 block text-center text-xs py-1.5 rounded-lg bg-emerald-700 hover:bg-emerald-600 text-white transition-colors"
+          <button
+            onClick={() => setDetailUuid(selectedQuadrat._id)}
+            className="mt-3 w-full text-center text-sm py-2 rounded-lg bg-emerald-700 hover:bg-emerald-600 text-white font-medium transition-colors"
           >
             View detail →
-          </Link>
+          </button>
         </div>
       )}
     </div>
