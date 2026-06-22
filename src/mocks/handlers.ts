@@ -68,6 +68,35 @@ export const handlers = [
         { code: '04A',      name: 'CALABARZON',                           type: 'region',       parentCode: null,     regionCode: '04A', hasData: true },
         { code: '1648',     name: 'Laguna',                               type: 'province',     parentCode: '04A',    regionCode: '04A', hasData: true },
         { code: '164807',   name: 'Los Baños',                            type: 'municipality', parentCode: '1648',   regionCode: '04A', hasData: true },
+        // Cagayan Valley — Region II
+        { code: '02',       name: 'Region II (Cagayan Valley)',           type: 'region',       parentCode: null,     regionCode: '02',  hasData: true },
+        { code: '021500000',name: 'Cagayan',                              type: 'province',     parentCode: '02',     regionCode: '02',  hasData: true },
+        { code: '02150600', name: 'Baggao',                               type: 'municipality', parentCode: '021500000', regionCode: '02', hasData: true },
+        { code: '02150800', name: 'Tuguegarao City',                      type: 'municipality', parentCode: '021500000', regionCode: '02', hasData: true },
+        { code: '02150100', name: 'Amulung',                              type: 'municipality', parentCode: '021500000', regionCode: '02', hasData: true },
+        // Tarlac — Region III
+        { code: '03',       name: 'Region III (Central Luzon)',           type: 'region',       parentCode: null,     regionCode: '03',  hasData: true },
+        { code: '031400000',name: 'Tarlac',                               type: 'province',     parentCode: '03',     regionCode: '03',  hasData: true },
+        { code: '03141100', name: 'Mayantoc',                             type: 'municipality', parentCode: '031400000', regionCode: '03', hasData: true },
+        { code: '03140500', name: 'Capas',                                type: 'municipality', parentCode: '031400000', regionCode: '03', hasData: true },
+        { code: '03142200', name: 'San Jose',                             type: 'municipality', parentCode: '031400000', regionCode: '03', hasData: true },
+        // Cavite — Region IV-A
+        { code: '042100000',name: 'Cavite',                               type: 'province',     parentCode: '04A',    regionCode: '04A', hasData: true },
+        { code: '04211100', name: 'Indang',                               type: 'municipality', parentCode: '042100000', regionCode: '04A', hasData: true },
+        { code: '04211300', name: 'Magallanes',                           type: 'municipality', parentCode: '042100000', regionCode: '04A', hasData: true },
+        { code: '04211500', name: 'Maragondon',                           type: 'municipality', parentCode: '042100000', regionCode: '04A', hasData: true },
+        // Palawan — Region IV-B
+        { code: '04B',      name: 'Region IV-B (MIMAROPA)',               type: 'region',       parentCode: null,     regionCode: '04B', hasData: true },
+        { code: '175800000',name: 'Palawan',                              type: 'province',     parentCode: '04B',    regionCode: '04B', hasData: true },
+        { code: '17580800', name: 'El Nido',                              type: 'municipality', parentCode: '175800000', regionCode: '04B', hasData: true },
+        { code: '17581100', name: 'Puerto Princesa City',                 type: 'municipality', parentCode: '175800000', regionCode: '04B', hasData: true },
+        { code: '17582400', name: 'Taytay',                               type: 'municipality', parentCode: '175800000', regionCode: '04B', hasData: true },
+        // Cebu — Region VII
+        { code: '07',       name: 'Region VII (Central Visayas)',         type: 'region',       parentCode: null,     regionCode: '07',  hasData: true },
+        { code: '072200000',name: 'Cebu',                                 type: 'province',     parentCode: '07',     regionCode: '07',  hasData: true },
+        { code: '07222500', name: 'Tuburan',                              type: 'municipality', parentCode: '072200000', regionCode: '07', hasData: true },
+        { code: '07220200', name: 'Balamban',                             type: 'municipality', parentCode: '072200000', regionCode: '07', hasData: true },
+        { code: '07222000', name: 'Pinamungahan',                         type: 'municipality', parentCode: '072200000', regionCode: '07', hasData: true },
       ],
     })
   }),
@@ -92,7 +121,56 @@ export const handlers = [
         { code: '04A',      name: 'CALABARZON',                           type: 'region',       parentCode: null,    regionCode: '04A' },
         { code: '1648',     name: 'Laguna',                               type: 'province',     parentCode: '04A',   regionCode: '04A' },
         { code: '164807',   name: 'Los Baños',                            type: 'municipality', parentCode: '1648',  regionCode: '04A' },
+        // Cagayan Valley — Region II
+        { code: '02',       name: 'Region II (Cagayan Valley)',           type: 'region',       parentCode: null,    regionCode: '02'  },
+        { code: '021500000',name: 'Cagayan',                              type: 'province',     parentCode: '02',    regionCode: '02'  },
+        { code: '02150600', name: 'Baggao',                               type: 'municipality', parentCode: '021500000', regionCode: '02' },
+        { code: '02150800', name: 'Tuguegarao City',                      type: 'municipality', parentCode: '021500000', regionCode: '02' },
+        { code: '02150100', name: 'Amulung',                              type: 'municipality', parentCode: '021500000', regionCode: '02' },
+        // Tarlac — Region III
+        { code: '03',       name: 'Region III (Central Luzon)',           type: 'region',       parentCode: null,    regionCode: '03'  },
+        { code: '031400000',name: 'Tarlac',                               type: 'province',     parentCode: '03',    regionCode: '03'  },
+        { code: '03141100', name: 'Mayantoc',                             type: 'municipality', parentCode: '031400000', regionCode: '03' },
+        { code: '03140500', name: 'Capas',                                type: 'municipality', parentCode: '031400000', regionCode: '03' },
+        { code: '03142200', name: 'San Jose',                             type: 'municipality', parentCode: '031400000', regionCode: '03' },
+        // Cavite — Region IV-A
+        { code: '042100000',name: 'Cavite',                               type: 'province',     parentCode: '04A',   regionCode: '04A' },
+        { code: '04211100', name: 'Indang',                               type: 'municipality', parentCode: '042100000', regionCode: '04A' },
+        { code: '04211300', name: 'Magallanes',                           type: 'municipality', parentCode: '042100000', regionCode: '04A' },
+        { code: '04211500', name: 'Maragondon',                           type: 'municipality', parentCode: '042100000', regionCode: '04A' },
+        // Palawan — Region IV-B
+        { code: '04B',      name: 'Region IV-B (MIMAROPA)',               type: 'region',       parentCode: null,    regionCode: '04B' },
+        { code: '175800000',name: 'Palawan',                              type: 'province',     parentCode: '04B',   regionCode: '04B' },
+        { code: '17580800', name: 'El Nido',                              type: 'municipality', parentCode: '175800000', regionCode: '04B' },
+        { code: '17581100', name: 'Puerto Princesa City',                 type: 'municipality', parentCode: '175800000', regionCode: '04B' },
+        { code: '17582400', name: 'Taytay',                               type: 'municipality', parentCode: '175800000', regionCode: '04B' },
+        // Cebu — Region VII
+        { code: '07',       name: 'Region VII (Central Visayas)',         type: 'region',       parentCode: null,    regionCode: '07'  },
+        { code: '072200000',name: 'Cebu',                                 type: 'province',     parentCode: '07',    regionCode: '07'  },
+        { code: '07222500', name: 'Tuburan',                              type: 'municipality', parentCode: '072200000', regionCode: '07' },
+        { code: '07220200', name: 'Balamban',                             type: 'municipality', parentCode: '072200000', regionCode: '07' },
+        { code: '07222000', name: 'Pinamungahan',                         type: 'municipality', parentCode: '072200000', regionCode: '07' },
       ],
+    })
+  }),
+
+  // ── Public: stats ──────────────────────────────────────────────────────────
+
+  http.get('*/api/v1/public/stats', async () => {
+    await delay(DELAY)
+    const species = new Set<string>()
+    Object.values(PUBLIC_QUADRAT_DETAIL).forEach((d) => {
+      d.speciesSummary.forEach((s) => species.add(s.scientificName))
+    })
+    const regions = new Set(PUBLIC_QUADRATS.map((q) => q.regionCode))
+    const provinces = new Set(PUBLIC_QUADRATS.map((q) => q.provinceCode))
+    return HttpResponse.json({
+      quadratCount: PUBLIC_QUADRATS.length,
+      clumpCount: Object.values(PUBLIC_QUADRAT_DETAIL).reduce((n, d) => n + d.clumps.length, 0),
+      speciesCount: species.size,
+      regionCount: regions.size,
+      provinceCount: provinces.size,
+      serverTimestamp: Date.now(),
     })
   }),
 

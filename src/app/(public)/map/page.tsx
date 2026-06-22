@@ -18,6 +18,9 @@ import {
 import { useAuth } from '@/lib/auth-context'
 import { getSpeciesColor } from '@/components/map/deck-layers'
 
+import type { BritemapGLHandle } from '@/components/map/BritemapGL'
+import { exportMapPDF } from '@/components/map/exportPDF'
+
 // BritemapGL uses MapLibre/WebGL — must be client-only, no SSR
 const BritemapGL = dynamic(
   () => import('@/components/map/BritemapGL').then((m) => m.BritemapGL),
@@ -57,6 +60,8 @@ function MapPageContent() {
   const [speciesFilter, setSpeciesFilter] = useState<string[]>([])
   const [dateRange, setDateRange] = useState<DateRange>({ from: null, to: null })
   const [layerFilteredCount, setLayerFilteredCount] = useState<number | undefined>(undefined)
+  const [exporting, setExporting] = useState(false)
+  const britemapRef = useRef<BritemapGLHandle>(null)
 
   // Read initial quadrat UUID from URL once on mount
   const [initialQuadratId] = useState(() => searchParams.get('quadrat'))
@@ -92,6 +97,7 @@ function MapPageContent() {
   const { data: regionsGeoJSON }       = useQuery({ queryKey: ['geodata-regions'],       queryFn: () => fetchGeoJSON('/geodata/regions.geojson'),       staleTime: Infinity })
   const { data: provincesGeoJSON }     = useQuery({ queryKey: ['geodata-provinces'],     queryFn: () => fetchGeoJSON('/geodata/provinces.geojson'),     staleTime: Infinity })
   const { data: municipalitiesGeoJSON }= useQuery({ queryKey: ['geodata-municipalities'],queryFn: () => fetchGeoJSON('/geodata/municipalities.geojson'), staleTime: Infinity })
+  const { data: tarlacExtentGeoJSON }  = useQuery({ queryKey: ['geodata-tarlac-extent'], queryFn: () => fetchGeoJSON('/geodata/tarlac-extent.geojson'),  staleTime: Infinity })
 
   // Fetch all public quadrats (paginate to completion for map display)
   const { data, fetchNextPage, hasNextPage, isFetching } = useInfiniteQuery({
@@ -234,6 +240,16 @@ function MapPageContent() {
     [filteredQuadrats],
   )
 
+  const handleExport = useCallback(async () => {
+    setExporting(true)
+    try {
+      const mapImage = britemapRef.current?.getMapImage() ?? null
+      await exportMapPDF({ mapImage, filteredQuadrats, displayedClumps, filters, speciesFilter })
+    } finally {
+      setExporting(false)
+    }
+  }, [filteredQuadrats, displayedClumps, filters, speciesFilter])
+
   return (
     <div className="relative w-full h-screen bg-slate-950">
       {/* Brand badge + back nav — sits directly above the Survey data panel */}
@@ -276,6 +292,7 @@ function MapPageContent() {
       />
 
       <BritemapGL
+        ref={britemapRef}
         quadrats={filteredQuadrats}
         clumps={allClumps}
         speciesFilter={speciesFilter}
@@ -284,9 +301,7 @@ function MapPageContent() {
         regionsGeoJSON={regionsGeoJSON}
         provincesGeoJSON={provincesGeoJSON}
         municipalitiesGeoJSON={municipalitiesGeoJSON}
-        activeRegion={filters.region || undefined}
-        activeProvince={filters.province || undefined}
-        activeMunicipality={filters.municipality || undefined}
+        extentGeoJSON={tarlacExtentGeoJSON}
         onQuadratClick={handleQuadratClick}
         onVisibleCountChange={setLayerFilteredCount}
         flyToTarget={selectedQuadrat?.latitude != null ? { latitude: selectedQuadrat.latitude!, longitude: selectedQuadrat.longitude! } : undefined}
@@ -296,6 +311,32 @@ function MapPageContent() {
         speciesCount={speciesCount}
         className="w-full h-full"
       />
+
+      {/* PDF export button — bottom-left, above scale control */}
+      <button
+        onClick={handleExport}
+        disabled={exporting}
+        title="Export current view as PDF"
+        className="absolute bottom-8 left-4 z-10 flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-slate-900/90 border border-slate-700 text-slate-400 hover:text-white hover:border-slate-500 text-[11px] font-medium shadow-lg backdrop-blur-sm transition-all disabled:opacity-40 disabled:cursor-wait select-none"
+      >
+        <svg className="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 16 16">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M8 2v8m0 0-3-3m3 3 3-3M3 12h10" />
+        </svg>
+        PDF
+      </button>
+
+      {/* Export loading overlay */}
+      {exporting && (
+        <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-slate-950/80 backdrop-blur-sm">
+          <div className="flex flex-col items-center gap-4 bg-slate-900/95 border border-slate-700 rounded-2xl px-10 py-8 shadow-2xl">
+            <div className="w-10 h-10 rounded-full border-2 border-slate-700 border-t-emerald-500 animate-spin" />
+            <div className="text-center">
+              <p className="text-white text-sm font-semibold">Generating PDF</p>
+              <p className="text-slate-500 text-xs mt-1">Building map export…</p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Empty state — shown when filters exclude all loaded quadrats */}
       {!isFetching && allQuadrats.length > 0 && filteredQuadrats.length === 0 && (

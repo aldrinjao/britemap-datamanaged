@@ -23,6 +23,7 @@ export interface LayerState {
     bamboDistOpacity: number
     droneId: string | null
     droneOpacity: number
+    surveyExtent: boolean
   }
 }
 
@@ -39,6 +40,7 @@ type LayerAction =
   | { type: 'SET_BAMBOO_DIST_OPACITY'; payload: number }
   | { type: 'SET_DRONE_ID'; payload: string | null }
   | { type: 'SET_DRONE_OPACITY'; payload: number }
+  | { type: 'TOGGLE_SURVEY_EXTENT' }
 
 const initialState: LayerState = {
   basemap: 'streets',
@@ -60,6 +62,7 @@ const initialState: LayerState = {
     bamboDistOpacity: 0.65,
     droneId: null,
     droneOpacity: 0.9,
+    surveyExtent: true,
   },
 }
 
@@ -89,6 +92,8 @@ function reducer(state: LayerState, action: LayerAction): LayerState {
       return { ...state, overlays: { ...state.overlays, droneId: action.payload } }
     case 'SET_DRONE_OPACITY':
       return { ...state, overlays: { ...state.overlays, droneOpacity: action.payload } }
+    case 'TOGGLE_SURVEY_EXTENT':
+      return { ...state, overlays: { ...state.overlays, surveyExtent: !state.overlays.surveyExtent } }
     default:
       return state
   }
@@ -111,5 +116,6 @@ export function useMapLayers() {
     setBamboDistOpacity: (v: number)             => dispatch({ type: 'SET_BAMBOO_DIST_OPACITY', payload: v }),
     setDroneId:          (v: string | null)      => dispatch({ type: 'SET_DRONE_ID', payload: v }),
     setDroneOpacity:     (v: number)             => dispatch({ type: 'SET_DRONE_OPACITY', payload: v }),
+    toggleSurveyExtent:  ()                      => dispatch({ type: 'TOGGLE_SURVEY_EXTENT' }),
   }
 }

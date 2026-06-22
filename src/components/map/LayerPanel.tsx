@@ -19,6 +19,7 @@ interface LayerPanelProps {
   onSetBamboDistOpacity: (v: number) => void
   onSetDroneId: (id: string | null) => void
   onSetDroneOpacity: (v: number) => void
+  onToggleSurveyExtent: () => void
 }
 
 type Tab = 'map' | 'boundaries' | 'data' | 'overlays'
@@ -89,6 +90,7 @@ export function LayerPanel({
   onSetBamboDistOpacity,
   onSetDroneId,
   onSetDroneOpacity,
+  onToggleSurveyExtent,
 }: LayerPanelProps) {
   const [open, setOpen] = useState(true)
   const [tab, setTab] = useState<Tab>('map')
@@ -209,6 +211,12 @@ export function LayerPanel({
 
             {tab === 'overlays' && (
               <>
+                {/* Survey extent */}
+                <div className="space-y-2">
+                  <p className="text-xs text-slate-500">Survey extent</p>
+                  <Toggle label="Tarlac (Y1)" checked={layers.overlays.surveyExtent} onChange={onToggleSurveyExtent} />
+                </div>
+
                 {/* Bamboo distribution */}
                 <div className="space-y-2">
                   <p className="text-xs text-slate-500">Bamboo distribution</p>

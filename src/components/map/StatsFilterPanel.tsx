@@ -110,7 +110,7 @@ export function StatsFilterPanel({
 }: StatsFilterPanelProps) {
   const [open, setOpen]           = useState(true)
   const [tab, setTab]             = useState<Tab>('stats')
-  const [showAllSpecies, setShowAllSpecies] = useState(false)
+  const [speciesOpen, setSpeciesOpen]       = useState(true)
   const [speciesSearch, setSpeciesSearch]   = useState('')
 
   const set = (patch: Partial<MapFilters>) => onFiltersChange({ ...filters, ...patch })
@@ -334,86 +334,6 @@ export function StatsFilterPanel({
                         </div>
                       </div>
                     )}
-
-                    {/* Species distribution */}
-                    {stats.speciesList.length > 0 && (
-                      <div className="space-y-1.5">
-                        <SectionLabel>Species distribution</SectionLabel>
-                        <div className="space-y-1.5">
-                          {(showAllSpecies ? stats.speciesList : stats.speciesList.slice(0, 8)).map(({ name, count, pct, avgDiam }) => {
-                            const [r, g, b] = getSpeciesColor(name)
-                            return (
-                              <div key={name}>
-                                <div className="flex items-center justify-between mb-0.5 gap-1">
-                                  <div className="flex items-center gap-1.5 min-w-0">
-                                    <span
-                                      className="w-2 h-2 rounded-sm flex-shrink-0"
-                                      style={{ backgroundColor: `rgb(${r},${g},${b})` }}
-                                    />
-                                    <span className="text-xs text-slate-300 italic truncate" title={name}>{name}</span>
-                                  </div>
-                                  <span className="text-xs text-slate-400 flex-shrink-0">
-                                    {count} <span className="text-slate-600">({fmt(pct, 0)}%)</span>
-                                  </span>
-                                </div>
-                                <div className="h-1.5 bg-slate-700 rounded-full overflow-hidden">
-                                  <div
-                                    className="h-full rounded-full"
-                                    style={{
-                                      width: `${(count / stats.maxSpeciesCount) * 100}%`,
-                                      backgroundColor: `rgb(${r},${g},${b})`,
-                                    }}
-                                  />
-                                </div>
-                                {avgDiam != null && (
-                                  <p className="text-right text-slate-600 mt-0.5" style={{ fontSize: '10px' }}>
-                                    avg ⌀ {fmt(avgDiam)} cm
-                                  </p>
-                                )}
-                              </div>
-                            )
-                          })}
-                        </div>
-                        {stats.speciesList.length > 8 && (
-                          <button
-                            onClick={() => setShowAllSpecies((v) => !v)}
-                            className="text-xs text-slate-500 hover:text-slate-300 w-full text-center"
-                          >
-                            {showAllSpecies
-                              ? '↑ show less'
-                              : `+ ${stats.speciesList.length - 8} more species`}
-                          </button>
-                        )}
-                      </div>
-                    )}
-
-                    {/* Geographic coverage */}
-                    <div className="space-y-1.5">
-                      <SectionLabel>Coverage</SectionLabel>
-                      <div className="space-y-1">
-                        <Row label="Regions"       value={stats.regions} />
-                        <Row label="Provinces"     value={stats.provinces} />
-                        <Row label="Municipalities" value={stats.munis} />
-                        <Row label="Barangays"     value={stats.barangays} />
-                      </div>
-                    </div>
-
-                    {/* Survey period */}
-                    {stats.earliest && stats.latest && (
-                      <div className="space-y-1.5">
-                        <SectionLabel>Survey period</SectionLabel>
-                        <div className="space-y-1">
-                          <Row
-                            label="From"
-                            value={new Date(stats.earliest).toLocaleDateString('en-PH', { month: 'short', day: 'numeric', year: 'numeric' })}
-                          />
-                          <Row
-                            label="To"
-                            value={new Date(stats.latest).toLocaleDateString('en-PH', { month: 'short', day: 'numeric', year: 'numeric' })}
-                          />
-                        </div>
-                      </div>
-                    )}
                   </>
                 )}
               </>
@@ -590,6 +510,100 @@ export function StatsFilterPanel({
                     Clear all filters
                   </button>
                 )}
+              </>
+            )}
+
+            {/* ── Always-visible: species distribution, coverage, survey period ── */}
+            {!isLoading && stats && (
+              <>
+                <div className="border-t border-slate-700/60 pt-3 space-y-4">
+
+                  {/* Geographic coverage */}
+                  <div className="space-y-1.5">
+                    <SectionLabel>Coverage</SectionLabel>
+                    <div className="space-y-1">
+                      <Row label="Regions"        value={stats.regions} />
+                      <Row label="Provinces"      value={stats.provinces} />
+                      <Row label="Municipalities" value={stats.munis} />
+                      <Row label="Barangays"      value={stats.barangays} />
+                    </div>
+                  </div>
+
+                  {/* Survey period */}
+                  {stats.earliest && stats.latest && (
+                    <div className="space-y-1.5">
+                      <SectionLabel>Survey period</SectionLabel>
+                      <div className="space-y-1">
+                        <Row
+                          label="From"
+                          value={new Date(stats.earliest).toLocaleDateString('en-PH', { month: 'short', day: 'numeric', year: 'numeric' })}
+                        />
+                        <Row
+                          label="To"
+                          value={new Date(stats.latest).toLocaleDateString('en-PH', { month: 'short', day: 'numeric', year: 'numeric' })}
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Species distribution */}
+                  {stats.speciesList.length > 0 && (
+                    <div className="space-y-1.5">
+                      <button
+                        onClick={() => setSpeciesOpen((v) => !v)}
+                        className="flex items-center justify-between w-full group"
+                      >
+                        <SectionLabel>Species distribution</SectionLabel>
+                        <span className="text-slate-600 group-hover:text-slate-400 text-xs leading-none">
+                          {speciesOpen ? '▲' : '▼'}
+                        </span>
+                      </button>
+                      {speciesOpen && <div className="relative">
+                        <div className="space-y-1.5 max-h-48 overflow-y-auto pr-0.5">
+                          {stats.speciesList.map(({ name, count, pct, avgDiam }) => {
+                            const [r, g, b] = getSpeciesColor(name)
+                            return (
+                              <div key={name}>
+                                <div className="flex items-center justify-between mb-0.5 gap-1">
+                                  <div className="flex items-center gap-1.5 min-w-0">
+                                    <span
+                                      className="w-2 h-2 rounded-sm flex-shrink-0"
+                                      style={{ backgroundColor: `rgb(${r},${g},${b})` }}
+                                    />
+                                    <span className="text-xs text-slate-300 italic truncate" title={name}>{name}</span>
+                                  </div>
+                                  <span className="text-xs text-slate-400 flex-shrink-0">
+                                    {count} <span className="text-slate-600">({fmt(pct, 0)}%)</span>
+                                  </span>
+                                </div>
+                                <div className="h-1.5 bg-slate-700 rounded-full overflow-hidden">
+                                  <div
+                                    className="h-full rounded-full"
+                                    style={{
+                                      width: `${(count / stats.maxSpeciesCount) * 100}%`,
+                                      backgroundColor: `rgb(${r},${g},${b})`,
+                                    }}
+                                  />
+                                </div>
+                                {avgDiam != null && (
+                                  <p className="text-right text-slate-600 mt-0.5" style={{ fontSize: '10px' }}>
+                                    avg ⌀ {fmt(avgDiam)} cm
+                                  </p>
+                                )}
+                              </div>
+                            )
+                          })}
+                        </div>
+                        {stats.speciesList.length > 4 && (
+                          <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-7 bg-gradient-to-t from-slate-900/95 to-transparent flex items-end justify-center pb-0.5">
+                            <span className="text-[10px] text-slate-500">↕ scroll</span>
+                          </div>
+                        )}
+                      </div>}
+                    </div>
+                  )}
+
+                </div>
               </>
             )}
 

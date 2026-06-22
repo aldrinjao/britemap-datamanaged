@@ -1,6 +1,8 @@
 'use client'
 
 import Link from 'next/link'
+import { useQuery } from '@tanstack/react-query'
+import { publicApi } from '@/lib/api'
 
 // ─── Nav ──────────────────────────────────────────────────────────────────────
 
@@ -86,6 +88,42 @@ function ProjectImage({ src, alt, className = '' }: { src: string; alt: string; 
         className="w-full h-full object-cover"
         onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
       />
+    </div>
+  )
+}
+
+// ─── Stats strip ─────────────────────────────────────────────────────────────
+
+function StatCell({ value, label }: { value: string | number | undefined; label: string }) {
+  return (
+    <div>
+      <p className="text-3xl font-extrabold text-emerald-300 leading-none tabular-nums">
+        {value === undefined ? (
+          <span className="inline-block w-16 h-8 rounded bg-emerald-700/60 animate-pulse align-bottom" />
+        ) : (
+          value
+        )}
+      </p>
+      <p className="mt-1 text-sm text-emerald-100 font-medium">{label}</p>
+    </div>
+  )
+}
+
+function StatsStrip() {
+  const { data } = useQuery({
+    queryKey: ['public-stats'],
+    queryFn: publicApi.stats,
+    staleTime: 5 * 60_000,
+  })
+
+  return (
+    <div className="bg-emerald-800 text-white">
+      <div className="max-w-6xl mx-auto px-6 py-8 grid grid-cols-2 sm:grid-cols-4 gap-6 text-center">
+        <StatCell value={data?.quadratCount} label="Quadrats Surveyed" />
+        <StatCell value={data?.clumpCount?.toLocaleString()} label="Bamboo Clumps" />
+        <StatCell value={data?.speciesCount} label="Bamboo Species" />
+        <StatCell value={data?.regionCount} label="Regions Covered" />
+      </div>
     </div>
   )
 }
@@ -180,21 +218,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── Stats strip ── */}
-      <div className="bg-emerald-800 text-white">
-        <div className="max-w-6xl mx-auto px-6 py-8 grid grid-cols-2 sm:grid-cols-4 gap-6 text-center">
-          {[
-            { value: '60+',  label: 'Quadrats Surveyed' },
-            { value: '9',    label: 'Bamboo Species' },
-            { value: '11',   label: 'Regions Covered' },
-            { value: '3',    label: 'Project Components' },
-          ].map(({ value, label }) => (
-            <div key={label}>
-              <p className="text-3xl font-extrabold text-emerald-300 leading-none">{value}</p>
-              <p className="mt-1 text-sm text-emerald-100 font-medium">{label}</p>
-            </div>
-          ))}
-        </div>
-      </div>
+      <StatsStrip />
 
       {/* ── About ── */}
       <Section id="about" className="bg-slate-50">

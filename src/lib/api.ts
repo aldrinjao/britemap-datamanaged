@@ -141,7 +141,18 @@ export interface PublicQuadratFilters {
   cursor?: string
 }
 
+export interface PublicStats {
+  quadratCount: number
+  clumpCount: number
+  speciesCount: number
+  regionCount: number
+  provinceCount: number
+  serverTimestamp: number
+}
+
 export const publicApi = {
+  stats: () => apiFetch<PublicStats>('/public/stats'),
+
   listQuadrats: (filters: PublicQuadratFilters = {}) => {
     const params = new URLSearchParams()
     if (filters.provinceCode) params.set('provinceCode', filters.provinceCode)

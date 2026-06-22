@@ -7,6 +7,8 @@ import type {
   BatchRun,
   PublicClump,
 } from '@/lib/types'
+import { CAGAYAN_QUADRATS, CAGAYAN_QUADRAT_DETAIL } from './data-cagayan'
+import { Y1_QUADRATS, Y1_QUADRAT_DETAIL } from './data-y1'
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -163,6 +165,10 @@ export const PUBLIC_QUADRATS: PublicQuadrat[] = [
   { _id: uid(3029), serverId: 3029, regionCode: '14', region: 'CAR (Cordillera Administrative Region)', provinceCode: '1400100000', province: 'Abra', municipalityCode: 'ABR_SAL', municipality: 'Sallapadan', barangayCode: 'ABR_SAL_BILABILA', barangay: 'Bilabila', latitude: 17.497663, longitude: 120.758489, clumpCount: 13, photoCount: 0, approvedAt: 1733414400000 },
   // Demo quadrat with placeholder photos — Los Baños, Laguna (near UPLB)
   { _id: uid(4000), serverId: 4000, regionCode: '04A', region: 'CALABARZON', provinceCode: '1648000000', province: 'Laguna', municipalityCode: 'LAG_LB', municipality: 'Los Baños', barangayCode: 'LAG_LB_TADLAC', barangay: 'Tadlac', latitude: 14.1684, longitude: 121.2391, clumpCount: 4, photoCount: 3, approvedAt: daysAgo(14) },
+  // Cagayan Valley — Region II
+  ...CAGAYAN_QUADRATS,
+  // Multi-province Year 1 data — Tarlac, Cavite, Palawan, Abra (Y1), Cebu
+  ...Y1_QUADRATS,
 
 ]
 
@@ -1567,6 +1573,11 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
       { _id: uid(7003), quadratId: uid(4000), scientificName: 'Bambusa spinosa',  commonName: 'Kawayan Tinik',  culmCount: 65,  averageDiameterCm: 6.0, averageHeightMeters: 12.0, approvedAt: daysAgo(14), azimuth: 315, distanceMeters: 14, photos: [] },
     ],
   },
+
+  // Cagayan Valley — Region II
+  ...CAGAYAN_QUADRAT_DETAIL,
+  // Multi-province Year 1 data
+  ...Y1_QUADRAT_DETAIL,
 
 }
 

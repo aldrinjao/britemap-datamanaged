@@ -184,6 +184,14 @@ export interface ProvinceFeature {
   geometry: { type: string; coordinates: unknown }
 }
 
+// Provinces deliberately excluded from the choropleth highlight (geojson PSGC).
+// Rendered as no-data so they blend in with the rest of the country.
+const PROVINCE_FILL_EXCLUDED = new Set<string>([
+  '501700000', // Camarines Sur
+  '306900000', // Tarlac
+  '1400100000', // Abra
+])
+
 export function makeProvinceFillLayer(
   geojson: { type: 'FeatureCollection'; features: ProvinceFeature[] },
   opacity: number,
@@ -197,7 +205,9 @@ export function makeProvinceFillLayer(
     filled: true,
     stroked: true,
     getFillColor: (f) => {
-      const count = quadratCountByProvince[f.properties.PSGC] ?? 0
+      const count = PROVINCE_FILL_EXCLUDED.has(f.properties.PSGC)
+        ? 0
+        : quadratCountByProvince[f.properties.PSGC] ?? 0
       const t = count / maxCount
       return [
         Math.round(255 - t * 180),
@@ -292,4 +302,19 @@ export function makeMunicipalityHighlightLayer(
   const features = (geojson.features as { properties: Record<string, unknown> }[])
     .filter((f) => String(f.properties.adm3_en).toLowerCase().includes(lower))
   return highlightLayer('municipality-highlight', features, 60)
+}
+
+export function makeSurveyExtentLayer(
+  geojson: { type: 'FeatureCollection'; features: unknown[] },
+): Layer {
+  return new GeoJsonLayer({
+    id: 'survey-extent',
+    data: geojson as unknown as FeatureCollection,
+    filled: true,
+    stroked: true,
+    getFillColor: [245, 158, 11, 20],
+    getLineColor: [245, 158, 11, 220],
+    getLineWidth: 2,
+    lineWidthMinPixels: 1.5,
+  })
 }

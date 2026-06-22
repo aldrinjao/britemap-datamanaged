@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
 import Map, { NavigationControl, ScaleControl, Source, Layer as MapLayer, type MapRef } from 'react-map-gl/maplibre'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import type { Layer } from '@deck.gl/core'
@@ -16,9 +16,8 @@ import {
   makeProvinceFillLayer,
   makeRegionOutlineLayer,
   makeMunicipalityOutlineLayer,
-  makeRegionHighlightLayer,
-  makeProvinceHighlightLayer,
-  makeMunicipalityHighlightLayer,
+
+  makeSurveyExtentLayer,
   getSpeciesColor,
 } from './deck-layers'
 import type { PublicClump, PublicQuadrat } from '@/lib/types'
@@ -87,6 +86,10 @@ function MapTooltip({ info }: { info: TooltipInfo }) {
 
 // ─── Main component ───────────────────────────────────────────────────────────
 
+export interface BritemapGLHandle {
+  getMapImage: () => string | null
+}
+
 export interface BritemapGLProps {
   quadrats: PublicQuadrat[]
   clumps?: PublicClump[]
@@ -96,9 +99,7 @@ export interface BritemapGLProps {
   provincesGeoJSON?: { type: 'FeatureCollection'; features: unknown[] }
   regionsGeoJSON?: { type: 'FeatureCollection'; features: unknown[] }
   municipalitiesGeoJSON?: { type: 'FeatureCollection'; features: unknown[] }
-  activeRegion?: string
-  activeProvince?: string
-  activeMunicipality?: string
+  extentGeoJSON?: { type: 'FeatureCollection'; features: unknown[] }
   onQuadratClick?: (quadrat: PublicQuadrat) => void
   onVisibleCountChange?: (count: number) => void
   flyToTarget?: { latitude: number; longitude: number }
@@ -109,7 +110,7 @@ export interface BritemapGLProps {
   className?: string
 }
 
-export function BritemapGL({
+export const BritemapGL = forwardRef<BritemapGLHandle, BritemapGLProps>(function BritemapGL({
   quadrats,
   clumps = [],
   speciesFilter = [],
@@ -118,9 +119,7 @@ export function BritemapGL({
   provincesGeoJSON,
   regionsGeoJSON,
   municipalitiesGeoJSON,
-  activeRegion,
-  activeProvince,
-  activeMunicipality,
+  extentGeoJSON,
   onQuadratClick,
   onVisibleCountChange,
   flyToTarget,
@@ -129,11 +128,15 @@ export function BritemapGL({
   speciesCommonName = {},
   speciesCount = {},
   className = 'w-full h-full',
-}: BritemapGLProps) {
+}: BritemapGLProps, ref) {
   const { layers, ...actions } = useMapLayers()
   const [tooltip, setTooltip] = useState<TooltipInfo | null>(null)
   const [zoom, setZoom] = useState(5.5)
   const mapRef = useRef<MapRef | null>(null)
+
+  useImperativeHandle(ref, () => ({
+    getMapImage: () => mapRef.current?.getCanvas()?.toDataURL('image/png') ?? null,
+  }))
 
   useEffect(() => {
     if (!flyToTarget || !mapRef.current) return
@@ -198,22 +201,16 @@ export function BritemapGL({
         makeProvinceFillLayer(provincesGeoJSON as any, layers.provincesOpacity, quadratCountByProvince),
       )
     }
+    if (layers.overlays.surveyExtent && extentGeoJSON) {
+      result.push(makeSurveyExtentLayer(extentGeoJSON))
+    }
     if (layers.boundaries.regions && regionsGeoJSON) {
       result.push(makeRegionOutlineLayer(regionsGeoJSON as { type: 'FeatureCollection'; features: unknown[] }))
     }
     if (layers.boundaries.municipalities && municipalitiesGeoJSON) {
       result.push(makeMunicipalityOutlineLayer(municipalitiesGeoJSON as { type: 'FeatureCollection'; features: unknown[] }))
     }
-    // Active-filter highlights — always shown when a filter is set, regardless of layer toggles
-    if (activeRegion && regionsGeoJSON) {
-      result.push(makeRegionHighlightLayer(regionsGeoJSON as { type: 'FeatureCollection'; features: unknown[] }, activeRegion))
-    }
-    if (activeProvince && provincesGeoJSON) {
-      result.push(makeProvinceHighlightLayer(provincesGeoJSON as { type: 'FeatureCollection'; features: unknown[] }, activeProvince))
-    }
-    if (activeMunicipality && municipalitiesGeoJSON) {
-      result.push(makeMunicipalityHighlightLayer(municipalitiesGeoJSON as { type: 'FeatureCollection'; features: unknown[] }, activeMunicipality))
-    }
+
     if (layers.data.heatmap) {
       result.push(makeHeatmapLayer(filteredClumps))
     }
@@ -246,10 +243,8 @@ export function BritemapGL({
     provincesGeoJSON,
     regionsGeoJSON,
     municipalitiesGeoJSON,
+    extentGeoJSON,
     quadratCountByProvince,
-    activeRegion,
-    activeProvince,
-    activeMunicipality,
     handleHover,
     handleClick,
   ])
@@ -266,6 +261,7 @@ export function BritemapGL({
         attributionControl={false}
         minZoom={5}
         onMove={handleMove}
+        preserveDrawingBuffer
       >
         <NavigationControl position="bottom-right" />
         <ScaleControl position="bottom-left" />
@@ -359,32 +355,40 @@ export function BritemapGL({
             onSetBamboDistOpacity={actions.setBamboDistOpacity}
             onSetDroneId={actions.setDroneId}
             onSetDroneOpacity={actions.setDroneOpacity}
+            onToggleSurveyExtent={actions.toggleSurveyExtent}
           />
           {visibleSpecies.length > 0 && (
             <div className="w-56 bg-slate-900/95 backdrop-blur-sm border border-slate-700 rounded-lg shadow-xl px-3 py-2">
               <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Species</p>
-              <div className="space-y-1.5 max-h-60 overflow-y-auto">
-                {visibleSpecies.map((name) => {
-                  const [r, g, b] = getSpeciesColor(name)
-                  const common = speciesCommonName[name]
-                  return (
-                    <div key={name} className="flex items-start gap-1.5">
-                      <span
-                        className="w-2.5 h-2.5 rounded-sm flex-shrink-0 mt-0.5"
-                        style={{ backgroundColor: `rgb(${r},${g},${b})` }}
-                      />
-                      <div className="min-w-0 flex-1">
-                        <p className="text-xs italic text-slate-300 truncate leading-tight" title={name}>{name}</p>
-                        {common && <p className="text-xs text-slate-500 truncate leading-tight">{common}</p>}
+              <div className="relative">
+                <div className="space-y-1.5 max-h-80 overflow-y-auto pr-0.5" id="species-legend-scroll">
+                  {visibleSpecies.map((name) => {
+                    const [r, g, b] = getSpeciesColor(name)
+                    const common = speciesCommonName[name]
+                    return (
+                      <div key={name} className="flex items-start gap-1.5">
+                        <span
+                          className="w-2.5 h-2.5 rounded-sm flex-shrink-0 mt-0.5"
+                          style={{ backgroundColor: `rgb(${r},${g},${b})` }}
+                        />
+                        <div className="min-w-0 flex-1">
+                          <p className="text-xs italic text-slate-300 truncate leading-tight" title={name}>{name}</p>
+                          {common && <p className="text-xs text-slate-500 truncate leading-tight">{common}</p>}
+                        </div>
+                        {speciesCount[name] != null && (
+                          <span className="flex-shrink-0 text-[10px] font-medium text-slate-400 bg-slate-800 rounded px-1 py-0.5 leading-none mt-0.5">
+                            {speciesCount[name]}
+                          </span>
+                        )}
                       </div>
-                      {speciesCount[name] != null && (
-                        <span className="flex-shrink-0 text-[10px] font-medium text-slate-400 bg-slate-800 rounded px-1 py-0.5 leading-none mt-0.5">
-                          {speciesCount[name]}
-                        </span>
-                      )}
-                    </div>
-                  )
-                })}
+                    )
+                  })}
+                </div>
+                {visibleSpecies.length > 6 && (
+                  <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-slate-900/95 to-transparent rounded-b flex items-end justify-center pb-0.5">
+                    <span className="text-[10px] text-slate-500">↕ scroll</span>
+                  </div>
+                )}
               </div>
             </div>
           )}
@@ -394,4 +398,4 @@ export function BritemapGL({
       {tooltip && <MapTooltip info={tooltip} />}
     </div>
   )
-}
+})
