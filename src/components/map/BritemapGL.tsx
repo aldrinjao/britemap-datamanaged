@@ -18,10 +18,13 @@ import {
   makeMunicipalityOutlineLayer,
 
   makeSurveyExtentLayer,
+  makeDroneVideoLayer,
   getSpeciesColor,
 } from './deck-layers'
 import type { PublicClump, PublicQuadrat } from '@/lib/types'
 import type { DateRange } from './StatsFilterPanel'
+import { mapVideos, type DroneVideo } from '@/components/video/drone-videos'
+import { VideoLightbox } from '@/components/video/VideoLightbox'
 
 // ─── Basemap style URLs ───────────────────────────────────────────────────────
 
@@ -132,7 +135,11 @@ export const BritemapGL = forwardRef<BritemapGLHandle, BritemapGLProps>(function
   const { layers, ...actions } = useMapLayers()
   const [tooltip, setTooltip] = useState<TooltipInfo | null>(null)
   const [zoom, setZoom] = useState(5.5)
+  const [activeVideo, setActiveVideo] = useState<DroneVideo | null>(null)
   const mapRef = useRef<MapRef | null>(null)
+
+  // Geolocated, uploaded videos — static config, computed once
+  const videoMarkers = useMemo(() => mapVideos(), [])
 
   useImperativeHandle(ref, () => ({
     getMapImage: () => mapRef.current?.getCanvas()?.toDataURL('image/png') ?? null,
@@ -234,6 +241,11 @@ export const BritemapGL = forwardRef<BritemapGLHandle, BritemapGLProps>(function
       }
     }
 
+    // Drone video markers — always on top so the ▶ pins stay clickable
+    if (layers.overlays.droneVideos && videoMarkers.length > 0) {
+      result.push(makeDroneVideoLayer(videoMarkers, setActiveVideo))
+    }
+
     return result
   }, [
     layers,
@@ -247,6 +259,7 @@ export const BritemapGL = forwardRef<BritemapGLHandle, BritemapGLProps>(function
     quadratCountByProvince,
     handleHover,
     handleClick,
+    videoMarkers,
   ])
 
   const mapStyle = layers.basemap === 'streets' ? MAP_STYLES.streets : MAP_STYLES.satellite
@@ -355,6 +368,7 @@ export const BritemapGL = forwardRef<BritemapGLHandle, BritemapGLProps>(function
             onSetBamboDistOpacity={actions.setBamboDistOpacity}
             onSetDroneId={actions.setDroneId}
             onSetDroneOpacity={actions.setDroneOpacity}
+            onToggleDroneVideos={actions.toggleDroneVideos}
             onToggleSurveyExtent={actions.toggleSurveyExtent}
           />
           {visibleSpecies.length > 0 && (
@@ -396,6 +410,9 @@ export const BritemapGL = forwardRef<BritemapGLHandle, BritemapGLProps>(function
       )}
 
       {tooltip && <MapTooltip info={tooltip} />}
+
+      {/* Drone video player — opens when a ▶ marker is clicked */}
+      <VideoLightbox video={activeVideo} onClose={() => setActiveVideo(null)} />
     </div>
   )
 })

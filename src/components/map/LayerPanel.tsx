@@ -4,6 +4,7 @@ import { useState } from 'react'
 import clsx from 'clsx'
 import type { LayerState, BasemapStyle, ClumpSizeMetric } from './use-map-layers'
 import { BAMBOO_DIST_TILES, DRONE_FLIGHTS } from './overlay-config'
+import { mapVideos } from '@/components/video/drone-videos'
 
 interface LayerPanelProps {
   layers: LayerState
@@ -19,6 +20,7 @@ interface LayerPanelProps {
   onSetBamboDistOpacity: (v: number) => void
   onSetDroneId: (id: string | null) => void
   onSetDroneOpacity: (v: number) => void
+  onToggleDroneVideos: () => void
   onToggleSurveyExtent: () => void
 }
 
@@ -90,6 +92,7 @@ export function LayerPanel({
   onSetBamboDistOpacity,
   onSetDroneId,
   onSetDroneOpacity,
+  onToggleDroneVideos,
   onToggleSurveyExtent,
 }: LayerPanelProps) {
   const [open, setOpen] = useState(true)
@@ -97,6 +100,7 @@ export function LayerPanel({
 
   const bambooReady = BAMBOO_DIST_TILES !== ''
   const availableDroneFlights = DRONE_FLIGHTS.filter((f) => f.tiles !== '')
+  const videoCount = mapVideos().length
 
   const tabs: { id: Tab; label: string }[] = [
     { id: 'map',        label: 'Map'      },
@@ -215,6 +219,22 @@ export function LayerPanel({
                 <div className="space-y-2">
                   <p className="text-xs text-slate-500">Survey extent</p>
                   <Toggle label="Tarlac (Y1)" checked={layers.overlays.surveyExtent} onChange={onToggleSurveyExtent} />
+                </div>
+
+                {/* Drone video markers */}
+                <div className="space-y-2">
+                  <p className="text-xs text-slate-500">Drone footage</p>
+                  <Toggle
+                    label="Video markers"
+                    checked={layers.overlays.droneVideos}
+                    onChange={onToggleDroneVideos}
+                    disabled={videoCount === 0}
+                    note={
+                      videoCount === 0
+                        ? 'No geolocated videos yet'
+                        : `${videoCount} clip${videoCount === 1 ? '' : 's'} · click a ▶ pin to watch`
+                    }
+                  />
                 </div>
 
                 {/* Bamboo distribution */}

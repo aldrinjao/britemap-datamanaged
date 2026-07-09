@@ -1,9 +1,10 @@
-import { PolygonLayer, ScatterplotLayer, GeoJsonLayer } from '@deck.gl/layers'
+import { PolygonLayer, ScatterplotLayer, GeoJsonLayer, IconLayer } from '@deck.gl/layers'
 import { HeatmapLayer } from '@deck.gl/aggregation-layers'
 import type { Layer } from '@deck.gl/core'
 import type { FeatureCollection } from 'geojson'
 import type { PublicClump, PublicQuadrat } from '@/lib/types'
 import type { ClumpSizeMetric, LayerState } from './use-map-layers'
+import type { DroneVideo } from '@/components/video/drone-videos'
 
 // ─── Species palette ──────────────────────────────────────────────────────────
 
@@ -316,5 +317,36 @@ export function makeSurveyExtentLayer(
     getLineColor: [245, 158, 11, 220],
     getLineWidth: 2,
     lineWidthMinPixels: 1.5,
+  })
+}
+
+// ─── Drone video markers ──────────────────────────────────────────────────────
+
+// Red teardrop pin with a white play triangle — reads instantly as "video here".
+// encodeURIComponent (not btoa) keeps this SSR-safe.
+const VIDEO_MARKER_SVG =
+  `<svg xmlns="http://www.w3.org/2000/svg" width="48" height="60" viewBox="0 0 48 60">` +
+  `<path d="M24 0C10.7 0 0 10.7 0 24c0 16.6 24 36 24 36s24-19.4 24-36C48 10.7 37.3 0 24 0z" fill="#dc2626"/>` +
+  `<circle cx="24" cy="24" r="14" fill="#ffffff"/>` +
+  `<path d="M20 16l12 8-12 8z" fill="#dc2626"/>` +
+  `</svg>`
+
+const VIDEO_ICON_URL = `data:image/svg+xml,${encodeURIComponent(VIDEO_MARKER_SVG)}`
+
+export function makeDroneVideoLayer(
+  videos: DroneVideo[],
+  onClick: (video: DroneVideo) => void,
+): Layer {
+  return new IconLayer<DroneVideo>({
+    id: 'drone-videos',
+    data: videos,
+    getPosition: (d) => [d.lng!, d.lat!],
+    getIcon: () => ({ url: VIDEO_ICON_URL, width: 48, height: 60, anchorY: 60 }),
+    getSize: 42,
+    sizeUnits: 'pixels',
+    pickable: true,
+    onClick: (info) => {
+      if (info.object) onClick(info.object as DroneVideo)
+    },
   })
 }
