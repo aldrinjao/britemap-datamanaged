@@ -96,6 +96,20 @@ addEventListener('fetch', function (event) {
     return
   }
 
+  // Bypass media and HTTP Range requests. Streaming media (e.g. the hero
+  // <video>) uses Range requests that MSW's worker cannot pass through
+  // reliably — letting the browser handle them natively avoids the error
+  // "A ServiceWorker intercepted the request and encountered an unexpected
+  // error". NOTE: re-apply this block if you regenerate the worker with
+  // `npm run msw:init`.
+  if (
+    event.request.destination === 'video' ||
+    event.request.destination === 'audio' ||
+    event.request.headers.has('range')
+  ) {
+    return
+  }
+
   // Opening the DevTools triggers the "only-if-cached" request
   // that cannot be handled by the worker. Bypass such requests.
   if (
