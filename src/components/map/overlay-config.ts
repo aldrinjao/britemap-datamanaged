@@ -33,3 +33,23 @@ export const DRONE_FLIGHTS: DroneFlightConfig[] = [
     tiles: process.env.NEXT_PUBLIC_DRONE_TILES_LB ?? '',
   },
 ]
+
+export interface SurveyMapConfig {
+  id: string
+  name: string
+  /** Path to a WGS84 TopoJSON in /public (expanded to GeoJSON in the browser). */
+  path: string
+}
+
+/**
+ * Bamboo survey maps (semifinal): per-municipality classification polygons,
+ * converted from shapefiles to simplified TopoJSON. Loaded lazily — only when
+ * a layer is toggled on.
+ */
+export const SURVEY_MAPS: SurveyMapConfig[] = [
+  { id: 'abra',    name: 'Abra (Y3)',           path: '/geodata/survey-maps/abra.topojson' },
+  { id: 'camsur',  name: 'Camarines Sur (Y3)',  path: '/geodata/survey-maps/camsur.topojson' },
+  { id: 'cavite',  name: 'Cavite (Y1)',         path: '/geodata/survey-maps/cavite.topojson' },
+  { id: 'palawan', name: 'Palawan (Y3)',        path: '/geodata/survey-maps/palawan.topojson' },
+  { id: 'tarlac',  name: 'Tarlac (Y3)',         path: '/geodata/survey-maps/tarlac.topojson' },
+]
