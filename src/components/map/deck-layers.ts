@@ -305,18 +305,20 @@ export function makeMunicipalityHighlightLayer(
   return highlightLayer('municipality-highlight', features, 60)
 }
 
-export function makeSurveyExtentLayer(
-  geojson: { type: 'FeatureCollection'; features: unknown[] },
-): Layer {
+// ─── Bamboo survey maps (semifinal classification polygons) ──────────────────
+
+export function makeSurveyMapLayer(id: string, geojson: FeatureCollection, opacity: number): Layer {
   return new GeoJsonLayer({
-    id: 'survey-extent',
-    data: geojson as unknown as FeatureCollection,
+    id: `survey-map-${id}`,
+    data: geojson,
     filled: true,
     stroked: true,
-    getFillColor: [245, 158, 11, 20],
-    getLineColor: [245, 158, 11, 220],
-    getLineWidth: 2,
-    lineWidthMinPixels: 1.5,
+    getFillColor: [16, 185, 129, 160],   // emerald — layer opacity scales this
+    getLineColor: [5, 120, 87, 230],
+    getLineWidth: 1,
+    lineWidthMinPixels: 0.4,
+    opacity,
+    pickable: false,
   })
 }
 

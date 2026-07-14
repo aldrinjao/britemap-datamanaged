@@ -97,7 +97,6 @@ function MapPageContent() {
   const { data: regionsGeoJSON }       = useQuery({ queryKey: ['geodata-regions'],       queryFn: () => fetchGeoJSON('/geodata/regions.geojson'),       staleTime: Infinity })
   const { data: provincesGeoJSON }     = useQuery({ queryKey: ['geodata-provinces'],     queryFn: () => fetchGeoJSON('/geodata/provinces.geojson'),     staleTime: Infinity })
   const { data: municipalitiesGeoJSON }= useQuery({ queryKey: ['geodata-municipalities'],queryFn: () => fetchGeoJSON('/geodata/municipalities.geojson'), staleTime: Infinity })
-  const { data: tarlacExtentGeoJSON }  = useQuery({ queryKey: ['geodata-tarlac-extent'], queryFn: () => fetchGeoJSON('/geodata/tarlac-extent.geojson'),  staleTime: Infinity })
 
   // Fetch all public quadrats (paginate to completion for map display)
   const { data, fetchNextPage, hasNextPage, isFetching } = useInfiniteQuery({
@@ -301,7 +300,6 @@ function MapPageContent() {
         regionsGeoJSON={regionsGeoJSON}
         provincesGeoJSON={provincesGeoJSON}
         municipalitiesGeoJSON={municipalitiesGeoJSON}
-        extentGeoJSON={tarlacExtentGeoJSON}
         onQuadratClick={handleQuadratClick}
         onVisibleCountChange={setLayerFilteredCount}
         flyToTarget={selectedQuadrat?.latitude != null ? { latitude: selectedQuadrat.latitude!, longitude: selectedQuadrat.longitude! } : undefined}

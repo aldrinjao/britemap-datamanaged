@@ -3,11 +3,14 @@
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
 import Map, { NavigationControl, ScaleControl, Source, Layer as MapLayer, type MapRef } from 'react-map-gl/maplibre'
 import 'maplibre-gl/dist/maplibre-gl.css'
+import { useQueries } from '@tanstack/react-query'
+import { feature } from 'topojson-client'
+import type { FeatureCollection } from 'geojson'
 import type { Layer } from '@deck.gl/core'
 import { DeckGLOverlay } from './DeckGLOverlay'
 import { LayerPanel } from './LayerPanel'
 import { useMapLayers } from './use-map-layers'
-import { BAMBOO_DIST_TILES, DRONE_FLIGHTS } from './overlay-config'
+import { BAMBOO_DIST_TILES, DRONE_FLIGHTS, SURVEY_MAPS } from './overlay-config'
 import {
   makeQuadratDotsLayer,
   makeQuadratSquaresLayer,
@@ -17,7 +20,7 @@ import {
   makeRegionOutlineLayer,
   makeMunicipalityOutlineLayer,
 
-  makeSurveyExtentLayer,
+  makeSurveyMapLayer,
   makeDroneVideoLayer,
   getSpeciesColor,
 } from './deck-layers'
@@ -30,6 +33,8 @@ import { VideoLightbox } from '@/components/video/VideoLightbox'
 
 const MAP_STYLES = {
   streets: 'https://tiles.openfreemap.org/styles/liberty',
+  // Muted light-grey minimal style — keeps data overlays (survey maps) prominent.
+  plain: 'https://tiles.openfreemap.org/styles/positron',
   satellite: {
     version: 8 as const,
     sources: {
@@ -85,6 +90,16 @@ const WPS_LAYER: import('maplibre-gl').LayerSpecification = {
     'text-halo-width': 1.5,
   },
 } as unknown as import('maplibre-gl').LayerSpecification
+
+// Fetch a TopoJSON survey map and expand its single object to a GeoJSON
+// FeatureCollection for deck.gl.
+async function loadSurveyMap(path: string): Promise<FeatureCollection> {
+  const topo = await fetch(path).then((r) => r.json())
+  const key = Object.keys(topo.objects)[0]
+  // The object is a GeometryCollection, so feature() returns a FeatureCollection
+  // at runtime even though the typed overload narrows to Feature.
+  return feature(topo, topo.objects[key]) as unknown as FeatureCollection
+}
 
 // ─── GeoJSON boundary paths ───────────────────────────────────────────────────
 
@@ -143,7 +158,6 @@ export interface BritemapGLProps {
   provincesGeoJSON?: { type: 'FeatureCollection'; features: unknown[] }
   regionsGeoJSON?: { type: 'FeatureCollection'; features: unknown[] }
   municipalitiesGeoJSON?: { type: 'FeatureCollection'; features: unknown[] }
-  extentGeoJSON?: { type: 'FeatureCollection'; features: unknown[] }
   onQuadratClick?: (quadrat: PublicQuadrat) => void
   onVisibleCountChange?: (count: number) => void
   flyToTarget?: { latitude: number; longitude: number }
@@ -163,7 +177,6 @@ export const BritemapGL = forwardRef<BritemapGLHandle, BritemapGLProps>(function
   provincesGeoJSON,
   regionsGeoJSON,
   municipalitiesGeoJSON,
-  extentGeoJSON,
   onQuadratClick,
   onVisibleCountChange,
   flyToTarget,
@@ -182,6 +195,32 @@ export const BritemapGL = forwardRef<BritemapGLHandle, BritemapGLProps>(function
   // Geolocated, uploaded videos — static config, computed once
   const videoMarkers = useMemo(() => mapVideos(), [])
 
+  // Bamboo survey maps — lazily fetched + expanded from TopoJSON only when toggled on.
+  const surveyMapQueries = useQueries({
+    queries: SURVEY_MAPS.map((m) => ({
+      queryKey: ['survey-map', m.id],
+      queryFn: () => loadSurveyMap(m.path),
+      staleTime: Infinity,
+      enabled: !!layers.overlays.surveyMaps[m.id],
+    })),
+  })
+  const surveyMapData = useMemo(
+    () =>
+      SURVEY_MAPS.reduce<Record<string, FeatureCollection | undefined>>((acc, m, i) => {
+        acc[m.id] = surveyMapQueries[i].data
+        return acc
+      }, {}),
+    [surveyMapQueries],
+  )
+  const surveyMapsLoading = useMemo(
+    () =>
+      SURVEY_MAPS.reduce<Record<string, boolean>>((acc, m, i) => {
+        acc[m.id] = surveyMapQueries[i].isLoading
+        return acc
+      }, {}),
+    [surveyMapQueries],
+  )
+
   useImperativeHandle(ref, () => ({
     getMapImage: () => mapRef.current?.getCanvas()?.toDataURL('image/png') ?? null,
   }))
@@ -196,13 +235,13 @@ export const BritemapGL = forwardRef<BritemapGLHandle, BritemapGLProps>(function
     })
   }, [flyToTarget])
 
-  // On the streets basemap, hide the OSM "South China Sea" label and drop in a
-  // "West Philippine Sea" label in its place. Re-applied on every styledata event
-  // because switching basemaps calls setStyle(), which resets the style (and any
-  // runtime override) back to the shipped default.
+  // On the OSM vector basemaps (streets / plain), hide the OSM "South China Sea"
+  // label and drop in a "West Philippine Sea" label in its place. Re-applied on
+  // every styledata event because switching basemaps calls setStyle(), which
+  // resets the style (and any runtime override) back to the shipped default.
   useEffect(() => {
     const map = mapRef.current?.getMap()
-    if (!map || layers.basemap !== 'streets') return
+    if (!map || (layers.basemap !== 'streets' && layers.basemap !== 'plain')) return
 
     const apply = () => {
       // Wait until the streets style (which owns the marine label layer) is loaded.
@@ -281,8 +320,12 @@ export const BritemapGL = forwardRef<BritemapGLHandle, BritemapGLProps>(function
         makeProvinceFillLayer(provincesGeoJSON as any, layers.provincesOpacity, quadratCountByProvince),
       )
     }
-    if (layers.overlays.surveyExtent && extentGeoJSON) {
-      result.push(makeSurveyExtentLayer(extentGeoJSON))
+    // Bamboo survey maps — one filled GeoJsonLayer per enabled+loaded region
+    for (const m of SURVEY_MAPS) {
+      const data = surveyMapData[m.id]
+      if (layers.overlays.surveyMaps[m.id] && data) {
+        result.push(makeSurveyMapLayer(m.id, data, layers.overlays.surveyMapsOpacity))
+      }
     }
     if (layers.boundaries.regions && regionsGeoJSON) {
       result.push(makeRegionOutlineLayer(regionsGeoJSON as { type: 'FeatureCollection'; features: unknown[] }))
@@ -328,14 +371,14 @@ export const BritemapGL = forwardRef<BritemapGLHandle, BritemapGLProps>(function
     provincesGeoJSON,
     regionsGeoJSON,
     municipalitiesGeoJSON,
-    extentGeoJSON,
     quadratCountByProvince,
     handleHover,
     handleClick,
     videoMarkers,
+    surveyMapData,
   ])
 
-  const mapStyle = layers.basemap === 'streets' ? MAP_STYLES.streets : MAP_STYLES.satellite
+  const mapStyle = MAP_STYLES[layers.basemap]
 
   return (
     <div className={`relative ${className}`}>
@@ -442,7 +485,9 @@ export const BritemapGL = forwardRef<BritemapGLHandle, BritemapGLProps>(function
             onSetDroneId={actions.setDroneId}
             onSetDroneOpacity={actions.setDroneOpacity}
             onToggleDroneVideos={actions.toggleDroneVideos}
-            onToggleSurveyExtent={actions.toggleSurveyExtent}
+            onToggleSurveyMap={actions.toggleSurveyMap}
+            onSetSurveyMapsOpacity={actions.setSurveyMapsOpacity}
+            surveyMapsLoading={surveyMapsLoading}
           />
           {visibleSpecies.length > 0 && (
             <div className="w-56 bg-slate-900/95 backdrop-blur-sm border border-slate-700 rounded-lg shadow-xl px-3 py-2">

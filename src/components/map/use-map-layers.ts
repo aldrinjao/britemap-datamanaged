@@ -1,6 +1,6 @@
 import { useReducer } from 'react'
 
-export type BasemapStyle = 'streets' | 'satellite'
+export type BasemapStyle = 'streets' | 'satellite' | 'plain'
 export type ClumpSizeMetric = 'diameter' | 'height'
 
 export interface LayerState {
@@ -24,7 +24,9 @@ export interface LayerState {
     droneId: string | null
     droneOpacity: number
     droneVideos: boolean
-    surveyExtent: boolean
+    /** Bamboo survey maps keyed by SURVEY_MAPS id → visible. */
+    surveyMaps: Record<string, boolean>
+    surveyMapsOpacity: number
   }
 }
 
@@ -42,15 +44,16 @@ type LayerAction =
   | { type: 'SET_DRONE_ID'; payload: string | null }
   | { type: 'SET_DRONE_OPACITY'; payload: number }
   | { type: 'TOGGLE_DRONE_VIDEOS' }
-  | { type: 'TOGGLE_SURVEY_EXTENT' }
+  | { type: 'TOGGLE_SURVEY_MAP'; payload: string }
+  | { type: 'SET_SURVEY_MAPS_OPACITY'; payload: number }
 
 const initialState: LayerState = {
-  basemap: 'streets',
+  basemap: 'plain',
   hillshade: false,
   roads: false,
   boundaries: {
-    regions: true,
-    provinces: true,
+    regions: false,
+    provinces: false,
     municipalities: false,
   },
   provincesOpacity: 0.25,
@@ -65,7 +68,8 @@ const initialState: LayerState = {
     droneId: null,
     droneOpacity: 0.9,
     droneVideos: true,
-    surveyExtent: true,
+    surveyMaps: {},
+    surveyMapsOpacity: 0.55,
   },
 }
 
@@ -97,8 +101,16 @@ function reducer(state: LayerState, action: LayerAction): LayerState {
       return { ...state, overlays: { ...state.overlays, droneOpacity: action.payload } }
     case 'TOGGLE_DRONE_VIDEOS':
       return { ...state, overlays: { ...state.overlays, droneVideos: !state.overlays.droneVideos } }
-    case 'TOGGLE_SURVEY_EXTENT':
-      return { ...state, overlays: { ...state.overlays, surveyExtent: !state.overlays.surveyExtent } }
+    case 'TOGGLE_SURVEY_MAP':
+      return {
+        ...state,
+        overlays: {
+          ...state.overlays,
+          surveyMaps: { ...state.overlays.surveyMaps, [action.payload]: !state.overlays.surveyMaps[action.payload] },
+        },
+      }
+    case 'SET_SURVEY_MAPS_OPACITY':
+      return { ...state, overlays: { ...state.overlays, surveyMapsOpacity: action.payload } }
     default:
       return state
   }
@@ -122,6 +134,7 @@ export function useMapLayers() {
     setDroneId:          (v: string | null)      => dispatch({ type: 'SET_DRONE_ID', payload: v }),
     setDroneOpacity:     (v: number)             => dispatch({ type: 'SET_DRONE_OPACITY', payload: v }),
     toggleDroneVideos:   ()                      => dispatch({ type: 'TOGGLE_DRONE_VIDEOS' }),
-    toggleSurveyExtent:  ()                      => dispatch({ type: 'TOGGLE_SURVEY_EXTENT' }),
+    toggleSurveyMap:     (id: string)            => dispatch({ type: 'TOGGLE_SURVEY_MAP', payload: id }),
+    setSurveyMapsOpacity:(v: number)             => dispatch({ type: 'SET_SURVEY_MAPS_OPACITY', payload: v }),
   }
 }

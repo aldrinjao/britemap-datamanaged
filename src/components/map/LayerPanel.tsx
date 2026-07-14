@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import clsx from 'clsx'
 import type { LayerState, BasemapStyle, ClumpSizeMetric } from './use-map-layers'
-import { BAMBOO_DIST_TILES, DRONE_FLIGHTS } from './overlay-config'
+import { BAMBOO_DIST_TILES, DRONE_FLIGHTS, SURVEY_MAPS } from './overlay-config'
 import { mapVideos } from '@/components/video/drone-videos'
 
 interface LayerPanelProps {
@@ -21,15 +21,28 @@ interface LayerPanelProps {
   onSetDroneId: (id: string | null) => void
   onSetDroneOpacity: (v: number) => void
   onToggleDroneVideos: () => void
-  onToggleSurveyExtent: () => void
+  onToggleSurveyMap: (id: string) => void
+  onSetSurveyMapsOpacity: (v: number) => void
+  /** Per-survey-map id → currently fetching/expanding its TopoJSON. */
+  surveyMapsLoading: Record<string, boolean>
 }
 
 type Tab = 'map' | 'boundaries' | 'data' | 'overlays'
 
+function Spinner() {
+  return (
+    <span
+      className="inline-block w-3 h-3 border-2 border-slate-600 border-t-emerald-400 rounded-full animate-spin"
+      role="status"
+      aria-label="Loading"
+    />
+  )
+}
+
 function Toggle({
-  label, checked, onChange, disabled = false, note,
+  label, checked, onChange, disabled = false, note, loading = false,
 }: {
-  label: string; checked: boolean; onChange: () => void; disabled?: boolean; note?: string
+  label: string; checked: boolean; onChange: () => void; disabled?: boolean; note?: string; loading?: boolean
 }) {
   return (
     <div>
@@ -42,6 +55,7 @@ function Toggle({
           className="w-4 h-4 rounded accent-emerald-500"
         />
         <span className={clsx('text-sm text-slate-300', !disabled && 'group-hover:text-white')}>{label}</span>
+        {loading && <Spinner />}
       </label>
       {note && <p className="text-xs text-slate-600 mt-0.5 pl-6">{note}</p>}
     </div>
@@ -78,6 +92,34 @@ function OpacitySlider({ label, value, onChange }: { label: string; value: numbe
   )
 }
 
+/** Collapsible group used to keep the Overlays tab compact. */
+function Section({
+  title, activeCount = 0, defaultOpen = false, children,
+}: {
+  title: string; activeCount?: number; defaultOpen?: boolean; children: React.ReactNode
+}) {
+  const [open, setOpen] = useState(defaultOpen)
+  return (
+    <div className="border-t border-slate-700 pt-2 first:border-t-0 first:pt-0">
+      <button
+        onClick={() => setOpen((o) => !o)}
+        className="w-full flex items-center justify-between text-left group"
+      >
+        <span className="flex items-center gap-1.5">
+          <span className="text-xs font-medium text-slate-400 group-hover:text-slate-200">{title}</span>
+          {activeCount > 0 && (
+            <span className="text-[10px] leading-none px-1.5 py-0.5 rounded-full bg-emerald-600/30 text-emerald-300">
+              {activeCount}
+            </span>
+          )}
+        </span>
+        <span className="text-slate-500 text-[10px] group-hover:text-slate-300">{open ? '▾' : '▸'}</span>
+      </button>
+      {open && <div className="mt-2 space-y-2">{children}</div>}
+    </div>
+  )
+}
+
 export function LayerPanel({
   layers,
   onSetBasemap,
@@ -93,7 +135,9 @@ export function LayerPanel({
   onSetDroneId,
   onSetDroneOpacity,
   onToggleDroneVideos,
-  onToggleSurveyExtent,
+  onToggleSurveyMap,
+  onSetSurveyMapsOpacity,
+  surveyMapsLoading,
 }: LayerPanelProps) {
   const [open, setOpen] = useState(true)
   const [tab, setTab] = useState<Tab>('map')
@@ -101,6 +145,7 @@ export function LayerPanel({
   const bambooReady = BAMBOO_DIST_TILES !== ''
   const availableDroneFlights = DRONE_FLIGHTS.filter((f) => f.tiles !== '')
   const videoCount = mapVideos().length
+  const activeSurveyMaps = SURVEY_MAPS.filter((m) => layers.overlays.surveyMaps[m.id]).length
 
   const tabs: { id: Tab; label: string }[] = [
     { id: 'map',        label: 'Map'      },
@@ -153,7 +198,7 @@ export function LayerPanel({
                 <div>
                   <p className="text-xs text-slate-500 mb-1.5">Basemap</p>
                   <div className="flex gap-2">
-                    {(['streets', 'satellite'] as BasemapStyle[]).map((s) => (
+                    {(['streets', 'plain', 'satellite'] as BasemapStyle[]).map((s) => (
                       <button
                         key={s}
                         onClick={() => onSetBasemap(s)}
@@ -214,32 +259,52 @@ export function LayerPanel({
             )}
 
             {tab === 'overlays' && (
-              <>
-                {/* Survey extent */}
-                <div className="space-y-2">
-                  <p className="text-xs text-slate-500">Survey extent</p>
-                  <Toggle label="Tarlac (Y1)" checked={layers.overlays.surveyExtent} onChange={onToggleSurveyExtent} />
-                </div>
+              <div className="space-y-2">
+                {/* Bamboo survey maps */}
+                <Section title="Survey maps" activeCount={activeSurveyMaps} defaultOpen>
+                  {SURVEY_MAPS.map((m) => (
+                    <Toggle
+                      key={m.id}
+                      label={m.name}
+                      checked={!!layers.overlays.surveyMaps[m.id]}
+                      onChange={() => onToggleSurveyMap(m.id)}
+                      loading={!!surveyMapsLoading[m.id]}
+                    />
+                  ))}
+                  {activeSurveyMaps > 0 && (
+                    <OpacitySlider
+                      label="Opacity"
+                      value={layers.overlays.surveyMapsOpacity}
+                      onChange={onSetSurveyMapsOpacity}
+                    />
+                  )}
+                </Section>
 
-                {/* Drone video markers */}
-                <div className="space-y-2">
-                  <p className="text-xs text-slate-500">Drone footage</p>
-                  <Toggle
-                    label="Video markers"
-                    checked={layers.overlays.droneVideos}
-                    onChange={onToggleDroneVideos}
-                    disabled={videoCount === 0}
-                    note={
-                      videoCount === 0
-                        ? 'No geolocated videos yet'
-                        : `${videoCount} clip${videoCount === 1 ? '' : 's'} · click a ▶ pin to watch`
-                    }
-                  />
-                </div>
+                {/* Drone imagery — orthophoto flights (single-select dropdown) */}
+                <Section title="Drone imagery" activeCount={layers.overlays.droneId ? 1 : 0}>
+                  <select
+                    value={layers.overlays.droneId ?? ''}
+                    onChange={(e) => onSetDroneId(e.target.value || null)}
+                    className="w-full bg-slate-800 border border-slate-600 rounded px-2 py-1 text-sm text-slate-200 focus:outline-none focus:border-emerald-500"
+                  >
+                    <option value="">None</option>
+                    {DRONE_FLIGHTS.map((f) => (
+                      <option key={f.id} value={f.id} disabled={f.tiles === ''}>
+                        {f.name}{f.tiles === '' ? ' — not hosted' : ''}
+                      </option>
+                    ))}
+                  </select>
+                  {layers.overlays.droneId !== null && availableDroneFlights.length > 0 && (
+                    <OpacitySlider
+                      label="Opacity"
+                      value={layers.overlays.droneOpacity}
+                      onChange={onSetDroneOpacity}
+                    />
+                  )}
+                </Section>
 
-                {/* Bamboo distribution */}
-                <div className="space-y-2">
-                  <p className="text-xs text-slate-500">Bamboo distribution</p>
+                {/* Bamboo distribution model raster */}
+                <Section title="Bamboo distribution" activeCount={layers.overlays.bambooDist ? 1 : 0}>
                   <Toggle
                     label="AI/ML model"
                     checked={layers.overlays.bambooDist}
@@ -254,55 +319,24 @@ export function LayerPanel({
                       onChange={onSetBamboDistOpacity}
                     />
                   )}
-                </div>
+                </Section>
 
-                {/* Drone imagery */}
-                <div className="space-y-2 border-t border-slate-700 pt-3">
-                  <p className="text-xs text-slate-500">Drone imagery</p>
-                  <div className="space-y-1.5">
-                    <label className="flex items-center gap-2 cursor-pointer">
-                      <input
-                        type="radio"
-                        checked={layers.overlays.droneId === null}
-                        onChange={() => onSetDroneId(null)}
-                        className="accent-emerald-500"
-                      />
-                      <span className="text-sm text-slate-400">None</span>
-                    </label>
-                    {DRONE_FLIGHTS.map((f) => {
-                      const ready = f.tiles !== ''
-                      return (
-                        <label
-                          key={f.id}
-                          className={clsx(
-                            'flex items-start gap-2',
-                            ready ? 'cursor-pointer' : 'cursor-not-allowed opacity-40',
-                          )}
-                        >
-                          <input
-                            type="radio"
-                            checked={layers.overlays.droneId === f.id}
-                            onChange={() => ready && onSetDroneId(f.id)}
-                            disabled={!ready}
-                            className="accent-emerald-500 mt-0.5 flex-shrink-0"
-                          />
-                          <div className="min-w-0">
-                            <span className="text-sm text-slate-300 leading-tight block">{f.name}</span>
-                            {!ready && <span className="text-[10px] text-slate-600">Not yet hosted</span>}
-                          </div>
-                        </label>
-                      )
-                    })}
-                  </div>
-                  {layers.overlays.droneId !== null && availableDroneFlights.length > 0 && (
-                    <OpacitySlider
-                      label="Opacity"
-                      value={layers.overlays.droneOpacity}
-                      onChange={onSetDroneOpacity}
-                    />
-                  )}
-                </div>
-              </>
+                {/* Drone footage markers */}
+                <Section title="Drone footage" activeCount={layers.overlays.droneVideos && videoCount > 0 ? 1 : 0}>
+                  <Toggle
+                    label="Video markers"
+                    checked={layers.overlays.droneVideos}
+                    onChange={onToggleDroneVideos}
+                    disabled={videoCount === 0}
+                    note={
+                      videoCount === 0
+                        ? 'No geolocated videos yet'
+                        : `${videoCount} clip${videoCount === 1 ? '' : 's'} · click a ▶ pin to watch`
+                    }
+                  />
+                </Section>
+
+              </div>
             )}
 
           </div>
