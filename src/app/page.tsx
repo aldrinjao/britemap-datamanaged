@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useQuery } from '@tanstack/react-query'
 import { publicApi } from '@/lib/api'
+import { AerialTourSection } from '@/components/video/AerialTourSection'
 
 // ─── Nav ──────────────────────────────────────────────────────────────────────
 
@@ -11,6 +12,7 @@ function Nav() {
     { href: '#home', label: 'Home' },
     { href: '#about', label: 'About' },
     { href: '#projects', label: 'Projects' },
+    { href: '#aerial', label: 'Videos' },
     { href: '#news', label: 'News' },
     { href: '#resources', label: 'Resources' },
     { href: '#contact', label: 'Contact' },
@@ -178,13 +180,25 @@ export default function LandingPage() {
 
       {/* ── Hero ── */}
       <section id="home" className="relative overflow-hidden bg-slate-950 min-h-[420px] flex items-end">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/hero2.png"
-          alt="Bamboo Forest"
+        {/*
+          Hero background loop. Self-host ONE hard-compressed clip at /public/videos/hero-loop.mp4
+          (~1080p H.264, 10–15s, aim for <8 MB). While the file is missing the poster (hero2.png)
+          shows, so the page degrades gracefully. This is the only self-hosted clip — all other
+          footage streams from YouTube via the Aerial Tour gallery + map markers.
+        */}
+        {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
+        <video
           className="absolute inset-0 w-full h-full object-cover opacity-75"
-          onError={(e) => { (e.target as HTMLImageElement).style.opacity = '0' }}
-        />
+          poster="/hero2.png"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          aria-hidden="true"
+        >
+          <source src="/videos/hero-loop.mp4" type="video/mp4" />
+        </video>
         {/* Dark gradient anchors the text without casting a green tint over the image */}
         <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/50 to-transparent pointer-events-none" />
 
@@ -381,6 +395,9 @@ export default function LandingPage() {
           ))}
         </div>
       </Section>
+
+      {/* ── Aerial Tour (drone videos) ── */}
+      <AerialTourSection />
 
       {/* ── Map CTA ── */}
       <section className="relative overflow-hidden bg-emerald-950 py-20">

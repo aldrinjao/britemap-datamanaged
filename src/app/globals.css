@@ -14,6 +14,14 @@ html, body, #__next {
   animation: slide-in-right 0.22s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+.animate-fade-in {
+  animation: fade-in 0.15s ease-out both;
+}
+
 /* MapLibre GL overrides */
 .maplibregl-ctrl-attrib {
   font-size: 10px;

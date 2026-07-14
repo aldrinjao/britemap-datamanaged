@@ -18,10 +18,13 @@ import {
   makeMunicipalityOutlineLayer,
 
   makeSurveyExtentLayer,
+  makeDroneVideoLayer,
   getSpeciesColor,
 } from './deck-layers'
 import type { PublicClump, PublicQuadrat } from '@/lib/types'
 import type { DateRange } from './StatsFilterPanel'
+import { mapVideos, type DroneVideo } from '@/components/video/drone-videos'
+import { VideoLightbox } from '@/components/video/VideoLightbox'
 
 // ─── Basemap style URLs ───────────────────────────────────────────────────────
 
@@ -41,6 +44,47 @@ const MAP_STYLES = {
     layers: [{ id: 'satellite-tiles', type: 'raster' as const, source: 'esri-satellite' }],
   },
 }
+
+// The OSM streets basemap (OpenFreeMap Liberty) renders a "South China Sea" marine
+// label from the OpenMapTiles `water_name` layer. We suppress just that one label,
+// keeping every lake and other sea name intact.
+const HIDDEN_SEA_LABEL = 'South China Sea'
+const SEA_LABEL_LAYER = 'water_name_point_label'
+// Original geometry filter, AND-ed with "name is not the hidden label".
+const SEA_LABEL_FILTER = [
+  'all',
+  ['match', ['geometry-type'], ['MultiPoint', 'Point'], true, false],
+  ['!=', ['coalesce', ['get', 'name_en'], ['get', 'name'], ['get', 'name:latin'], ''], HIDDEN_SEA_LABEL],
+] as unknown as import('maplibre-gl').FilterSpecification
+
+// Replacement label placed where the hidden "South China Sea" name used to sit —
+// in the Philippines' exclusive economic zone west of Luzon.
+const WPS_SOURCE = 'wps-label'
+const WPS_LAYER_ID = 'wps-label-symbol'
+const WPS_LABEL_GEOJSON: import('geojson').FeatureCollection = {
+  type: 'FeatureCollection',
+  features: [
+    { type: 'Feature', geometry: { type: 'Point', coordinates: [117.2, 15.2] }, properties: {} },
+  ],
+}
+// Styled to mirror the OpenMapTiles marine label it replaces (italic slate-blue).
+const WPS_LAYER: import('maplibre-gl').LayerSpecification = {
+  id: WPS_LAYER_ID,
+  type: 'symbol',
+  source: WPS_SOURCE,
+  layout: {
+    'text-field': 'West Philippine Sea',
+    'text-font': ['Noto Sans Italic'],
+    'text-letter-spacing': 0.2,
+    'text-max-width': 6,
+    'text-size': ['interpolate', ['linear'], ['zoom'], 4, 11, 8, 15],
+  },
+  paint: {
+    'text-color': '#495e91',
+    'text-halo-color': 'rgba(255,255,255,0.7)',
+    'text-halo-width': 1.5,
+  },
+} as unknown as import('maplibre-gl').LayerSpecification
 
 // ─── GeoJSON boundary paths ───────────────────────────────────────────────────
 
@@ -132,7 +176,11 @@ export const BritemapGL = forwardRef<BritemapGLHandle, BritemapGLProps>(function
   const { layers, ...actions } = useMapLayers()
   const [tooltip, setTooltip] = useState<TooltipInfo | null>(null)
   const [zoom, setZoom] = useState(5.5)
+  const [activeVideo, setActiveVideo] = useState<DroneVideo | null>(null)
   const mapRef = useRef<MapRef | null>(null)
+
+  // Geolocated, uploaded videos — static config, computed once
+  const videoMarkers = useMemo(() => mapVideos(), [])
 
   useImperativeHandle(ref, () => ({
     getMapImage: () => mapRef.current?.getCanvas()?.toDataURL('image/png') ?? null,
@@ -147,6 +195,38 @@ export const BritemapGL = forwardRef<BritemapGLHandle, BritemapGLProps>(function
       essential: true,
     })
   }, [flyToTarget])
+
+  // On the streets basemap, hide the OSM "South China Sea" label and drop in a
+  // "West Philippine Sea" label in its place. Re-applied on every styledata event
+  // because switching basemaps calls setStyle(), which resets the style (and any
+  // runtime override) back to the shipped default.
+  useEffect(() => {
+    const map = mapRef.current?.getMap()
+    if (!map || layers.basemap !== 'streets') return
+
+    const apply = () => {
+      // Wait until the streets style (which owns the marine label layer) is loaded.
+      if (!map.getLayer(SEA_LABEL_LAYER)) return
+
+      // Hide "South China Sea". The equality guard matters because setFilter/addLayer
+      // themselves fire styledata — without it this handler would loop forever.
+      if (JSON.stringify(map.getFilter(SEA_LABEL_LAYER)) !== JSON.stringify(SEA_LABEL_FILTER)) {
+        map.setFilter(SEA_LABEL_LAYER, SEA_LABEL_FILTER)
+      }
+
+      // Add the replacement "West Philippine Sea" label once per style load.
+      if (!map.getSource(WPS_SOURCE)) {
+        map.addSource(WPS_SOURCE, { type: 'geojson', data: WPS_LABEL_GEOJSON })
+      }
+      if (!map.getLayer(WPS_LAYER_ID)) {
+        map.addLayer(WPS_LAYER)
+      }
+    }
+
+    apply()
+    map.on('styledata', apply)
+    return () => { map.off('styledata', apply) }
+  }, [layers.basemap])
 
   const handleHover = useCallback((info: { object?: PublicQuadrat | null; x: number; y: number }) => {
     if (info.object) {
@@ -234,6 +314,11 @@ export const BritemapGL = forwardRef<BritemapGLHandle, BritemapGLProps>(function
       }
     }
 
+    // Drone video markers — always on top so the ▶ pins stay clickable
+    if (layers.overlays.droneVideos && videoMarkers.length > 0) {
+      result.push(makeDroneVideoLayer(videoMarkers, setActiveVideo))
+    }
+
     return result
   }, [
     layers,
@@ -247,6 +332,7 @@ export const BritemapGL = forwardRef<BritemapGLHandle, BritemapGLProps>(function
     quadratCountByProvince,
     handleHover,
     handleClick,
+    videoMarkers,
   ])
 
   const mapStyle = layers.basemap === 'streets' ? MAP_STYLES.streets : MAP_STYLES.satellite
@@ -355,6 +441,7 @@ export const BritemapGL = forwardRef<BritemapGLHandle, BritemapGLProps>(function
             onSetBamboDistOpacity={actions.setBamboDistOpacity}
             onSetDroneId={actions.setDroneId}
             onSetDroneOpacity={actions.setDroneOpacity}
+            onToggleDroneVideos={actions.toggleDroneVideos}
             onToggleSurveyExtent={actions.toggleSurveyExtent}
           />
           {visibleSpecies.length > 0 && (
@@ -396,6 +483,9 @@ export const BritemapGL = forwardRef<BritemapGLHandle, BritemapGLProps>(function
       )}
 
       {tooltip && <MapTooltip info={tooltip} />}
+
+      {/* Drone video player — opens when a ▶ marker is clicked */}
+      <VideoLightbox video={activeVideo} onClose={() => setActiveVideo(null)} />
     </div>
   )
 })
