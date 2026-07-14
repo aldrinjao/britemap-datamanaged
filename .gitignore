@@ -23,3 +23,6 @@ yarn-error.log*
 *.swp
 .vscode/
 .vercel
+
+# Raw shapefile sources — converted GeoJSON is tracked instead
+map_assets/

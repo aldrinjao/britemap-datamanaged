@@ -110,7 +110,7 @@ function MapPageContent() {
   // Fetch remaining pages automatically
   if (hasNextPage && !isFetching) fetchNextPage()
 
-  const allQuadrats = data?.pages.flatMap((p) => p.items) ?? []
+  const allQuadrats = data?.pages.flatMap((p) => p?.items ?? []) ?? []
 
   // Fetch all quadrat details in parallel once the list is fully loaded.
   // Gives us clumps (for map dots/heatmap) and speciesSummary (for square colours)

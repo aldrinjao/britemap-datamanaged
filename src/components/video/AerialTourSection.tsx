@@ -51,7 +51,7 @@ function VideoCard({ video, onPlay }: { video: DroneVideo; onPlay: (v: DroneVide
       </div>
       <div className="p-4 space-y-1">
         <h3 className="text-sm font-semibold text-slate-800 leading-snug line-clamp-2">{video.title}</h3>
-        <p className="text-xs text-slate-500">{video.location} · {video.date}</p>
+        <p className="text-xs text-slate-500">{video.date ? `${video.location} · ${video.date}` : video.location}</p>
       </div>
     </button>
   )
