@@ -5,6 +5,12 @@ import { useQuery } from '@tanstack/react-query'
 import { publicApi } from '@/lib/api'
 import { AerialTourSection } from '@/components/video/AerialTourSection'
 
+// Hero background loop source. Empty by default so the poster (hero2.png) shows
+// with NO failed media request. Once the hard-compressed clip is committed to
+// public/videos/hero-loop.mp4, set NEXT_PUBLIC_HERO_VIDEO=/videos/hero-loop.mp4
+// (Vercel env) to enable it.
+const HERO_VIDEO_SRC = process.env.NEXT_PUBLIC_HERO_VIDEO ?? ''
+
 // ─── Nav ──────────────────────────────────────────────────────────────────────
 
 function Nav() {
@@ -182,9 +188,9 @@ export default function LandingPage() {
       <section id="home" className="relative overflow-hidden bg-slate-950 min-h-[420px] flex items-end">
         {/*
           Hero background loop. Self-host ONE hard-compressed clip at /public/videos/hero-loop.mp4
-          (~1080p H.264, 10–15s, aim for <8 MB). While the file is missing the poster (hero2.png)
-          shows, so the page degrades gracefully. This is the only self-hosted clip — all other
-          footage streams from YouTube via the Aerial Tour gallery + map markers.
+          (~1080p H.264, 10–15s, aim for <8 MB) and set NEXT_PUBLIC_HERO_VIDEO to its path to
+          enable it. Until then only the poster (hero2.png) renders — no <source>, so there is no
+          failed media request. All other footage streams from YouTube (Aerial Tour + map markers).
         */}
         {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
         <video
@@ -197,7 +203,7 @@ export default function LandingPage() {
           preload="metadata"
           aria-hidden="true"
         >
-          <source src="/videos/hero-loop.mp4" type="video/mp4" />
+          {HERO_VIDEO_SRC && <source src={HERO_VIDEO_SRC} type="video/mp4" />}
         </video>
         {/* Dark gradient anchors the text without casting a green tint over the image */}
         <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/50 to-transparent pointer-events-none" />
