@@ -289,8 +289,34 @@ public/geodata/
 ├── provinces.geojson     # PSA PSGC — each feature needs properties.PSGC matching provinceCode
 ├── regions.geojson
 ├── municipalities.geojson
-└── barangays.geojson
+├── barangays.geojson
+└── survey-maps.pmtiles   # bamboo survey maps — see below
 ```
+
+### Survey map tiles
+
+The per-municipality bamboo classification polygons ship as a single PMTiles
+archive, read over HTTP range requests — the browser fetches the header plus the
+tiles in view rather than the whole file. They are raster-derived, so a few
+features carry a very large number of vertices (Palawan: 18 municipalities,
+1.38M points); served whole they cost ~8 MB gzipped for a view that renders each
+province a few hundred pixels wide.
+
+Each province is its own vector-tile layer, named to match the ids in
+`SURVEY_MAPS` (`src/components/map/overlay-config.ts`). Simplification affects
+only the drawn outline — `area_ha` is carried as a tile attribute and still
+reflects the surveyed figure.
+
+Rebuild from the raw exports in `map_assets/` (gitignored — the archive is the
+tracked artifact) after installing tippecanoe:
+
+```bash
+brew install tippecanoe
+npm run build:survey-tiles
+```
+
+Set `NEXT_PUBLIC_SURVEY_MAPS_PMTILES` to serve the archive from Blob/S3 instead
+of the deployment bundle. The host must support range requests.
 
 ### Filter pipeline
 

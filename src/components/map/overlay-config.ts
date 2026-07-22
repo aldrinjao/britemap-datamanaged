@@ -35,21 +35,30 @@ export const DRONE_FLIGHTS: DroneFlightConfig[] = [
 ]
 
 export interface SurveyMapConfig {
+  /** Also the vector-tile source-layer name inside the PMTiles archive. */
   id: string
   name: string
-  /** Path to a WGS84 TopoJSON in /public (expanded to GeoJSON in the browser). */
-  path: string
 }
 
 /**
- * Bamboo survey maps (semifinal): per-municipality classification polygons,
- * converted from shapefiles to simplified TopoJSON. Loaded lazily — only when
- * a layer is toggled on.
+ * PMTiles archive holding every survey map as its own vector-tile layer.
+ * Defaults to the copy in /public; point this at Blob/S3 to keep it out of the
+ * deployment bundle. Range requests are required — the client reads the header
+ * and only the tiles in view rather than the whole 17 MB file.
+ */
+export const SURVEY_MAPS_PMTILES =
+  process.env.NEXT_PUBLIC_SURVEY_MAPS_PMTILES ?? '/geodata/survey-maps.pmtiles'
+
+/**
+ * Bamboo survey maps: per-municipality classification polygons, tiled from the
+ * source shapefiles with tippecanoe (z4–z14, --simplification=10). Simplification
+ * only affects the drawn outline — `area_ha` rides along as a tile attribute and
+ * still reflects the surveyed figure.
  */
 export const SURVEY_MAPS: SurveyMapConfig[] = [
-  { id: 'abra',    name: 'Abra (Y3)',           path: '/geodata/survey-maps/abra.topojson' },
-  { id: 'camsur',  name: 'Camarines Sur (Y3)',  path: '/geodata/survey-maps/camsur.topojson' },
-  { id: 'cavite',  name: 'Cavite (Y1)',         path: '/geodata/survey-maps/cavite.topojson' },
-  { id: 'palawan', name: 'Palawan (Y3)',        path: '/geodata/survey-maps/palawan.topojson' },
-  { id: 'tarlac',  name: 'Tarlac (Y3)',         path: '/geodata/survey-maps/tarlac.topojson' },
+  { id: 'abra',    name: 'Abra (Y3)' },
+  { id: 'camsur',  name: 'Camarines Sur (Y3)' },
+  { id: 'cavite',  name: 'Cavite (Y1)' },
+  { id: 'palawan', name: 'Palawan (Y3)' },
+  { id: 'tarlac',  name: 'Tarlac (Y3)' },
 ]

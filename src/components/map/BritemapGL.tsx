@@ -3,14 +3,13 @@
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react'
 import Map, { NavigationControl, ScaleControl, Source, Layer as MapLayer, type MapRef } from 'react-map-gl/maplibre'
 import 'maplibre-gl/dist/maplibre-gl.css'
-import { useQueries } from '@tanstack/react-query'
-import { feature } from 'topojson-client'
-import type { FeatureCollection } from 'geojson'
+import maplibregl from 'maplibre-gl'
+import { Protocol } from 'pmtiles'
 import type { Layer } from '@deck.gl/core'
 import { DeckGLOverlay } from './DeckGLOverlay'
 import { LayerPanel } from './LayerPanel'
 import { useMapLayers } from './use-map-layers'
-import { BAMBOO_DIST_TILES, DRONE_FLIGHTS, SURVEY_MAPS } from './overlay-config'
+import { BAMBOO_DIST_TILES, DRONE_FLIGHTS, SURVEY_MAPS, SURVEY_MAPS_PMTILES } from './overlay-config'
 import {
   makeQuadratDotsLayer,
   makeQuadratSquaresLayer,
@@ -20,7 +19,6 @@ import {
   makeRegionOutlineLayer,
   makeMunicipalityOutlineLayer,
 
-  makeSurveyMapLayer,
   makeDroneVideoLayer,
   getSpeciesColor,
 } from './deck-layers'
@@ -91,14 +89,21 @@ const WPS_LAYER: import('maplibre-gl').LayerSpecification = {
   },
 } as unknown as import('maplibre-gl').LayerSpecification
 
-// Fetch a TopoJSON survey map and expand its single object to a GeoJSON
-// FeatureCollection for deck.gl.
-async function loadSurveyMap(path: string): Promise<FeatureCollection> {
-  const topo = await fetch(path).then((r) => r.json())
-  const key = Object.keys(topo.objects)[0]
-  // The object is a GeometryCollection, so feature() returns a FeatureCollection
-  // at runtime even though the typed overload narrows to Feature.
-  return feature(topo, topo.objects[key]) as unknown as FeatureCollection
+// ─── Survey map styling ──────────────────────────────────────────────────────
+
+const SURVEY_SOURCE = 'survey-maps'
+// Emerald fill matching the deck.gl layer this replaced. The old layer combined a
+// 160/255 fill alpha with the opacity slider, so fold that constant in here to
+// keep the slider's range looking the same.
+const SURVEY_FILL_ALPHA = 160 / 255
+
+// PMTiles serves MVT over range requests via a custom MapLibre protocol, which is
+// global rather than per-map — registering it twice throws, so guard it.
+let pmtilesRegistered = false
+function registerPMTilesProtocol() {
+  if (pmtilesRegistered) return
+  maplibregl.addProtocol('pmtiles', new Protocol().tile)
+  pmtilesRegistered = true
 }
 
 // ─── GeoJSON boundary paths ───────────────────────────────────────────────────
@@ -195,31 +200,10 @@ export const BritemapGL = forwardRef<BritemapGLHandle, BritemapGLProps>(function
   // Geolocated, uploaded videos — static config, computed once
   const videoMarkers = useMemo(() => mapVideos(), [])
 
-  // Bamboo survey maps — lazily fetched + expanded from TopoJSON only when toggled on.
-  const surveyMapQueries = useQueries({
-    queries: SURVEY_MAPS.map((m) => ({
-      queryKey: ['survey-map', m.id],
-      queryFn: () => loadSurveyMap(m.path),
-      staleTime: Infinity,
-      enabled: !!layers.overlays.surveyMaps[m.id],
-    })),
-  })
-  const surveyMapData = useMemo(
-    () =>
-      SURVEY_MAPS.reduce<Record<string, FeatureCollection | undefined>>((acc, m, i) => {
-        acc[m.id] = surveyMapQueries[i].data
-        return acc
-      }, {}),
-    [surveyMapQueries],
-  )
-  const surveyMapsLoading = useMemo(
-    () =>
-      SURVEY_MAPS.reduce<Record<string, boolean>>((acc, m, i) => {
-        acc[m.id] = surveyMapQueries[i].isLoading
-        return acc
-      }, {}),
-    [surveyMapQueries],
-  )
+  // Must run before the map requests any pmtiles:// URL.
+  registerPMTilesProtocol()
+
+  const anySurveyMapOn = SURVEY_MAPS.some((m) => layers.overlays.surveyMaps[m.id])
 
   useImperativeHandle(ref, () => ({
     getMapImage: () => mapRef.current?.getCanvas()?.toDataURL('image/png') ?? null,
@@ -320,13 +304,7 @@ export const BritemapGL = forwardRef<BritemapGLHandle, BritemapGLProps>(function
         makeProvinceFillLayer(provincesGeoJSON as any, layers.provincesOpacity, quadratCountByProvince),
       )
     }
-    // Bamboo survey maps — one filled GeoJsonLayer per enabled+loaded region
-    for (const m of SURVEY_MAPS) {
-      const data = surveyMapData[m.id]
-      if (layers.overlays.surveyMaps[m.id] && data) {
-        result.push(makeSurveyMapLayer(m.id, data, layers.overlays.surveyMapsOpacity))
-      }
-    }
+    // Survey maps are MapLibre vector layers now — see the <Source> below.
     if (layers.boundaries.regions && regionsGeoJSON) {
       result.push(makeRegionOutlineLayer(regionsGeoJSON as { type: 'FeatureCollection'; features: unknown[] }))
     }
@@ -375,7 +353,6 @@ export const BritemapGL = forwardRef<BritemapGLHandle, BritemapGLProps>(function
     handleHover,
     handleClick,
     videoMarkers,
-    surveyMapData,
   ])
 
   const mapStyle = MAP_STYLES[layers.basemap]
@@ -417,6 +394,28 @@ export const BritemapGL = forwardRef<BritemapGLHandle, BritemapGLProps>(function
               }}
             />
           </>
+        )}
+
+        {/* Bamboo survey maps — vector tiles read from a PMTiles archive over range
+            requests. One source-layer per province; toggling a province mounts its
+            fill layer rather than downloading anything province-specific. */}
+        {anySurveyMapOn && (
+          <Source id={SURVEY_SOURCE} type="vector" url={`pmtiles://${SURVEY_MAPS_PMTILES}`}>
+            {SURVEY_MAPS.filter((m) => layers.overlays.surveyMaps[m.id]).map((m) => (
+              <MapLayer
+                key={m.id}
+                id={`survey-map-${m.id}`}
+                type="fill"
+                source={SURVEY_SOURCE}
+                source-layer={m.id}
+                paint={{
+                  'fill-color': '#10b981',
+                  'fill-opacity': layers.overlays.surveyMapsOpacity * SURVEY_FILL_ALPHA,
+                  'fill-outline-color': '#057857',
+                }}
+              />
+            ))}
+          </Source>
         )}
 
         {/* Bamboo distribution — AI/ML raster tiles (below data, above basemap) */}
@@ -487,7 +486,6 @@ export const BritemapGL = forwardRef<BritemapGLHandle, BritemapGLProps>(function
             onToggleDroneVideos={actions.toggleDroneVideos}
             onToggleSurveyMap={actions.toggleSurveyMap}
             onSetSurveyMapsOpacity={actions.setSurveyMapsOpacity}
-            surveyMapsLoading={surveyMapsLoading}
           />
           {visibleSpecies.length > 0 && (
             <div className="w-56 bg-slate-900/95 backdrop-blur-sm border border-slate-700 rounded-lg shadow-xl px-3 py-2">
