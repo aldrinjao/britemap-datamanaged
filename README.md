@@ -289,34 +289,42 @@ public/geodata/
 ├── provinces.geojson     # PSA PSGC — each feature needs properties.PSGC matching provinceCode
 ├── regions.geojson
 ├── municipalities.geojson
-├── barangays.geojson
-└── survey-maps.pmtiles   # bamboo survey maps — see below
+└── barangays.geojson
 ```
 
 ### Survey map tiles
 
-The per-municipality bamboo classification polygons ship as a single PMTiles
-archive, read over HTTP range requests — the browser fetches the header plus the
-tiles in view rather than the whole file. They are raster-derived, so a few
-features carry a very large number of vertices (Palawan: 18 municipalities,
-1.38M points); served whole they cost ~8 MB gzipped for a view that renders each
-province a few hundred pixels wide.
+The per-municipality bamboo classification polygons are a single PMTiles archive,
+read over HTTP range requests — the browser fetches the header plus the tiles in
+view rather than the whole file. They are raster-derived, so a few features carry
+a very large number of vertices (Palawan: 18 municipalities, 1.38M points);
+served whole they cost ~8 MB gzipped for a view that renders each province a few
+hundred pixels wide.
 
 Each province is its own vector-tile layer, named to match the ids in
 `SURVEY_MAPS` (`src/components/map/overlay-config.ts`). Simplification affects
 only the drawn outline — `area_ha` is carried as a tile attribute and still
 reflects the surveyed figure.
 
-Rebuild from the raw exports in `map_assets/` (gitignored — the archive is the
-tracked artifact) after installing tippecanoe:
+**Hosting.** The archive is served from **Vercel Blob** (store `britemap-blob`),
+not the deployment bundle — it is neither committed nor shipped in `public/`.
+`NEXT_PUBLIC_SURVEY_MAPS_PMTILES` holds the Blob URL and is set in all Vercel
+environments plus local `.env.local`. `overlay-config.ts` falls back to the local
+`/geodata/survey-maps.pmtiles` path when that var is unset, so a locally built
+archive still works without Blob. Any host is fine as long as it supports range
+requests (Blob does).
+
+**Rebuilding.** From the raw exports in `map_assets/` (gitignored), with
+tippecanoe installed:
 
 ```bash
 brew install tippecanoe
-npm run build:survey-tiles
+npm run build:survey-tiles   # writes public/geodata/survey-maps.pmtiles (gitignored)
 ```
 
-Set `NEXT_PUBLIC_SURVEY_MAPS_PMTILES` to serve the archive from Blob/S3 instead
-of the deployment bundle. The host must support range requests.
+The script prints the `vercel blob put … --allow-overwrite` command to publish the
+result. Reusing the same pathname keeps the URL stable, so no env change is needed
+on re-upload.
 
 ### Filter pipeline
 

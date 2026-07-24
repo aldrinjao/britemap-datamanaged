@@ -26,3 +26,7 @@ yarn-error.log*
 
 # Raw shapefile sources — converted GeoJSON is tracked instead
 map_assets/
+.env*
+
+# Generated survey-map tiles — built by scripts/build-survey-tiles.mjs, served from Blob
+public/geodata/survey-maps.pmtiles

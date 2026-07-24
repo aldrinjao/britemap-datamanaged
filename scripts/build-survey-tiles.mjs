@@ -5,8 +5,11 @@
  *
  *   npm run build:survey-tiles
  *
- * map_assets/ is gitignored — the tiled archive is the tracked artifact, not its
- * inputs. You need a local copy of the raw exports to run this.
+ * The archive is served from Vercel Blob, not the deployment bundle, so both it
+ * and map_assets/ are gitignored — neither is a tracked artifact. You need a
+ * local copy of the raw exports to run this. After building, upload the result
+ * (the script prints the exact command) and, if the URL changes, update
+ * NEXT_PUBLIC_SURVEY_MAPS_PMTILES.
  *
  * Requires tippecanoe (`brew install tippecanoe`).
  *
@@ -119,6 +122,14 @@ try {
   console.log('\ntiling...')
   execFileSync('tippecanoe', ['-o', OUT, ...TIPPECANOE_ARGS, ...layerArgs], { stdio: 'inherit' })
   console.log(`\nwrote public/geodata/survey-maps.pmtiles (${mb(OUT)})`)
+  console.log(
+    '\nupload to Vercel Blob with:\n' +
+      '  vercel blob put ./public/geodata/survey-maps.pmtiles \\\n' +
+      '    --pathname geodata/survey-maps.pmtiles --access public --allow-overwrite \\\n' +
+      '    --content-type application/octet-stream --cache-control-max-age 31536000\n' +
+      '\nReusing the same pathname keeps the public URL stable, so no env change is\n' +
+      'needed on re-upload. Omit --allow-overwrite only for a brand-new pathname.',
+  )
 } finally {
   rmSync(work, { recursive: true, force: true })
 }
