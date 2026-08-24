@@ -9,6 +9,7 @@ import type {
 } from '@/lib/types'
 import { CAGAYAN_QUADRATS, CAGAYAN_QUADRAT_DETAIL } from './data-cagayan'
 import { Y1_QUADRATS, Y1_QUADRAT_DETAIL } from './data-y1'
+import { Y2_QUADRATS, Y2_QUADRAT_DETAIL } from './data-y2'
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -169,6 +170,9 @@ export const PUBLIC_QUADRATS: PublicQuadrat[] = [
   ...CAGAYAN_QUADRATS,
   // Multi-province Year 1 data — Tarlac, Cavite, Palawan, Abra (Y1), Cebu
   ...Y1_QUADRATS,
+  // Year 2 initial surveys — Leyte, Zamboanga del Norte, Davao del Sur,
+  // South Cotabato, Agusan del Norte
+  ...Y2_QUADRATS,
 
 ]
 
@@ -1578,6 +1582,9 @@ export const PUBLIC_QUADRAT_DETAIL: Record<string, PublicQuadratDetail> = {
   ...CAGAYAN_QUADRAT_DETAIL,
   // Multi-province Year 1 data
   ...Y1_QUADRAT_DETAIL,
+  // Year 2 initial surveys — Leyte, Zamboanga del Norte, Davao del Sur,
+  // South Cotabato, Agusan del Norte
+  ...Y2_QUADRAT_DETAIL,
 
 }
 
