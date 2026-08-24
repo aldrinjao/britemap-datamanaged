@@ -305,23 +305,6 @@ export function makeMunicipalityHighlightLayer(
   return highlightLayer('municipality-highlight', features, 60)
 }
 
-// ─── Bamboo survey maps (semifinal classification polygons) ──────────────────
-
-export function makeSurveyMapLayer(id: string, geojson: FeatureCollection, opacity: number): Layer {
-  return new GeoJsonLayer({
-    id: `survey-map-${id}`,
-    data: geojson,
-    filled: true,
-    stroked: true,
-    getFillColor: [16, 185, 129, 160],   // emerald — layer opacity scales this
-    getLineColor: [5, 120, 87, 230],
-    getLineWidth: 1,
-    lineWidthMinPixels: 0.4,
-    opacity,
-    pickable: false,
-  })
-}
-
 // ─── Drone video markers ──────────────────────────────────────────────────────
 
 // Red teardrop pin with a white play triangle — reads instantly as "video here".

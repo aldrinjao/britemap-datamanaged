@@ -292,6 +292,40 @@ public/geodata/
 └── barangays.geojson
 ```
 
+### Survey map tiles
+
+The per-municipality bamboo classification polygons are a single PMTiles archive,
+read over HTTP range requests — the browser fetches the header plus the tiles in
+view rather than the whole file. They are raster-derived, so a few features carry
+a very large number of vertices (Palawan: 18 municipalities, 1.38M points);
+served whole they cost ~8 MB gzipped for a view that renders each province a few
+hundred pixels wide.
+
+Each province is its own vector-tile layer, named to match the ids in
+`SURVEY_MAPS` (`src/components/map/overlay-config.ts`). Simplification affects
+only the drawn outline — `area_ha` is carried as a tile attribute and still
+reflects the surveyed figure.
+
+**Hosting.** The archive is served from **Vercel Blob** (store `britemap-blob`),
+not the deployment bundle — it is neither committed nor shipped in `public/`.
+`NEXT_PUBLIC_SURVEY_MAPS_PMTILES` holds the Blob URL and is set in all Vercel
+environments plus local `.env.local`. `overlay-config.ts` falls back to the local
+`/geodata/survey-maps.pmtiles` path when that var is unset, so a locally built
+archive still works without Blob. Any host is fine as long as it supports range
+requests (Blob does).
+
+**Rebuilding.** From the raw exports in `map_assets/` (gitignored), with
+tippecanoe installed:
+
+```bash
+brew install tippecanoe
+npm run build:survey-tiles   # writes public/geodata/survey-maps.pmtiles (gitignored)
+```
+
+The script prints the `vercel blob put … --allow-overwrite` command to publish the
+result. Reusing the same pathname keeps the URL stable, so no env change is needed
+on re-upload.
+
 ### Filter pipeline
 
 Geographic and count filters (Stats & Filters panel, left side) are applied in `map/page.tsx` via `applyMapFilters()` before the data reaches deck.gl. Date range and species filters (Layers panel, right side) are applied inside `BritemapGL` via `use-map-layers`. Both filter sets stack. When the layer filters reduce the visible count below the geographic filter count, the Stats panel shows an amber note.

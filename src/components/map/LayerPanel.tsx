@@ -23,26 +23,14 @@ interface LayerPanelProps {
   onToggleDroneVideos: () => void
   onToggleSurveyMap: (id: string) => void
   onSetSurveyMapsOpacity: (v: number) => void
-  /** Per-survey-map id → currently fetching/expanding its TopoJSON. */
-  surveyMapsLoading: Record<string, boolean>
 }
 
 type Tab = 'map' | 'boundaries' | 'data' | 'overlays'
 
-function Spinner() {
-  return (
-    <span
-      className="inline-block w-3 h-3 border-2 border-slate-600 border-t-emerald-400 rounded-full animate-spin"
-      role="status"
-      aria-label="Loading"
-    />
-  )
-}
-
 function Toggle({
-  label, checked, onChange, disabled = false, note, loading = false,
+  label, checked, onChange, disabled = false, note,
 }: {
-  label: string; checked: boolean; onChange: () => void; disabled?: boolean; note?: string; loading?: boolean
+  label: string; checked: boolean; onChange: () => void; disabled?: boolean; note?: string
 }) {
   return (
     <div>
@@ -55,7 +43,6 @@ function Toggle({
           className="w-4 h-4 rounded accent-emerald-500"
         />
         <span className={clsx('text-sm text-slate-300', !disabled && 'group-hover:text-white')}>{label}</span>
-        {loading && <Spinner />}
       </label>
       {note && <p className="text-xs text-slate-600 mt-0.5 pl-6">{note}</p>}
     </div>
@@ -137,7 +124,6 @@ export function LayerPanel({
   onToggleDroneVideos,
   onToggleSurveyMap,
   onSetSurveyMapsOpacity,
-  surveyMapsLoading,
 }: LayerPanelProps) {
   const [open, setOpen] = useState(true)
   const [tab, setTab] = useState<Tab>('map')
@@ -268,7 +254,6 @@ export function LayerPanel({
                       label={m.name}
                       checked={!!layers.overlays.surveyMaps[m.id]}
                       onChange={() => onToggleSurveyMap(m.id)}
-                      loading={!!surveyMapsLoading[m.id]}
                     />
                   ))}
                   {activeSurveyMaps > 0 && (
